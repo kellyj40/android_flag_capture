@@ -1,9 +1,7 @@
 package com.joekelly.mapsandlocation;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -16,10 +14,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 
@@ -31,22 +27,17 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
-    private double[][] arrFlags = {{53.305, -6.2210},
-            {53.306, -6.2210},
-            {53.304, -6.2210},
-            {53.303, -6.2210524},
-            {53.305, -6.222},
-            {53.305, -6.223},
-            {53.305, -6.220},
-            {53.305, -6.219}};
+    private double[][] arrFlags = {{53.305, -6.2210}};
     LocationManager locationManager;
     LocationListener locationListener;
+    private Marker objectReference;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -111,8 +102,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
                 boolean value = checkFlagDistances(userLocation);
                 if (value) {
-                    mMap.addMarker(new MarkerOptions().position(userLocation).title("User location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                                        int radiusM = 100;
+//                    mMap.addMarker(new MarkerOptions().position(userLocation).title("User location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+
+                    int radiusM = 100;
+
+                    // Remove the flag
+                    objectReference.remove();
+
                     double latitude = location.getLatitude();// your center latitude
                     double longitude = location.getLongitude();// your center longitude
                             LatLng latLng = new LatLng(latitude,longitude);
@@ -195,7 +191,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         for (double[] flag : arrFlags) {
             LatLng position = new LatLng(flag[0], flag[1]);
-            mMap.addMarker(new MarkerOptions().position(position).title("Flag").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+            objectReference = mMap.addMarker(new MarkerOptions().position(position).title("Flag").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
         }
 
     }
