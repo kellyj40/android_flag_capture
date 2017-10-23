@@ -3,6 +3,11 @@ package com.joekelly.mapsandlocation;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,6 +29,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -41,6 +47,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             {53.305, -6.219}};
     LocationManager locationManager;
     LocationListener locationListener;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -73,6 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             } else {
                 if (grantResults.length > 0 && grantResults[0] == getPackageManager().PERMISSION_GRANTED) {
                     locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, locationListener);
+                    mMap.setMyLocationEnabled(true);
                 }
             }
         }
@@ -94,7 +102,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
 
-
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationListener = new LocationListener() {
 
@@ -105,7 +112,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 boolean value = checkFlagDistances(userLocation);
                 if (value) {
                     mMap.addMarker(new MarkerOptions().position(userLocation).title("User location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                }else{
+                                        int radiusM = 100;
+                    double latitude = location.getLatitude();// your center latitude
+                    double longitude = location.getLongitude();// your center longitude
+                            LatLng latLng = new LatLng(latitude,longitude);
+
+                    // draw circle
+                    int d = 500; // diameter
+                    Bitmap bm = Bitmap.createBitmap(d, d, Bitmap.Config.ARGB_8888);
+                    Canvas c = new Canvas(bm);
+                    Paint p = new Paint();
+                    p.setColor(Color.WHITE);
+
+                    c.drawCircle(d/2, d/2, d/2, p);
+
+                    // generate BitmapDescriptor from circle Bitmap
+                    BitmapDescriptor bmD = BitmapDescriptorFactory.fromBitmap(bm);
+
+// mapView is the GoogleMap
+                    mMap.addGroundOverlay(new GroundOverlayOptions().
+                            image(bmD).
+                            position(latLng,radiusM*2,radiusM*2).
+                            transparency(0.4f));
+                } else {
+
+
 //                    mMap.addMarker(new MarkerOptions().position(userLocation).title("User location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
 
                 }
