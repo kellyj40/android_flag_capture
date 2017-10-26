@@ -17,9 +17,8 @@ public class DistanceCalculations {
     public static int checkFlagDistances(LatLng userLocation,double[][] arrFlags) {
         double R = 6378137; // Earth’s mean radius in meter
         int count = 0;
-        double[] flag;
         while (count < arrFlags.length){
-            flag = arrFlags[count];
+            double[] flag = arrFlags[count];
             double dLat = rad(flag[0] - userLocation.latitude);
             double dLong = rad(flag[1] - userLocation.longitude);
             double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
@@ -35,6 +34,22 @@ public class DistanceCalculations {
         }
 
         return -1;
+    }
+
+    public static boolean checkCapturedDistance(LatLng userLocation,double[] flagCaught) {
+        double R = 6378137; // Earth’s mean radius in meter
+        int count = 0;
+        double dLat = rad(flagCaught[0] - userLocation.latitude);
+        double dLong = rad(flagCaught[1] - userLocation.longitude);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(rad(userLocation.latitude)) * Math.cos(rad(flagCaught[0])) *
+                        Math.sin(dLong / 2) * Math.sin(dLong / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double d = R * c;
+
+        if (d > 100)return true;
+
+        return false;
     }
 
 }
