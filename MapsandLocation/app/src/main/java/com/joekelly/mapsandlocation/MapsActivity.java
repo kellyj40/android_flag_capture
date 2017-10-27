@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -51,6 +52,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
+    @Override //Dont know if really need this?
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        // Ask for permission to get the users location
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 1) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != getPackageManager().PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            } else {
+                if (grantResults.length > 0 && grantResults[0] == getPackageManager().PERMISSION_GRANTED) {
+                    locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, locationListener);
+                    mMap.setMyLocationEnabled(true);
+                }
+            }
+        }
+
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -77,6 +95,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Add listener for GPS movement
         locationListener = new LocationListener() {
+
 
             public void onLocationChanged(Location location) {
 
@@ -122,6 +141,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Log.i("Captured", "Flag counted");
                         overLayReference.remove();
                         hasFlag = false;
+                        Toast.makeText(MapsActivity.this, R.string.flag_collected, Toast.LENGTH_SHORT).show();
                     }
                 }
                 // Keep camera on the user
@@ -145,6 +165,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
         };
+
 
         // Must be after the location listener is made
         // Once the map is ready put the location onto the map
@@ -173,20 +194,4 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 }
 
 
-//    @Override //Dont know if really need this?
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//        // Ask for permission to get the users location
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//
-//        if (requestCode == 1) {
-//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != getPackageManager().PERMISSION_GRANTED) {
-//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-//            } else {
-//                if (grantResults.length > 0 && grantResults[0] == getPackageManager().PERMISSION_GRANTED) {
-//                    locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, locationListener);
-//                    mMap.setMyLocationEnabled(true);
-//                }
-//            }
-//        }
-//
-//    }
+

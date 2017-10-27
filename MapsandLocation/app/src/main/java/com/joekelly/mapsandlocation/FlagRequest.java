@@ -8,7 +8,8 @@ public class FlagRequest {
 
 
     public static double[][] requestFlags(){
-        double[][] arrFlags ={{53.305, -6.2210},
+        double[][] arrFlags ={{53.309, -6.223},
+                              {53.305, -6.2210},
                               {53.304, -6.2210},
                               {53.303, -6.2210}};
         return arrFlags;
