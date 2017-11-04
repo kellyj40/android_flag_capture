@@ -12,6 +12,14 @@
         android:layout_alignParentTop="true"
         android:text="Flags captured:"/>
 
+    <TextView
+        android:id="@+id/points"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/distance"
+        android:text="Total points:"/>
+
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
