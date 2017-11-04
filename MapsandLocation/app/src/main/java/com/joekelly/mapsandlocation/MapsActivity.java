@@ -67,6 +67,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (grantResults.length > 0 && grantResults[0] == getPackageManager().PERMISSION_GRANTED) {
                     locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, locationListener);
                     mMap.setMyLocationEnabled(true);
+                    mMap.getUiSettings().setMyLocationButtonEnabled(true);
                 }
             }
         }
@@ -80,7 +81,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
         // Used for getting access to the systems location service
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
 
         // Make flag request and plot onto the map
         arrFlags = FlagRequest.requestFlags();
@@ -150,6 +150,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // Keep camera on the user
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
 
+
+//                Might be a smoother method to move camera
+//                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+//                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 10);
+//                map.animateCamera(cameraUpdate);
+//                locationManager.removeUpdates(this);
+
+
             }
 
             @Override
@@ -181,18 +189,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             } else {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
-                //Use this for when opening the map
-                Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-
-                LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-                // Move camera to the location of the user
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 17));
-                mMap.setMyLocationEnabled(true);
             }
-
         }
+        //Use this for when opening the map
+        Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+
+        LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+        // Move camera to the location of the user
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16));
+        mMap.setMyLocationEnabled(true);
+
 
     }
+
     public boolean onCreateOptionsMenu(Menu menu) {
 
         MenuInflater inflater = getMenuInflater();
