@@ -48,7 +48,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     LocationManager locationManager;
     LocationListener locationListener;
     private Marker[] objectReference;
-    private SQLiteDatabase userDatabase;
+    private DataBaseManagement referenceDataBase;
     private Cursor c;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,15 +61,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //Making table to store all the values of the flags collected by user
         try{
+            SQLiteDatabase userDatabase = this.openOrCreateDatabase("UserData", MODE_PRIVATE, null);
+            referenceDataBase = new DataBaseManagement(userDatabase);
 
-            userDatabase = this.openOrCreateDatabase("UserData", MODE_PRIVATE, null);
-
-            userDatabase.execSQL("CREATE TABLE IF NOT EXISTS flagsCaptured  (flagsNum INT(3))"); //IF NOT EXISTS
-            c = userDatabase.rawQuery("SELECT COUNT(*) FROM flagsCaptured;", null);
-
-            c.moveToFirst();
-            flagsCaptured= c.getInt(0);
-//            flagsCaptured = c.getCount();
+            flagsCaptured= referenceDataBase.makeLocalFlagTable();
 
             TextView textView = (TextView) findViewById(R.id.distance);
             textView.setText("Captured: " + Integer.toString(flagsCaptured));
@@ -171,19 +166,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         hasFlag = false;
                         Toast.makeText(MapsActivity.this, R.string.flag_collected, Toast.LENGTH_SHORT).show();
 //                        Add captured flag
-                        try{
-                            userDatabase.execSQL("INSERT INTO flagsCaptured(flagsNum) VALUES (1)");
-                            c = userDatabase.rawQuery("SELECT COUNT(*) FROM flagsCaptured;", null);
-
-                            flagsCaptured = c.getCount();
-                            Toast.makeText(MapsActivity.this, "Worked", Toast.LENGTH_SHORT).show();
-                        }catch(Exception e){
-                            Toast.makeText(MapsActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                        }
-
-                        c = userDatabase.rawQuery("SELECT COUNT(*) FROM flagsCaptured;", null);
-                        c.moveToFirst();
-                        flagsCaptured= c.getInt(0);
+                        referenceDataBase.updateLocalFlagTable();
+                        flagsCaptured++;
 
                         TextView textView = (TextView) findViewById(R.id.distance);
                         textView.setText("Captured: " + Integer.toString(flagsCaptured));
