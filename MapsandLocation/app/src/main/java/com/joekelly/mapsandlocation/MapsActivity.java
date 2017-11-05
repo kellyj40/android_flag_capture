@@ -175,8 +175,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
                 // Keep camera on the user
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
-
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 17));
 
             }
 
@@ -203,6 +202,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (Build.VERSION.SDK_INT < 23) {
             Toast.makeText(MapsActivity.this, "UPdate", Toast.LENGTH_SHORT).show();
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            mMap.setMyLocationEnabled(true);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+
         } else {
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != getPackageManager().PERMISSION_GRANTED) {
@@ -211,14 +213,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
             }
-        }
-        //Use this for when opening the map
-        Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+            //Use this for when opening the map
+            Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
 
-        LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-        // Move camera to the location of the user
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16));
-        mMap.setMyLocationEnabled(true);
+            LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+            // Move camera to the location of the user
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16));
+            mMap.setMyLocationEnabled(true);
+        }
+
 
 
     }
