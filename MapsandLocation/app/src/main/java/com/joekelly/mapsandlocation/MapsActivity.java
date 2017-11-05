@@ -72,6 +72,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }catch (Exception e){
             Toast.makeText(MapsActivity.this, "Error in Database", Toast.LENGTH_SHORT).show();
         }
+        FlagRequest getFlagsObject = new FlagRequest();
+
+        // Make flag request and plot onto the map
+        arrFlags = getFlagsObject.requestFlags();
 
 
     }
@@ -101,8 +105,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Used for getting access to the systems location service
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-        // Make flag request and plot onto the map
-        arrFlags = FlagRequest.requestFlags();
+
         int countFlags = 0;
         double[] flag;
         objectReference = new Marker[arrFlags.length];
@@ -175,7 +178,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 }
                 // Keep camera on the user
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 17));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
 
             }
 
