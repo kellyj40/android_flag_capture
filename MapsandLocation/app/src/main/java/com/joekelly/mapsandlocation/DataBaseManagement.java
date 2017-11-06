@@ -15,6 +15,7 @@ public class DataBaseManagement {
     private int flagsCaptured = 0;
 
     public DataBaseManagement(SQLiteDatabase userDatabase){
+
         this.userDatabase = userDatabase;
     }
 

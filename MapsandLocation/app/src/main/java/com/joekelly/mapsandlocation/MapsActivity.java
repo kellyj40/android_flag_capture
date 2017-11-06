@@ -8,6 +8,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -35,12 +39,20 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,SensorEventListener, StepListener{
     private boolean hasFlag = false;
     private double[] locationFlagCaptured = new double[2];
     private GoogleMap mMap;
     private GroundOverlay overLayReference;
     private int flagsCaptured = 0;
+
+    // Step instances
+    private StepDetector simpleStepDetector;
+    private SensorManager sensorManager;
+    private Sensor accel;
+    private static final String TEXT_NUM_STEPS = "Number of steps taken:";
+    private int numSteps;
+    private TextView StepsTaken;
 
 
     private double[][] arrFlags;
@@ -76,6 +88,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Make flag request and plot onto the map
         arrFlags = getFlagsObject.requestFlags();
+
+
+        // For steps
+        // Get an instance of the SensorManager
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        simpleStepDetector = new StepDetector();
+        simpleStepDetector.registerListener(this);
+        StepsTaken = (TextView) findViewById(R.id.tv_steps);
+        numSteps = 0;
+        sensorManager.registerListener(MapsActivity.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
 
 
     }
@@ -248,6 +271,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+
+
+    // Steps Here
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            simpleStepDetector.updateAccel(
+                    event.timestamp, event.values[0], event.values[1], event.values[2]);
+        }
+    }
+
+    @Override
+    public void step(long timeNs) {
+        numSteps++;
+        StepsTaken.setText(TEXT_NUM_STEPS + numSteps);
     }
 
 }
