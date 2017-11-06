@@ -102,24 +102,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     }
-    @Override //Dont know if really need this?
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        // Ask for permission to get the users location
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == 1) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != getPackageManager().PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            } else {
-                if (grantResults.length > 0 && grantResults[0] == getPackageManager().PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, locationListener);
-                    mMap.setMyLocationEnabled(true);
-                    mMap.getUiSettings().setMyLocationButtonEnabled(true);
-                }
-            }
-        }
-
-    }
+//    @Override //Dont know if really need this?
+//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+//        // Ask for permission to get the users location
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//
+//        if (requestCode == 1) {
+//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != getPackageManager().PERMISSION_GRANTED) {
+//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+//            } else {
+//                if (grantResults.length > 0 && grantResults[0] == getPackageManager().PERMISSION_GRANTED) {
+//                    locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, locationListener);
+//                    mMap.setMyLocationEnabled(true);
+//                    mMap.getUiSettings().setMyLocationButtonEnabled(true);
+//                }
+//            }
+//        }
+//
+//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
