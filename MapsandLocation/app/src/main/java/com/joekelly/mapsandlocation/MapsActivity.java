@@ -59,7 +59,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     LocationManager locationManager;
     LocationListener locationListener;
-    private Marker[] objectReference;
+    private GroundOverlay[] overLayReferenceFlags;
+    private Marker[] objectReferenceFlags;
     private DataBaseManagement referenceDataBase;
     private Cursor c;
     @Override
@@ -131,13 +132,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         int countFlags = 0;
         double[] flag;
-        objectReference = new Marker[arrFlags.length];
+        objectReferenceFlags = new Marker[arrFlags.length];
+        overLayReferenceFlags = new GroundOverlay[arrFlags.length];
+
         while(countFlags<arrFlags.length){
             flag = arrFlags[countFlags];
             LatLng position = new LatLng(flag[0], flag[1]);
 
-            objectReference[countFlags] = mMap.addMarker(new MarkerOptions().position(position).title("Flag").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+            objectReferenceFlags[countFlags] = mMap.addMarker(new MarkerOptions().position(position).title("Flag").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+
+
+            int radiusGet = 15;
+            // drawing circle
+            int d = 15; // diameter
+            Bitmap bm = Bitmap.createBitmap(d, d, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(bm);
+            Paint p = new Paint();
+            p.setColor(Color.GREEN);
+
+            c.drawCircle(d/2, d/2, d/2, p);
+
+            // generate BitmapDescriptor from circle Bitmap
+            BitmapDescriptor bmD = BitmapDescriptorFactory.fromBitmap(bm);
+
+            //Add the circle
+            overLayReferenceFlags[countFlags] =  mMap.addGroundOverlay(new GroundOverlayOptions().
+                    image(bmD).
+                    position(position,radiusGet*2,radiusGet*2).transparency(0.4f));
+
             countFlags++;
+
         }
 
 
@@ -179,7 +203,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             position(latLng,radiusM*2,radiusM*2).transparency(0.4f));
 
                     // Remove the flag
-                    objectReference[value].remove();
+                    objectReferenceFlags[value].remove();
+                    overLayReferenceFlags[value].remove();
                     locationFlagCaptured[0] = latitude;
                     locationFlagCaptured[1] = longitude;
                     hasFlag = true;
@@ -232,7 +257,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
         } else {
-
+            Toast.makeText(MapsActivity.this, "Last Location", Toast.LENGTH_SHORT).show();
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != getPackageManager().PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else {
