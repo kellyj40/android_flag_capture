@@ -26,7 +26,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.os.Vibrator;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -66,6 +66,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Marker[] objectReferenceFlags;
     private DataBaseManagement referenceDataBase;
     private Cursor c;
+    Vibrator v;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +107,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //Set up stats page db
         myDb = new Databasehelperclass(this);
+
+        //Initiate vibrator
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
 
     }
@@ -214,6 +218,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     locationFlagCaptured[0] = latitude;
                     locationFlagCaptured[1] = longitude;
                     hasFlag = true;
+                    //vibrates when flag is captured
+                    v.vibrate(500);
+
                 }
                 if (hasFlag){
                     boolean successCapture = DistanceCalculations.checkCapturedDistance(userLocation, locationFlagCaptured);
@@ -228,6 +235,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         TextView textView = (TextView) findViewById(R.id.distance);
                         textView.setText("Captured: " + Integer.toString(flagsCaptured));
+                        //Vibrates longer on succesfull capture
+                        v.vibrate(1000);
+
 
                     }
                 }
