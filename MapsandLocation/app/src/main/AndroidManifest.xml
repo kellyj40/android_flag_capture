@@ -49,6 +49,11 @@
             android:label="@string/title_activity_abouter"
             android:parentActivityName=".HomePage"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".StatsActivity"
+            android:label="stats"
+            android:parentActivityName=".MapsActivity"
+            />
     </application>
 
 </manifest>

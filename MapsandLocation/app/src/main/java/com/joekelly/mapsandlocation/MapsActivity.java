@@ -54,6 +54,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int numSteps;
     private TextView StepsTaken;
 
+    //stats db
+    Databasehelperclass myDb;
+
 
     private double[][] arrFlags;
 
@@ -100,6 +103,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         StepsTaken = (TextView) findViewById(R.id.tv_steps);
         numSteps = 0;
         sensorManager.registerListener(MapsActivity.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
+
+        //Set up stats page db
+        myDb = new Databasehelperclass(this);
 
 
     }
@@ -287,7 +293,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.about:
-                startActivity(new Intent(this, Abouter.class));
+                // passes steps to stats page
+                Intent registerIntent = new Intent(this, StatsActivity.class);
+                int x = numSteps;
+                //adds current steps to db
+                myDb.addSteps(new Steps(x));
+                registerIntent.putExtra("numSteps", x);
+                startActivity(registerIntent);
                 return true;
             case R.id.help:
                 startActivity(new Intent(this, Abouter.class));
@@ -318,4 +330,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         StepsTaken.setText(TEXT_NUM_STEPS + numSteps);
     }
 
+    protected void onStop() {
+        super.onStop();
+        myDb.addSteps(new Steps(numSteps));
+
+    }
 }

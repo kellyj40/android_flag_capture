@@ -60,7 +60,7 @@ public class HomePage extends AppCompatActivity {
     }
 
     public void statsLauncher(View view) {
-        Intent intent = new Intent(this, Abouter.class);
+        Intent intent = new Intent(this, StatsActivity.class);
         startActivity(intent);
     }
 
