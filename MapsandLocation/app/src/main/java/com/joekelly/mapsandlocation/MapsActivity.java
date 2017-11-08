@@ -17,16 +17,16 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Vibrator;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -39,13 +39,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,SensorEventListener, StepListener{
     private boolean hasFlag = false;
     private double[] locationFlagCaptured = new double[2];
     private GoogleMap mMap;
     private GroundOverlay overLayReference;
     private int flagsCaptured = 0;
-
+    Vibrator v;
     // Step instances
     private StepDetector simpleStepDetector;
     private SensorManager sensorManager;
@@ -66,7 +67,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Marker[] objectReferenceFlags;
     private DataBaseManagement referenceDataBase;
     private Cursor c;
-    Vibrator v;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,10 +89,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }catch (Exception e){
             Toast.makeText(MapsActivity.this, "Error in Database", Toast.LENGTH_SHORT).show();
         }
-        FlagRequest getFlagsObject = new FlagRequest();
+        //getting location
 
-        // Make flag request and plot onto the map
-        arrFlags = getFlagsObject.requestFlags();
+        PrivateRequest getFlagsObject = new PrivateRequest();
+
+        Intent intent = getIntent();
+        Double startingLat = intent.getDoubleExtra("LAT", 0.0);
+        Double startingLon = intent.getDoubleExtra("LON", 0.0);
+        Toast.makeText(this, "for real "+startingLat+" "+startingLon, Toast.LENGTH_LONG).show();
+
+        LatLng startingCoords = new LatLng(startingLat, startingLon);
+        arrFlags = getFlagsObject.requestFlags(startingCoords);
 
 
         // For steps
@@ -107,10 +114,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //Set up stats page db
         myDb = new Databasehelperclass(this);
-
-        //Initiate vibrator
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
 
     }
 //    @Override //Dont know if really need this?
@@ -218,9 +222,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     locationFlagCaptured[0] = latitude;
                     locationFlagCaptured[1] = longitude;
                     hasFlag = true;
-                    //vibrates when flag is captured
                     v.vibrate(500);
-
                 }
                 if (hasFlag){
                     boolean successCapture = DistanceCalculations.checkCapturedDistance(userLocation, locationFlagCaptured);
@@ -235,15 +237,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         TextView textView = (TextView) findViewById(R.id.distance);
                         textView.setText("Captured: " + Integer.toString(flagsCaptured));
-                        //Vibrates longer on succesfull capture
                         v.vibrate(1000);
-
 
                     }
                 }
                 // Keep camera on the user
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
-
             }
 
             @Override
@@ -342,7 +341,5 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     protected void onStop() {
         super.onStop();
-        myDb.addSteps(new Steps(numSteps));
-
     }
 }

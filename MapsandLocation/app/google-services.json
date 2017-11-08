@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "910432732208",
+    "firebase_url": "https://flagusers.firebaseio.com",
+    "project_id": "flagusers",
+    "storage_bucket": "flagusers.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:910432732208:android:684a3ed1097a5ef1",
+        "android_client_info": {
+          "package_name": "com.joekelly.mapsandlocation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "910432732208-fc6l5da83a5iharc0ubog9dgms0sk1kl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.joekelly.mapsandlocation",
+            "certificate_hash": "cb60f51059160a31c7a5c774b89b616239a7587b"
+          }
+        },
+        {
+          "client_id": "910432732208-tnni3eku525stfl986aeo52sstq7rfi6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCngC12TQm6H0x2auSRTN40_JIXuwFupVg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "910432732208-tnni3eku525stfl986aeo52sstq7rfi6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
