@@ -4,4 +4,5 @@
     <string name="flag_collected">Flag collected</string>
     <string name="title_activity_abouter">Abouter</string>
     <string name="title_activity_private_map">Map</string>
+    <string name="no_location_detected">Cant find location</string>
 </resources>

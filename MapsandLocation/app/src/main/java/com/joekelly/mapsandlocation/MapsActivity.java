@@ -17,18 +17,16 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Vibrator;
-import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -91,10 +89,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }catch (Exception e){
             Toast.makeText(MapsActivity.this, "Error in Database", Toast.LENGTH_SHORT).show();
         }
-        FlagRequest getFlagsObject = new FlagRequest();
+        //getting location
 
-        // Make flag request and plot onto the map
-        arrFlags = getFlagsObject.requestFlags();
+        PrivateRequest getFlagsObject = new PrivateRequest();
+
+        Intent intent = getIntent();
+        Double startingLat = intent.getDoubleExtra("LAT", 0.0);
+        Double startingLon = intent.getDoubleExtra("LON", 0.0);
+        Toast.makeText(this, "for real "+startingLat+" "+startingLon, Toast.LENGTH_LONG).show();
+
+        LatLng startingCoords = new LatLng(startingLat, startingLon);
+        arrFlags = getFlagsObject.requestFlags(startingCoords);
 
 
         // For steps
