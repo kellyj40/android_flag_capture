@@ -226,7 +226,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Must be after the location listener is made
         // Once the map is ready put the location onto the map
         if (Build.VERSION.SDK_INT < 23) {
-            Toast.makeText(MapsActivity.this, "UPdate", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MapsActivity.this, "Update", Toast.LENGTH_SHORT).show();
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
             mMap.setMyLocationEnabled(true);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);

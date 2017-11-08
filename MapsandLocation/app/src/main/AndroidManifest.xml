@@ -47,8 +47,7 @@
         <activity
             android:name=".Abouter"
             android:label="@string/title_activity_abouter"
-            android:parentActivityName=".HomePage"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:parentActivityName=".HomePage"/>
     </application>
 
 </manifest>
