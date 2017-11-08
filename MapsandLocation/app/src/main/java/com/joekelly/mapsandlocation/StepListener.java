@@ -5,6 +5,9 @@ package com.joekelly.mapsandlocation;
  */
 
 
+// TUTORIAL FOLLOWED http://www.gadgetsaint.com/android/create-pedometer-step-counter-android/
+
+
     // Will listen to step alerts
     public interface StepListener {
 

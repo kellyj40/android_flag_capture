@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+
 public class HomePage extends AppCompatActivity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +62,7 @@ public class HomePage extends AppCompatActivity {
     }
 
     public void statsLauncher(View view) {
-        Intent intent = new Intent(this, Abouter.class);
+        Intent intent = new Intent(this, StatsActivity.class);
         startActivity(intent);
     }
 

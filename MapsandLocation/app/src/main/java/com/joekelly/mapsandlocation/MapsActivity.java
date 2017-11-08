@@ -26,7 +26,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.os.Vibrator;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -54,14 +54,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int numSteps;
     private TextView StepsTaken;
 
+    //stats db
+    Databasehelperclass myDb;
+
 
     private double[][] arrFlags;
 
     LocationManager locationManager;
     LocationListener locationListener;
-    private Marker[] objectReference;
+    private GroundOverlay[] overLayReferenceFlags;
+    private Marker[] objectReferenceFlags;
     private DataBaseManagement referenceDataBase;
     private Cursor c;
+    Vibrator v;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +105,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         numSteps = 0;
         sensorManager.registerListener(MapsActivity.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
 
+        //Set up stats page db
+        myDb = new Databasehelperclass(this);
+
+        //Initiate vibrator
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
 
     }
 //    @Override //Dont know if really need this?
@@ -131,13 +142,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         int countFlags = 0;
         double[] flag;
-        objectReference = new Marker[arrFlags.length];
+        objectReferenceFlags = new Marker[arrFlags.length];
+        overLayReferenceFlags = new GroundOverlay[arrFlags.length];
+
         while(countFlags<arrFlags.length){
             flag = arrFlags[countFlags];
             LatLng position = new LatLng(flag[0], flag[1]);
 
-            objectReference[countFlags] = mMap.addMarker(new MarkerOptions().position(position).title("Flag").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+            objectReferenceFlags[countFlags] = mMap.addMarker(new MarkerOptions().position(position).title("Flag").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+
+
+            int radiusGet = 15;
+            // drawing circle
+            int d = 15; // diameter
+            Bitmap bm = Bitmap.createBitmap(d, d, Bitmap.Config.ARGB_8888);
+            Canvas c = new Canvas(bm);
+            Paint p = new Paint();
+            p.setColor(Color.GREEN);
+
+            c.drawCircle(d/2, d/2, d/2, p);
+
+            // generate BitmapDescriptor from circle Bitmap
+            BitmapDescriptor bmD = BitmapDescriptorFactory.fromBitmap(bm);
+
+            //Add the circle
+            overLayReferenceFlags[countFlags] =  mMap.addGroundOverlay(new GroundOverlayOptions().
+                    image(bmD).
+                    position(position,radiusGet*2,radiusGet*2).transparency(0.4f));
+
             countFlags++;
+
         }
 
 
@@ -179,10 +213,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             position(latLng,radiusM*2,radiusM*2).transparency(0.4f));
 
                     // Remove the flag
-                    objectReference[value].remove();
+                    objectReferenceFlags[value].remove();
+                    overLayReferenceFlags[value].remove();
                     locationFlagCaptured[0] = latitude;
                     locationFlagCaptured[1] = longitude;
                     hasFlag = true;
+                    //vibrates when flag is captured
+                    v.vibrate(500);
+
                 }
                 if (hasFlag){
                     boolean successCapture = DistanceCalculations.checkCapturedDistance(userLocation, locationFlagCaptured);
@@ -197,6 +235,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         TextView textView = (TextView) findViewById(R.id.distance);
                         textView.setText("Captured: " + Integer.toString(flagsCaptured));
+                        //Vibrates longer on succesfull capture
+                        v.vibrate(1000);
+
 
                     }
                 }
@@ -232,7 +273,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
         } else {
-
+            Toast.makeText(MapsActivity.this, "Last Location", Toast.LENGTH_SHORT).show();
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != getPackageManager().PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else {
@@ -262,7 +303,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.about:
-                startActivity(new Intent(this, Abouter.class));
+                // passes steps to stats page
+                Intent registerIntent = new Intent(this, StatsActivity.class);
+                int x = numSteps;
+                //adds current steps to db
+                myDb.addSteps(new Steps(x));
+                registerIntent.putExtra("numSteps", x);
+                startActivity(registerIntent);
                 return true;
             case R.id.help:
                 startActivity(new Intent(this, Abouter.class));
@@ -293,4 +340,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         StepsTaken.setText(TEXT_NUM_STEPS + numSteps);
     }
 
+    protected void onStop() {
+        super.onStop();
+        myDb.addSteps(new Steps(numSteps));
+
+    }
 }

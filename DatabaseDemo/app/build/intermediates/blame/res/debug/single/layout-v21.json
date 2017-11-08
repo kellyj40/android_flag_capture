@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/Users/joekelly/Desktop/androidProject/android_flag_capture/DatabaseDemo/app/build/intermediates/res/merged/debug/layout-v21/notification_template_icon_group.xml",
+        "source": "/Users/joekelly/.android/build-cache/e95a83e4fffd39d2aaafa91044d43a1eb775ee53/output/res/layout-v21/notification_template_icon_group.xml"
+    },
+    {
+        "merged": "/Users/joekelly/Desktop/androidProject/android_flag_capture/DatabaseDemo/app/build/intermediates/res/merged/debug/layout-v21/notification_template_custom_big.xml",
+        "source": "/Users/joekelly/.android/build-cache/e95a83e4fffd39d2aaafa91044d43a1eb775ee53/output/res/layout-v21/notification_template_custom_big.xml"
+    },
+    {
+        "merged": "/Users/joekelly/Desktop/androidProject/android_flag_capture/DatabaseDemo/app/build/intermediates/res/merged/debug/layout-v21/notification_action_tombstone.xml",
+        "source": "/Users/joekelly/.android/build-cache/e95a83e4fffd39d2aaafa91044d43a1eb775ee53/output/res/layout-v21/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "/Users/joekelly/Desktop/androidProject/android_flag_capture/DatabaseDemo/app/build/intermediates/res/merged/debug/layout-v21/notification_action.xml",
+        "source": "/Users/joekelly/.android/build-cache/e95a83e4fffd39d2aaafa91044d43a1eb775ee53/output/res/layout-v21/notification_action.xml"
+    }
+]

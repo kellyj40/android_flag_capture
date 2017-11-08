@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/Users/joekelly/Desktop/androidProject/android_flag_capture/DatabaseDemo/app/build/intermediates/res/merged/debug/color-v11/abc_background_cache_hint_selector_material_light.xml",
+        "source": "/Users/joekelly/.android/build-cache/e95a83e4fffd39d2aaafa91044d43a1eb775ee53/output/res/color-v11/abc_background_cache_hint_selector_material_light.xml"
+    },
+    {
+        "merged": "/Users/joekelly/Desktop/androidProject/android_flag_capture/DatabaseDemo/app/build/intermediates/res/merged/debug/color-v11/abc_background_cache_hint_selector_material_dark.xml",
+        "source": "/Users/joekelly/.android/build-cache/e95a83e4fffd39d2aaafa91044d43a1eb775ee53/output/res/color-v11/abc_background_cache_hint_selector_material_dark.xml"
+    }
+]

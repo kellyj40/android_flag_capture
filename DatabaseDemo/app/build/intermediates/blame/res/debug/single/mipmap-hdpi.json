@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/Users/joekelly/Desktop/androidProject/android_flag_capture/DatabaseDemo/app/build/intermediates/res/merged/debug/mipmap-hdpi/ic_launcher.png",
+        "source": "/Users/joekelly/Desktop/androidProject/android_flag_capture/DatabaseDemo/app/src/main/res/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/joekelly/Desktop/androidProject/android_flag_capture/DatabaseDemo/app/build/intermediates/res/merged/debug/mipmap-hdpi/ic_launcher_round.png",
+        "source": "/Users/joekelly/Desktop/androidProject/android_flag_capture/DatabaseDemo/app/src/main/res/mipmap-hdpi/ic_launcher_round.png"
+    }
+]

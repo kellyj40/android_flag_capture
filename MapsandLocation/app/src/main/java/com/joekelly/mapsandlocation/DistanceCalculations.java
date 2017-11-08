@@ -27,7 +27,7 @@ public class DistanceCalculations {
             double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             double d = R * c;
 
-            if (d < 10) {
+            if (d < 15) {
                 return count;
             }
             count++;

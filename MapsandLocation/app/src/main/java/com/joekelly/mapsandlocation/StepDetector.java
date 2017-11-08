@@ -4,6 +4,8 @@ package com.joekelly.mapsandlocation;
  * Created by pigna on 25/10/2017.
  */
 
+// TUTORIAL FOLLOWED http://www.gadgetsaint.com/android/create-pedometer-step-counter-android/
+
 public class StepDetector {
 
     private static final int ACCEL_RING_SIZE = 50;
