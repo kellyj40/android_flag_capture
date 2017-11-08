@@ -27,6 +27,8 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.os.Vibrator;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -39,13 +41,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,SensorEventListener, StepListener{
     private boolean hasFlag = false;
     private double[] locationFlagCaptured = new double[2];
     private GoogleMap mMap;
     private GroundOverlay overLayReference;
     private int flagsCaptured = 0;
-
+    Vibrator v;
     // Step instances
     private StepDetector simpleStepDetector;
     private SensorManager sensorManager;
@@ -66,7 +69,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Marker[] objectReferenceFlags;
     private DataBaseManagement referenceDataBase;
     private Cursor c;
-    Vibrator v;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,10 +109,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //Set up stats page db
         myDb = new Databasehelperclass(this);
-
-        //Initiate vibrator
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
 
     }
 //    @Override //Dont know if really need this?
@@ -218,9 +217,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     locationFlagCaptured[0] = latitude;
                     locationFlagCaptured[1] = longitude;
                     hasFlag = true;
-                    //vibrates when flag is captured
                     v.vibrate(500);
-
                 }
                 if (hasFlag){
                     boolean successCapture = DistanceCalculations.checkCapturedDistance(userLocation, locationFlagCaptured);
@@ -235,15 +232,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         TextView textView = (TextView) findViewById(R.id.distance);
                         textView.setText("Captured: " + Integer.toString(flagsCaptured));
-                        //Vibrates longer on succesfull capture
                         v.vibrate(1000);
-
 
                     }
                 }
                 // Keep camera on the user
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
-
             }
 
             @Override
@@ -342,7 +336,5 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     protected void onStop() {
         super.onStop();
-        myDb.addSteps(new Steps(numSteps));
-
     }
 }

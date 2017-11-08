@@ -10,9 +10,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.firebase.geofire.GeoFire;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class HomePage extends AppCompatActivity {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +55,9 @@ public class HomePage extends AppCompatActivity {
     }
 
     public void publicGameLauncher(View view) {
-        Intent intent = new Intent(this, Abouter.class);
+        Intent intent = new Intent(this, UserLoginActivity.class);
         startActivity(intent);
+
     }
 
     public void privateGameLauncher(View view) {
