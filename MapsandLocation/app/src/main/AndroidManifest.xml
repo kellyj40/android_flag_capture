@@ -42,6 +42,7 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
+            android:screenOrientation="portrait"
             android:parentActivityName=".HomePage" />
         <activity
             android:name=".Abouter"
