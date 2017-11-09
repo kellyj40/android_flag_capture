@@ -68,6 +68,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Marker[] objectReferenceFlags;
     private DataBaseManagement referenceDataBase;
     private Cursor c;
+    private LatLng userLocation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,8 +100,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Double startingLon = intent.getDoubleExtra("LON", 0.0);
         Toast.makeText(this, "for real "+startingLat+" "+startingLon, Toast.LENGTH_LONG).show();
 
-        LatLng startingCoords = new LatLng(startingLat, startingLon);
-        arrFlags = getFlagsObject.requestFlags(startingCoords);
+        userLocation = new LatLng(startingLat, startingLon);
+        arrFlags = getFlagsObject.requestFlags(userLocation);
 
 
         // For steps
@@ -281,9 +282,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
             //Use this for when opening the map
-            Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+//            Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
 
-            LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+//            LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+
             // Move camera to the location of the user
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16));
             mMap.setMyLocationEnabled(true);
