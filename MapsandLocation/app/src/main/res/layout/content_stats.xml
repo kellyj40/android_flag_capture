@@ -61,18 +61,19 @@
 
     <com.jjoe64.graphview.helper.GraphViewXML
         android:id="@+id/gGraph"
-        android:layout_width="348dp"
-        android:layout_height="97dp"
+        android:layout_width="309dp"
+        android:layout_height="81dp"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         app:seriesColor="#ee0000"
-        app:seriesData="0=5;2=5;3=0;4=2"
+        app:seriesData="0=0;1=1;2=2;3=3; 4=4;"
         app:seriesType="bar"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/tvCurrentSession" />
+        app:layout_constraintBottom_toTopOf="@+id/tvCurrentSession"
+        app:layout_constraintVertical_bias="0.509" />
 
 </android.support.constraint.ConstraintLayout>

@@ -47,12 +47,15 @@ public class StatsActivity extends AppCompatActivity {
         TextView today_steps;
         TextView week_steps;
         TextView overall_steps;
-
+        //taken from graphView examples
         GraphView graph = (GraphView) findViewById(R.id.gGraph);
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {
-                new DataPoint(0, todayssteps),
-                new DataPoint(1, week),
-                new DataPoint(2, overall),
+
+                new DataPoint (0, todayssteps),
+                new DataPoint(2, week),
+                new DataPoint(4, overall)
+
+
 
         });
         graph.addSeries(series);
@@ -66,12 +69,12 @@ public class StatsActivity extends AppCompatActivity {
 
 
 
-// draw values on top
+        // draw values on top
         series.setDrawValuesOnTop(true);
         series.setValuesOnTopColor(Color.RED);
 
         StaticLabelsFormatter staticLabelsFormatter = new StaticLabelsFormatter(graph);
-        staticLabelsFormatter.setHorizontalLabels(new String[] {"Today", "Week", "Overall"});
+        staticLabelsFormatter.setHorizontalLabels(new String[] {"Today","   Week", "    Overall", ""});
 
         graph.getGridLabelRenderer().setLabelFormatter(staticLabelsFormatter);
 
