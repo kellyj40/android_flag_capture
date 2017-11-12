@@ -39,7 +39,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-
+// Activity for the private game
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,SensorEventListener, StepListener{
     private boolean hasFlag = false;
     private double[] locationFlagCaptured = new double[2];
@@ -69,15 +69,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DataBaseManagement referenceDataBase;
     private Cursor c;
     private LatLng userLocation;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        createDatabaseTable();
+        getLocation();
+        initialiseStepSensor();
+
+        //Set up stats page db
+        myDb = new Databasehelperclass(this);
+    }
+
+    public void createDatabaseTable() {
         //Making table to store all the values of the flags collected by user
         try{
             SQLiteDatabase userDatabase = this.openOrCreateDatabase("UserData", MODE_PRIVATE, null);
@@ -87,24 +101,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             TextView textView = (TextView) findViewById(R.id.distance);
             textView.setText("Captured: " + Integer.toString(flagsCaptured));
-
         }catch (Exception e){
             Toast.makeText(MapsActivity.this, "Error in Database", Toast.LENGTH_SHORT).show();
         }
-        //getting location
+    }
 
+    public void getLocation() {
+        // getting location
         PrivateRequest getFlagsObject = new PrivateRequest();
 
         Intent intent = getIntent();
         Double startingLat = intent.getDoubleExtra("LAT", 0.0);
         Double startingLon = intent.getDoubleExtra("LON", 0.0);
-        Toast.makeText(this, "for real "+startingLat+" "+startingLon, Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, "for real "+startingLat+" "+startingLon, Toast.LENGTH_LONG).show();
 
         userLocation = new LatLng(startingLat, startingLon);
+
+        // initialising flags
         arrFlags = getFlagsObject.requestFlags(userLocation);
+    }
 
-
-        // For steps
+    public void initialiseStepSensor() {
         // Get an instance of the SensorManager
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -113,30 +130,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         StepsTaken = (TextView) findViewById(R.id.tv_steps);
         numSteps = 0;
         sensorManager.registerListener(MapsActivity.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
-
-        //Set up stats page db
-        myDb = new Databasehelperclass(this);
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
     }
-//    @Override //Dont know if really need this?
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//        // Ask for permission to get the users location
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//
-//        if (requestCode == 1) {
-//            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != getPackageManager().PERMISSION_GRANTED) {
-//                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-//            } else {
-//                if (grantResults.length > 0 && grantResults[0] == getPackageManager().PERMISSION_GRANTED) {
-//                    locationManager.requestLocationUpdates(locationManager.GPS_PROVIDER, 0, 0, locationListener);
-//                    mMap.setMyLocationEnabled(true);
-//                    mMap.getUiSettings().setMyLocationButtonEnabled(true);
-//                }
-//            }
-//        }
-//
-//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -274,12 +269,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
         } else {
-            Toast.makeText(MapsActivity.this, "Last Location", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(MapsActivity.this, "Last Location", Toast.LENGTH_SHORT).show();
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != getPackageManager().PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
+//                Toast.makeText(this, "Map initialized", Toast.LENGTH_SHORT).show();
             }
             //Use this for when opening the map
 //            Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
@@ -345,12 +340,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         super.onStart();
         // Step instances
-        StepDetector simpleStepDetector;
-        SensorManager sensorManager;
-        Sensor accel;
-        String TEXT_NUM_STEPS = "Number of steps taken:";
-        int numSteps;
-        TextView StepsTaken;
+//        StepDetector simpleStepDetector;
+//        SensorManager sensorManager;
+//        Sensor accel;
+//        String TEXT_NUM_STEPS = "Number of steps taken:";
+//        int numSteps;
+//        TextView StepsTaken;
     }
     protected void onPause() {
         super.onPause();

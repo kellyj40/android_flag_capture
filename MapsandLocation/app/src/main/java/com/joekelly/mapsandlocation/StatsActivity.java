@@ -19,6 +19,7 @@ import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 
+// Activity for the stats screen
 public class StatsActivity extends AppCompatActivity {
 
 

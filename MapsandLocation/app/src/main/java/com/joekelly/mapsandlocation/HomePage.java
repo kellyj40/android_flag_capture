@@ -25,6 +25,8 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
     protected Double mLatitudeText;
     protected Double mLongitudeText;
 
+    protected Boolean hasLocation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +58,25 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         }
     }
 
+    public void getLocation() {
+        // Provides a simple way of getting a device's location and is well suited for
+        // applications that do not require a fine-grained location and that do not need location
+        // updates. Gets the best and most recent location currently available, which may be null
+        // in rare cases when a location is not available.
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        }
+        if (mLastLocation != null) {
+            mLatitudeText = mLastLocation.getLatitude();
+            mLongitudeText = mLastLocation.getLongitude();
+            hasLocation = true;
+        } else {
+//            Toast.makeText(this, R.string.no_location_detected, Toast.LENGTH_LONG).show();
+            hasLocation = false;
+        }
+    }
+
     public void showToast(String message) {
         Context context = getApplicationContext();
         CharSequence text = message;
@@ -72,11 +93,18 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
     }
 
     public void privateGameLauncher(View view) {
+        getLocation();
         Intent intent = new Intent(HomePage.this, MapsActivity.class);
         intent.putExtra("LAT", mLatitudeText);
         intent.putExtra("LON", mLongitudeText);
-        Toast.makeText(this, ""+mLatitudeText, Toast.LENGTH_LONG).show();;
-        startActivity(intent);
+//        Toast.makeText(this, ""+mLatitudeText, Toast.LENGTH_LONG).show();
+
+        if (hasLocation) {
+            startActivity(intent);
+        } else {
+            // print error message, tell user to turn on location services?
+            showToast("Error! Can't find location. Please try turning on location services.");
+        }
     }
 
     public void statsLauncher(View view) {
@@ -91,21 +119,7 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
 
     public void onConnected(Bundle connectionHint) {
         Log.i("count", "0");
-        // Provides a simple way of getting a device's location and is well suited for
-        // applications that do not require a fine-grained location and that do not need location
-        // updates. Gets the best and most recent location currently available, which may be null
-        // in rare cases when a location is not available.
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        }
-        if (mLastLocation != null) {
-            mLatitudeText = mLastLocation.getLatitude();
-            mLongitudeText = mLastLocation.getLongitude();
-
-        } else {
-            Toast.makeText(this, R.string.no_location_detected, Toast.LENGTH_LONG).show();
-        }
+        getLocation();
     }
 
     public void onConnectionFailed(ConnectionResult result) {
@@ -128,7 +142,5 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
                 .addApi(LocationServices.API)
                 .build();
         mGoogleApiClient.connect();
-
-
     }
 }

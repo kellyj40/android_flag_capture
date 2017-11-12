@@ -1,6 +1,7 @@
 package com.joekelly.mapsandlocation;
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -29,9 +30,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
+// Activity for the public game
 public class PublicMapActivity extends AppCompatActivity implements OnMapReadyCallback{
 
     private GoogleMap mMap;
+    private LatLng userLocation;
+
 
     LocationManager locationManager;
     LocationListener locationListener;
@@ -46,6 +50,7 @@ public class PublicMapActivity extends AppCompatActivity implements OnMapReadyCa
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        getLocation();
     }
 
     @Override
@@ -110,15 +115,26 @@ public class PublicMapActivity extends AppCompatActivity implements OnMapReadyCa
 
             }
             //Use this for when opening the map
-            Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-
-            LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+//            Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+//
+//            LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
             // Move camera to the location of the user
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16));
             mMap.setMyLocationEnabled(true);
         }
         upDateUsers();
 
+    }
+
+    public void getLocation() {
+        PrivateRequest getFlagsObject = new PrivateRequest();
+
+        Intent intent = getIntent();
+        Double startingLat = intent.getDoubleExtra("LAT", 0.0);
+        Double startingLon = intent.getDoubleExtra("LON", 0.0);
+//        Toast.makeText(this, "for real "+startingLat+" "+startingLon, Toast.LENGTH_LONG).show();
+
+        userLocation = new LatLng(startingLat, startingLon);
     }
 
 
