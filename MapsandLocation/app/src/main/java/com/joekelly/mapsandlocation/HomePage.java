@@ -16,7 +16,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
-public class HomePage extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class HomePage extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     protected Location mLastLocation;
     protected GoogleApiClient mGoogleApiClient;
@@ -26,13 +27,12 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
     protected Double mLongitudeText;
 
     protected Boolean hasLocation;
+    private String locationErrorMessage = "Error! Can't find location. Please try turning on location services.";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
-
-
     }
 
     @Override
@@ -86,10 +86,20 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         toast.show();
     }
 
+    
     public void publicGameLauncher(View view) {
+        getLocation();
         Intent intent = new Intent(this, UserLoginActivity.class);
-        startActivity(intent);
+        intent.putExtra("LAT", mLatitudeText);
+        intent.putExtra("LON", mLongitudeText);
 
+        // check if we have successfully recieved user's location
+        // if not, ask them to check their settings
+        if (hasLocation) {
+            startActivity(intent);
+        } else {
+            showToast(locationErrorMessage);
+        }
     }
 
     public void privateGameLauncher(View view) {
@@ -97,13 +107,13 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         Intent intent = new Intent(HomePage.this, MapsActivity.class);
         intent.putExtra("LAT", mLatitudeText);
         intent.putExtra("LON", mLongitudeText);
-//        Toast.makeText(this, ""+mLatitudeText, Toast.LENGTH_LONG).show();
 
+        // check if we have successfully recieved user's location
+        // if not, ask them to check their settings
         if (hasLocation) {
             startActivity(intent);
         } else {
-            // print error message, tell user to turn on location services?
-            showToast("Error! Can't find location. Please try turning on location services.");
+            showToast(locationErrorMessage);
         }
     }
 

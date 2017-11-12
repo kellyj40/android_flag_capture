@@ -108,16 +108,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void getLocation() {
         // getting location
-        PrivateRequest getFlagsObject = new PrivateRequest();
-
         Intent intent = getIntent();
         Double startingLat = intent.getDoubleExtra("LAT", 0.0);
         Double startingLon = intent.getDoubleExtra("LON", 0.0);
-//        Toast.makeText(this, "for real "+startingLat+" "+startingLon, Toast.LENGTH_LONG).show();
 
         userLocation = new LatLng(startingLat, startingLon);
+        showToast(userLocation.toString());
 
         // initialising flags
+        PrivateRequest getFlagsObject = new PrivateRequest();
         arrFlags = getFlagsObject.requestFlags(userLocation);
     }
 
@@ -339,13 +338,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onStart() {
 
         super.onStart();
-        // Step instances
-//        StepDetector simpleStepDetector;
-//        SensorManager sensorManager;
-//        Sensor accel;
-//        String TEXT_NUM_STEPS = "Number of steps taken:";
-//        int numSteps;
-//        TextView StepsTaken;
     }
     protected void onPause() {
         super.onPause();
@@ -363,5 +355,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onStop();
         //Toast.makeText(MapsActivity.this, saveSteps+"Saving to database", Toast.LENGTH_SHORT).show();
         myDb.addSteps(new Steps(numSteps));
+    }
+
+    public void showToast(String message) {
+        Context context = getApplicationContext();
+        CharSequence text = message;
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 }

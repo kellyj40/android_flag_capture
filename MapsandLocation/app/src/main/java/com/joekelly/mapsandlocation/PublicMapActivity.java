@@ -107,7 +107,7 @@ public class PublicMapActivity extends AppCompatActivity implements OnMapReadyCa
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
         } else {
-            Toast.makeText(PublicMapActivity.this, "Last Location", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(PublicMapActivity.this, "Last Location", Toast.LENGTH_SHORT).show();
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != getPackageManager().PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else {
@@ -116,9 +116,11 @@ public class PublicMapActivity extends AppCompatActivity implements OnMapReadyCa
             }
             //Use this for when opening the map
 //            Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-//
+////
 //            LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+
             // Move camera to the location of the user
+//            showToast(userLocation.toString());
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16));
             mMap.setMyLocationEnabled(true);
         }
@@ -135,6 +137,7 @@ public class PublicMapActivity extends AppCompatActivity implements OnMapReadyCa
 //        Toast.makeText(this, "for real "+startingLat+" "+startingLon, Toast.LENGTH_LONG).show();
 
         userLocation = new LatLng(startingLat, startingLon);
+        showToast(userLocation.toString());
     }
 
 
@@ -185,6 +188,10 @@ public class PublicMapActivity extends AppCompatActivity implements OnMapReadyCa
         geoFire.removeLocation(userId);
     }
 
+    protected void onStart() {
+        super.onStart();
+    }
+
     protected void onStop() {
         super.onStop();
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -195,6 +202,15 @@ public class PublicMapActivity extends AppCompatActivity implements OnMapReadyCa
         GeoFire geoFire = new GeoFire(ref);
         geoFire.removeLocation(userId);
         locationManager.removeUpdates(locationListener);
+    }
+
+    public void showToast(String message) {
+        Context context = getApplicationContext();
+        CharSequence text = message;
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 }
 
