@@ -30,13 +30,14 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
-        buildGoogleApiClient();
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
         getLocationPermission();
+        buildGoogleApiClient();
     }
 
 
@@ -74,6 +75,7 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         Intent intent = new Intent(HomePage.this, MapsActivity.class);
         intent.putExtra("LAT", mLatitudeText);
         intent.putExtra("LON", mLongitudeText);
+        Toast.makeText(this, ""+mLatitudeText, Toast.LENGTH_LONG).show();;
         startActivity(intent);
     }
 

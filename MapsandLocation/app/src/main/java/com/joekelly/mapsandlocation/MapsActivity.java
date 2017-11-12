@@ -53,6 +53,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Sensor accel;
     private static final String TEXT_NUM_STEPS = "Number of steps taken:";
     private int numSteps;
+    int saveSteps;
     private TextView StepsTaken;
 
     //stats db
@@ -67,6 +68,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Marker[] objectReferenceFlags;
     private DataBaseManagement referenceDataBase;
     private Cursor c;
+    private LatLng userLocation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,8 +100,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Double startingLon = intent.getDoubleExtra("LON", 0.0);
         Toast.makeText(this, "for real "+startingLat+" "+startingLon, Toast.LENGTH_LONG).show();
 
-        LatLng startingCoords = new LatLng(startingLat, startingLon);
-        arrFlags = getFlagsObject.requestFlags(startingCoords);
+        userLocation = new LatLng(startingLat, startingLon);
+        arrFlags = getFlagsObject.requestFlags(userLocation);
 
 
         // For steps
@@ -280,9 +282,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
             //Use this for when opening the map
-            Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+//            Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
 
-            LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+//            LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+
             // Move camera to the location of the user
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16));
             mMap.setMyLocationEnabled(true);
@@ -306,7 +309,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Intent registerIntent = new Intent(this, StatsActivity.class);
                 int x = numSteps;
                 //adds current steps to db
-                myDb.addSteps(new Steps(x));
+                //myDb.addSteps(new Steps(x));
                 registerIntent.putExtra("numSteps", x);
                 startActivity(registerIntent);
                 return true;
@@ -338,8 +341,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         numSteps++;
         StepsTaken.setText(TEXT_NUM_STEPS + numSteps);
     }
+    protected void onStart() {
 
+        super.onStart();
+        // Step instances
+        StepDetector simpleStepDetector;
+        SensorManager sensorManager;
+        Sensor accel;
+        String TEXT_NUM_STEPS = "Number of steps taken:";
+        int numSteps;
+        TextView StepsTaken;
+    }
+    protected void onPause() {
+        super.onPause();
+        //saveSteps = numSteps;
+        //Toast.makeText(MapsActivity.this, saveSteps+"Pause", Toast.LENGTH_SHORT).show();
+        //myDb.addSteps(new Steps(numSteps));
+    }
+    protected void onResume() {
+        super.onResume();
+       // Toast.makeText(MapsActivity.this, saveSteps+"Resume", Toast.LENGTH_SHORT).show();
+        //numSteps = saveSteps;
+        //myDb.addSteps(new Steps(numSteps));
+    }
     protected void onStop() {
         super.onStop();
+        //Toast.makeText(MapsActivity.this, saveSteps+"Saving to database", Toast.LENGTH_SHORT).show();
+        myDb.addSteps(new Steps(numSteps));
     }
 }

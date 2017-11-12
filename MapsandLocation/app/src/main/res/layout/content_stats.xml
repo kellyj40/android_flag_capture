@@ -18,7 +18,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintVertical_bias="0.211"
+        app:layout_constraintVertical_bias="0.429"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -28,7 +28,7 @@
         android:text="Weekly Steps: "
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="114dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintTop_toBottomOf="@+id/tvTodaySteps"
         app:layout_constraintHorizontal_bias="0.501" />
 
@@ -43,7 +43,8 @@
         app:layout_constraintTop_toBottomOf="@+id/tvWeeklySteps"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/tvCurrentSession"
@@ -53,6 +54,26 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="32dp"
-        app:layout_constraintHorizontal_bias="0.502" />
+        android:layout_marginTop="157dp"
+        app:layout_constraintHorizontal_bias="0.502"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/tvTodaySteps" />
+
+    <com.jjoe64.graphview.helper.GraphViewXML
+        android:id="@+id/gGraph"
+        android:layout_width="309dp"
+        android:layout_height="81dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:seriesColor="#ffffff"
+        app:seriesData="0=0;2=0;4=0;"
+        app:seriesType="bar"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/tvCurrentSession"
+        app:layout_constraintVertical_bias="0.509" />
+
 </android.support.constraint.ConstraintLayout>
