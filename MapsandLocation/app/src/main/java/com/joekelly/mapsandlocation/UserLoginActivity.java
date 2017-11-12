@@ -26,6 +26,8 @@ public class UserLoginActivity extends AppCompatActivity {
     //Listener for when auth state changes
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
+    protected Double mLatitudeText;
+    protected Double mLongitudeText;
 
 
 
@@ -37,6 +39,9 @@ public class UserLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_login);
 
+        Intent intent = getIntent();
+        mLatitudeText = intent.getDoubleExtra("LAT", 0.0);
+        mLongitudeText = intent.getDoubleExtra("LON", 0.0);
 
         mAuth = FirebaseAuth.getInstance();
         // User logins in and goes to the next stage if exists
@@ -46,6 +51,8 @@ public class UserLoginActivity extends AppCompatActivity {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if(user!=null){
                     Intent intent = new Intent(UserLoginActivity.this, PublicMapActivity.class);
+                    intent.putExtra("LAT", mLatitudeText);
+                    intent.putExtra("LON", mLongitudeText);
                     startActivity(intent);
                     finish();
                     return;
