@@ -1,6 +1,7 @@
 package com.joekelly.mapsandlocation;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -38,18 +39,18 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
     @Override
     public void onStart() {
         super.onStart();
-        getLocationPermission();
+        getLocationPermission(this, this);
         buildGoogleApiClient();
     }
 
 
 
-    public void getLocationPermission() {
+    public static void getLocationPermission(Context context, Activity activity) {
 //         Checking for permission ???
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             // Check Permissions Now
-            ActivityCompat.requestPermissions(this,
+            ActivityCompat.requestPermissions(activity,
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     8034);
         } else {

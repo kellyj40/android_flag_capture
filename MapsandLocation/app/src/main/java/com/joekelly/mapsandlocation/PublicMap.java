@@ -2,6 +2,7 @@ package com.joekelly.mapsandlocation;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -35,7 +36,6 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
     private GoogleMap mMap;
     private LatLng userLocation;
-
 
     LocationManager locationManager;
     LocationListener locationListener;
@@ -102,9 +102,17 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         // Once the map is ready put the location onto the map
         if (Build.VERSION.SDK_INT < 23) {
             Toast.makeText(PublicMap.this, "UPdate", Toast.LENGTH_SHORT).show();
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            mMap.setMyLocationEnabled(true);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            // check for permision, and then start requesting location updates. Otherwise, request permission
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                mMap.setMyLocationEnabled(true);
+            } else {
+                // ask for permission
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        8034);
+            }
 
         } else {
 //            Toast.makeText(PublicMap.this, "Last Location", Toast.LENGTH_SHORT).show();
@@ -115,12 +123,8 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
             }
             //Use this for when opening the map
-//            Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-////
-//            LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
 
             // Move camera to the location of the user
-//            showToast(userLocation.toString());
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16));
             mMap.setMyLocationEnabled(true);
         }

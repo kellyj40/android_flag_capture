@@ -2,6 +2,7 @@ package com.joekelly.mapsandlocation;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -60,12 +61,12 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback,
     Databasehelperclass myDb;
 
 
-    private double[][] arrFlags;
+    private double[][] arrFlags; // Coordinates of all flags on map
 
     LocationManager locationManager;
     LocationListener locationListener;
     private GroundOverlay[] overLayReferenceFlags;
-    private Marker[] objectReferenceFlags;
+    private Marker[] objectReferenceFlags; // array of flag objects - make into an instance variable of MapHelper?
     private DataBaseManagement referenceDataBase;
     private Cursor c;
     private LatLng userLocation;
@@ -86,6 +87,7 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback,
         createDatabaseTable();
         getLocation();
         initialiseStepSensor();
+
 
         // initialising flags
         PrivateFlagRequest getFlagsObject = new PrivateFlagRequest();
@@ -140,16 +142,21 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback,
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
 
-        int countFlags = 0;
-        double[] flag;
+        //------- FLAG LOGIC -------
+        // drawing the flags onto the map
+        int flagIndex = 0; // index of the current flag
+        double[] flagLocation; // stores the lat/long of the current flag
+
+        //
         objectReferenceFlags = new Marker[arrFlags.length];
         overLayReferenceFlags = new GroundOverlay[arrFlags.length];
 
-        while(countFlags<arrFlags.length){
-            flag = arrFlags[countFlags];
-            LatLng position = new LatLng(flag[0], flag[1]);
+        // loops over each flag
+        while(flagIndex<arrFlags.length){
+            flagLocation = arrFlags[flagIndex];
+            LatLng position = new LatLng(flagLocation[0], flagLocation[1]);
 
-            objectReferenceFlags[countFlags] = mMap.addMarker(new MarkerOptions().position(position).title("Flag").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+            objectReferenceFlags[flagIndex] = mMap.addMarker(new MarkerOptions().position(position).title("Flag").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
 
 
             int radiusGet = 15;
@@ -166,11 +173,11 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback,
             BitmapDescriptor bmD = BitmapDescriptorFactory.fromBitmap(bm);
 
             //Add the circle
-            overLayReferenceFlags[countFlags] =  mMap.addGroundOverlay(new GroundOverlayOptions().
+            overLayReferenceFlags[flagIndex] =  mMap.addGroundOverlay(new GroundOverlayOptions().
                     image(bmD).
                     position(position,radiusGet*2,radiusGet*2).transparency(0.4f));
 
-            countFlags++;
+            flagIndex++;
 
         }
 
@@ -263,10 +270,17 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback,
         // Once the map is ready put the location onto the map
         if (Build.VERSION.SDK_INT < 23) {
             Toast.makeText(PrivateMap.this, "Update", Toast.LENGTH_SHORT).show();
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            mMap.setMyLocationEnabled(true);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
+            // check for permision, and then start requesting location updates. Otherwise, request permission
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                mMap.setMyLocationEnabled(true);
+            } else {
+                // ask for permission
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        8034);
+            }
         } else {
 //            Toast.makeText(PrivateMap.this, "Last Location", Toast.LENGTH_SHORT).show();
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != getPackageManager().PERMISSION_GRANTED) {
@@ -276,10 +290,6 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback,
 //                Toast.makeText(this, "Map initialized", Toast.LENGTH_SHORT).show();
             }
             //Use this for when opening the map
-//            Location lastKnownLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-
-//            LatLng userLocation = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-
             // Move camera to the location of the user
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16));
             mMap.setMyLocationEnabled(true);
