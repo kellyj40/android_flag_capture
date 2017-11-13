@@ -40,7 +40,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MapsActivity"
+            android:name=".PrivateMap"
             android:label="@string/title_activity_maps"
             android:screenOrientation="portrait"
             android:parentActivityName=".HomePage" />
@@ -52,10 +52,10 @@
         <activity
             android:name=".StatsActivity"
             android:label="stats"
-            android:parentActivityName=".MapsActivity" />
+            android:parentActivityName=".PrivateMap" />
         <activity android:name=".UserLoginActivity" />
         <activity
-            android:name=".PublicMapActivity"
+            android:name=".PublicMap"
             android:label="@string/title_activity_private_map"></activity>
     </application>
 

@@ -31,7 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 
 // Activity for the public game
-public class PublicMapActivity extends AppCompatActivity implements OnMapReadyCallback{
+public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
     private GoogleMap mMap;
     private LatLng userLocation;
@@ -101,13 +101,13 @@ public class PublicMapActivity extends AppCompatActivity implements OnMapReadyCa
         // Must be after the location listener is made
         // Once the map is ready put the location onto the map
         if (Build.VERSION.SDK_INT < 23) {
-            Toast.makeText(PublicMapActivity.this, "UPdate", Toast.LENGTH_SHORT).show();
+            Toast.makeText(PublicMap.this, "UPdate", Toast.LENGTH_SHORT).show();
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
             mMap.setMyLocationEnabled(true);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
         } else {
-//            Toast.makeText(PublicMapActivity.this, "Last Location", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(PublicMap.this, "Last Location", Toast.LENGTH_SHORT).show();
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != getPackageManager().PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else {
@@ -129,7 +129,7 @@ public class PublicMapActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
     public void getLocation() {
-        PrivateRequest getFlagsObject = new PrivateRequest();
+        PrivateFlagRequest getFlagsObject = new PrivateFlagRequest();
 
         Intent intent = getIntent();
         Double startingLat = intent.getDoubleExtra("LAT", 0.0);

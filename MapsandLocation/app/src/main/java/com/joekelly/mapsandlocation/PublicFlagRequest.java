@@ -22,7 +22,8 @@ import java.util.concurrent.ExecutionException;
  * Created by joekelly on 26/10/2017.
  */
 
-public class FlagRequest {
+// Requests array of flags from database - for the public game
+public class PublicFlagRequest {
 
 
     public double[][] requestFlags(){

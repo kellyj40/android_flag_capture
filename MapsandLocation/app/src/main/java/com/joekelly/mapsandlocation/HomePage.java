@@ -104,7 +104,7 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
 
     public void privateGameLauncher(View view) {
         getLocation();
-        Intent intent = new Intent(HomePage.this, MapsActivity.class);
+        Intent intent = new Intent(HomePage.this, PrivateMap.class);
         intent.putExtra("LAT", mLatitudeText);
         intent.putExtra("LON", mLongitudeText);
 

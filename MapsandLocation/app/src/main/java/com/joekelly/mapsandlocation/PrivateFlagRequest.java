@@ -8,7 +8,9 @@ import java.util.Random;
  * Created by jakek on 06/11/2017.
  */
 
-public class PrivateRequest {
+// Creates array of flags based on user location
+// To be used in private game (PrivateMap)
+public class PrivateFlagRequest {
 
 
     public double[][] requestFlags(LatLng point) {

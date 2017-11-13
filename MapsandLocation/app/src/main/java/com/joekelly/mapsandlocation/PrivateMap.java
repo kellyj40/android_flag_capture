@@ -40,7 +40,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 // Activity for the private game
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,SensorEventListener, StepListener{
+public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback,SensorEventListener, StepListener{
     private boolean hasFlag = false;
     private double[] locationFlagCaptured = new double[2];
     private GoogleMap mMap;
@@ -87,6 +87,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         getLocation();
         initialiseStepSensor();
 
+        // initialising flags
+        PrivateFlagRequest getFlagsObject = new PrivateFlagRequest();
+        arrFlags = getFlagsObject.requestFlags(userLocation);
+
         //Set up stats page db
         myDb = new Databasehelperclass(this);
     }
@@ -102,7 +106,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             TextView textView = (TextView) findViewById(R.id.distance);
             textView.setText("Captured: " + Integer.toString(flagsCaptured));
         }catch (Exception e){
-            Toast.makeText(MapsActivity.this, "Error in Database", Toast.LENGTH_SHORT).show();
+            Toast.makeText(PrivateMap.this, "Error in Database", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -114,10 +118,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         userLocation = new LatLng(startingLat, startingLon);
         showToast(userLocation.toString());
-
-        // initialising flags
-        PrivateRequest getFlagsObject = new PrivateRequest();
-        arrFlags = getFlagsObject.requestFlags(userLocation);
     }
 
     public void initialiseStepSensor() {
@@ -128,7 +128,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         simpleStepDetector.registerListener(this);
         StepsTaken = (TextView) findViewById(R.id.tv_steps);
         numSteps = 0;
-        sensorManager.registerListener(MapsActivity.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(PrivateMap.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
 
@@ -181,7 +181,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             public void onLocationChanged(Location location) {
 
-                LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                userLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
                 // Calculate the distance to all the flags
                 int value = DistanceCalculations.checkFlagDistances(userLocation, arrFlags);
@@ -226,7 +226,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         overLayReference.remove();
                         hasFlag = false;
-                        Toast.makeText(MapsActivity.this, R.string.flag_collected, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(PrivateMap.this, R.string.flag_collected, Toast.LENGTH_SHORT).show();
 //                        Add captured flag
                         referenceDataBase.updateLocalFlagTable();
                         flagsCaptured++;
@@ -262,13 +262,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // Must be after the location listener is made
         // Once the map is ready put the location onto the map
         if (Build.VERSION.SDK_INT < 23) {
-            Toast.makeText(MapsActivity.this, "Update", Toast.LENGTH_SHORT).show();
+            Toast.makeText(PrivateMap.this, "Update", Toast.LENGTH_SHORT).show();
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
             mMap.setMyLocationEnabled(true);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
         } else {
-//            Toast.makeText(MapsActivity.this, "Last Location", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(PrivateMap.this, "Last Location", Toast.LENGTH_SHORT).show();
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != getPackageManager().PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else {
@@ -342,18 +342,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onPause() {
         super.onPause();
         //saveSteps = numSteps;
-        //Toast.makeText(MapsActivity.this, saveSteps+"Pause", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(PrivateMap.this, saveSteps+"Pause", Toast.LENGTH_SHORT).show();
         //myDb.addSteps(new Steps(numSteps));
     }
     protected void onResume() {
         super.onResume();
-       // Toast.makeText(MapsActivity.this, saveSteps+"Resume", Toast.LENGTH_SHORT).show();
+       // Toast.makeText(PrivateMap.this, saveSteps+"Resume", Toast.LENGTH_SHORT).show();
         //numSteps = saveSteps;
         //myDb.addSteps(new Steps(numSteps));
     }
     protected void onStop() {
         super.onStop();
-        //Toast.makeText(MapsActivity.this, saveSteps+"Saving to database", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(PrivateMap.this, saveSteps+"Saving to database", Toast.LENGTH_SHORT).show();
         myDb.addSteps(new Steps(numSteps));
     }
 
