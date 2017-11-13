@@ -57,6 +57,7 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
     @Override
     public void onStart() {
         super.onStart();
+        stepObject.numSteps=0;
 //        getLocationPermission(this, this);
 //        buildGoogleApiClient();
     }
@@ -188,7 +189,7 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         super.onPause();
         //saveSteps = numSteps;
         //Toast.makeText(PrivateMap.this, saveSteps+"Pause", Toast.LENGTH_SHORT).show();
-        myDb.addSteps(new Steps(stepObject.numSteps));
+        //myDb.addSteps(new Steps(stepObject.numSteps));
     }
 
 
