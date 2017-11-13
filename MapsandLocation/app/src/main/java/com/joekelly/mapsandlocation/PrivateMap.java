@@ -344,6 +344,9 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback,
     public void step(long timeNs) {
         numSteps++;
         StepsTaken.setText(TEXT_NUM_STEPS + numSteps);
+        if (numSteps == 110){
+            Notification.notifier(this);
+        }
     }
     protected void onStart() {
 
