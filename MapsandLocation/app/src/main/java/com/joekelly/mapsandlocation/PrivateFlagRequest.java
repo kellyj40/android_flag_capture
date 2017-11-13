@@ -14,8 +14,8 @@ public class PrivateFlagRequest {
 
 
     public double[][] requestFlags(LatLng point) {
-        int radius = 100;
-        int numberPins = 10;
+        int radius = 500;
+        int numberPins = 4;
         double[][] arrFlags = new double[numberPins][2];
 
         //This is to generate 10 random points
