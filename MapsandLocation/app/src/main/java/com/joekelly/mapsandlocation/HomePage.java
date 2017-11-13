@@ -30,12 +30,28 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
     protected Boolean hasLocation;
     private String locationErrorMessage = "Error! Can't find location. Please try turning on location services.";
 
+    //Variable with the current steps
+    private int numSteps;
+    //Object which contains the step listeners;
+    private SensorObject stepObject;
+
+    //stats db
+    Databasehelperclass myDb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
         getLocationPermission(this, this);
         buildGoogleApiClient();
+
+        //Step stuff
+
+        stepObject = new SensorObject();
+        numSteps= stepObject.numSteps;
+        stepObject.initialiseStepSensor(this);
+
+        myDb = new Databasehelperclass(this);
     }
 
     @Override
@@ -122,6 +138,9 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
 
     public void statsLauncher(View view) {
         Intent intent = new Intent(this, StatsActivity.class);
+
+        //Add steps to DB
+        myDb.addSteps(new Steps(stepObject.numSteps));
         startActivity(intent);
     }
 
@@ -156,4 +175,21 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
                 .build();
         mGoogleApiClient.connect();
     }
+
+
+    //Andrea
+    protected void onStop() {
+        super.onStop();
+        //Toast.makeText(PrivateMap.this, saveSteps+"Saving to database", Toast.LENGTH_SHORT).show();
+        //myDb.addSteps(new Steps(stepObject.numSteps));
+    }
+
+    protected void onPause() {
+        super.onPause();
+        //saveSteps = numSteps;
+        //Toast.makeText(PrivateMap.this, saveSteps+"Pause", Toast.LENGTH_SHORT).show();
+        myDb.addSteps(new Steps(stepObject.numSteps));
+    }
+
+
 }

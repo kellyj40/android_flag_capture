@@ -41,21 +41,18 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 // Activity for the private game
-public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback,SensorEventListener, StepListener{
+public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
     private boolean hasFlag = false;
     private double[] locationFlagCaptured = new double[2];
     private GoogleMap mMap;
     private GroundOverlay overLayReference;
     private int flagsCaptured = 0;
     Vibrator v;
-    // Step instances
-    private StepDetector simpleStepDetector;
-    private SensorManager sensorManager;
-    private Sensor accel;
-    private static final String TEXT_NUM_STEPS = "Number of steps taken:";
+    // Step instance
     private int numSteps;
-    int saveSteps;
-    private TextView StepsTaken;
+    //Object wit hthe step stuff
+    private SensorObject stepObject;
+//    private TextView StepsTaken; THIS NEEDS WORK
 
     //stats db
     Databasehelperclass myDb;
@@ -86,7 +83,13 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback,
 
         createDatabaseTable();
         getLocation();
-        initialiseStepSensor();
+        //initialiseStepSensor();
+        stepObject = new SensorObject();
+        numSteps= stepObject.numSteps;
+        stepObject.initialiseStepSensor(this);
+        //StepsTaken = (TextView) findViewById(R.id.tv_steps);
+
+
 
 
         // initialising flags
@@ -95,6 +98,8 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback,
 
         //Set up stats page db
         myDb = new Databasehelperclass(this);
+
+
     }
 
     public void createDatabaseTable() {
@@ -120,19 +125,11 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback,
 
         userLocation = new LatLng(startingLat, startingLon);
         showToast(userLocation.toString());
+
+
     }
 
-    public void initialiseStepSensor() {
-        // Get an instance of the SensorManager
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        simpleStepDetector = new StepDetector();
-        simpleStepDetector.registerListener(this);
-        StepsTaken = (TextView) findViewById(R.id.tv_steps);
-        numSteps = 0;
-        sensorManager.registerListener(PrivateMap.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
-        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -311,7 +308,7 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback,
             case R.id.about:
                 // passes steps to stats page
                 Intent registerIntent = new Intent(this, StatsActivity.class);
-                int x = numSteps;
+                int x = stepObject.numSteps;
                 //adds current steps to db
                 //myDb.addSteps(new Steps(x));
                 registerIntent.putExtra("numSteps", x);
@@ -327,27 +324,6 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback,
     }
 
 
-    // Steps Here
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            simpleStepDetector.updateAccel(
-                    event.timestamp, event.values[0], event.values[1], event.values[2]);
-        }
-    }
-
-    @Override
-    public void step(long timeNs) {
-        numSteps++;
-        StepsTaken.setText(TEXT_NUM_STEPS + numSteps);
-        if (numSteps == 110){
-            Notification.notifier(this);
-        }
-    }
     protected void onStart() {
 
         super.onStart();
@@ -367,7 +343,7 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback,
     protected void onStop() {
         super.onStop();
         //Toast.makeText(PrivateMap.this, saveSteps+"Saving to database", Toast.LENGTH_SHORT).show();
-        myDb.addSteps(new Steps(numSteps));
+        myDb.addSteps(new Steps(stepObject.numSteps));
     }
 
     public void showToast(String message) {
