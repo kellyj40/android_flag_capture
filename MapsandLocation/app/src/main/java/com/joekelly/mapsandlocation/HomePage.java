@@ -34,13 +34,15 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+        getLocationPermission(this, this);
+        buildGoogleApiClient();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        getLocationPermission(this, this);
-        buildGoogleApiClient();
+//        getLocationPermission(this, this);
+//        buildGoogleApiClient();
     }
 
 
@@ -104,6 +106,7 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
     }
 
     public void privateGameLauncher(View view) {
+        Notification.notifier(this);
         getLocation();
         Intent intent = new Intent(HomePage.this, PrivateMap.class);
         intent.putExtra("LAT", mLatitudeText);
