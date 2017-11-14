@@ -45,6 +45,7 @@ public class PrivateFlagRequest {
             double foundLongitude = y + y0;
             double[]placeholder = {foundLatitude,foundLongitude};
 
+            //Add to the Linked List so can remove when collected.
             arrFlags.add(placeholder);
 
         }

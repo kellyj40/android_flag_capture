@@ -22,6 +22,7 @@ public class DistanceCalculations {
         double R = 6378137; // Earth’s mean radius in meter
         int count = 0;
         for(double[] flag: arrFlags){
+            // Calculate the distance for each flag against the user location
             double dLat = rad(flag[0] - userLocation.latitude);
             double dLong = rad(flag[1] - userLocation.longitude);
             double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
@@ -31,7 +32,9 @@ public class DistanceCalculations {
             double d = R * c;
 
             if (d < 15) {
+                // If within the distance, then remove from the linkedList
                 arrFlags.remove(flag);
+                // Return the index of what was removed
                 return count;
             }
             count++;

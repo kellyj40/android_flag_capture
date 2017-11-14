@@ -83,7 +83,7 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
             referenceDataBase = new DataBaseManagement(userDatabase);
 
             flagsCaptured = referenceDataBase.makeLocalFlagTable();
-
+            // Update text with number of flags captured from other games
             TextView textView = (TextView) findViewById(R.id.distance);
             textView.setText("Captured: " + Integer.toString(flagsCaptured));
         }catch (Exception e){
@@ -94,10 +94,10 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
     public void getLocation() {
         // getting location
         Intent intent = getIntent();
-
+        // Lat and lngs pasted in from the homepage
         Double startingLat = intent.getDoubleExtra("LAT", 0.0);
         Double startingLon = intent.getDoubleExtra("LON", 0.0);
-
+        // Set to the global value
         userLocation = new LatLng(startingLat, startingLon);
         showToast(userLocation.toString());
     }
@@ -114,34 +114,34 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
         // Set up Marker Object for a given map
         flagsOnMap = new FlagsOnMap(mMap);
+
         // Place markers onto the map
         flagsOnMap.drawFlagsToMap(arrFlags);
 
-
-        // Add listener for GPS movement
+            // Add listener for GPS movement
         locationListener = new LocationListener() {
 
+                // On location change Listener - Called each time the user moves
+                // Updates user location and checks if near flags
+                public void onLocationChanged(Location location) {
+                    //Get the users new location and update variable
+                    userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                    // Call method to see if in range to collect flag
+                    checkIfCapturedFlag();
+                }
 
-        public void onLocationChanged(Location location) {
-            //Get the users new location and update variable
-            userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-            // Call method to see if in range to collect flag
-            checkIfCapturedFlag();
-        }
+                @Override
+                public void onStatusChanged(String s, int i, Bundle bundle) {
 
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {
+                }
+                @Override
+                public void onProviderEnabled(String s) {
 
-        }
-        @Override
-        public void onProviderEnabled(String s) {
+                }
+                @Override
+                public void onProviderDisabled(String s) {
 
-        }
-        @Override
-        public void onProviderDisabled(String s) {
-
-        }
-
+                }
         };
 
 
@@ -150,9 +150,11 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
             // check for permision, and then start requesting location updates. Otherwise, request permission
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
                 mMap.setMyLocationEnabled(true);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},8034);
             }
+
         } else {
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != getPackageManager().PERMISSION_GRANTED) {
@@ -161,8 +163,8 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
             }
             // Move camera to the location of the user
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16));
             mMap.setMyLocationEnabled(true);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
         }
 
 
@@ -170,20 +172,21 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
     }
 
     public void checkIfCapturedFlag(){
-        // Calculate the distance to all the flags
+        // Calculate the distance to all the flags, if within the distance return location of the index, -1 if not in radius
         int value = DistanceCalculations.checkFlagDistances(userLocation, arrFlags);
 
+        // if with in distance, value will be >= to zero if the index
         if (value>=0) {
 
 //            vib.vibrate(500);
             // Remove the flag from the map
             flagsOnMap.removeFlagFromMap(value);
-            // Increment number of flags
+            // Increment number of flags collected by the user
             flagsCaptured++;
-            // Make toast that flag was captured
-            showToast("Flag captured :) ");
             // Update the local database
             referenceDataBase.updateLocalFlagTable();
+            // Make toast that flag was captured
+            showToast("Flag captured :) ");
 
             // Up date the text view of the number of captured flags
             TextView textView = (TextView) findViewById(R.id.distance);
@@ -206,10 +209,12 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
     }
 
     public void newFlags(){
+        // Make a flagRequest for new flags from the users location
         arrFlags = getFlagLocation.requestFlags(userLocation);
     }
 
     public void showToast(String message) {
+        // All Toast messages call this method
         Context context = getApplicationContext();
         CharSequence text = message;
         int duration = Toast.LENGTH_SHORT;

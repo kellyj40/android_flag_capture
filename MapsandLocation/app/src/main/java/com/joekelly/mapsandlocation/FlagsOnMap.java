@@ -21,6 +21,7 @@ import java.util.ArrayList;
 public class FlagsOnMap {
 
     GoogleMap mMap;
+
     public Marker[] flagObjectReference;
     public GroundOverlay[] overLayReferenceFlags;
     public int numberOfFlagsRemaining = 0;
@@ -54,27 +55,24 @@ public class FlagsOnMap {
         for(double[] arrFlag: arrFlags){
             LatLng position = new LatLng(arrFlag[0], arrFlag[1]);
 
-            flagObjectReference[flagIndex] = mMap.addMarker(new MarkerOptions().position(position).title("Flag").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+            // Reference array for the markers of the flags
+            flagObjectReference[flagIndex] = mMap.addMarker(new MarkerOptions().position(position).title("Flag").icon(BitmapDescriptorFactory.fromResource(R.drawable.mapicon)));
 
-
+            // Radius of the circle
             int radiusGet = 15;
-            // drawing circle
-            int d = 15; // diameter
-            Bitmap bm = Bitmap.createBitmap(d, d, Bitmap.Config.ARGB_8888);
-            Canvas c = new Canvas(bm);
-            Paint p = new Paint();
-            p.setColor(Color.GREEN);
 
-            c.drawCircle(d/2, d/2, d/2, p);
+            //Circle
+            Bitmap bm = drawCircle();
 
             // generate BitmapDescriptor from circle Bitmap
             BitmapDescriptor bmD = BitmapDescriptorFactory.fromBitmap(bm);
 
-            //Add the circle
+            //Add the circle to the map
             overLayReferenceFlags[flagIndex] =  mMap.addGroundOverlay(new GroundOverlayOptions().
                     image(bmD).
                     position(position,radiusGet*2,radiusGet*2).transparency(0.4f));
 
+            // Increment the number of flags
             flagIndex++;
         }
 
@@ -83,18 +81,32 @@ public class FlagsOnMap {
 
     }
     public void removeFlagFromMap(int indexOfCapturedFlag){
-        // Remove the flag and overlay
 
+        // Remove the flag and overlay
         flagObjectReference[indexOfCapturedFlag].remove();
         overLayReferenceFlags[indexOfCapturedFlag].remove();
-        // move objects down so they are in the right position...
 
+        // move objects down so they are in the right position...
         for (int i = indexOfCapturedFlag; i<flagObjectReference.length-1; i++){
             flagObjectReference[i] = flagObjectReference[i+1];
             overLayReferenceFlags[i] = overLayReferenceFlags[i+1];
         }
+        // Number of flags left to collect is decremented
         numberOfFlagsRemaining--;
 
+    }
+
+    public Bitmap drawCircle(){
+
+        // drawing circle
+        int d = 15; // diameter
+        Bitmap bm = Bitmap.createBitmap(d, d, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bm);
+        Paint p = new Paint();
+        p.setColor(Color.GREEN);
+
+        c.drawCircle(d/2, d/2, d/2, p);
+        return bm;
     }
 
 
