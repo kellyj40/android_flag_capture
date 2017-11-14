@@ -24,6 +24,7 @@ public class SensorObject implements SensorEventListener, StepListener {
     public int numSteps;
     int saveSteps;
     private TextView StepsTaken;
+    Context contextNotification;
 
     public void initialiseStepSensor(Context context) {
         // Get an instance of the SensorManager
@@ -35,6 +36,7 @@ public class SensorObject implements SensorEventListener, StepListener {
         numSteps = 0;
         sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
         //v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        contextNotification=context;
     }
 
     @Override
@@ -56,8 +58,10 @@ public class SensorObject implements SensorEventListener, StepListener {
         //need to get the notifier working as there are issues with textview
 
         //StepsTaken.setText(TEXT_NUM_STEPS + numSteps);
-        //if (numSteps == 110){
-            //Notification.notifier(this);
+        if (numSteps == 110) {
+            Notification.notifier(contextNotification);
         }
     }
+
+}
 
