@@ -4,21 +4,24 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+
 /**
  * Created by joekelly on 26/10/2017.
+ * This class calculates the distance between different locations, such as the user an a flag
  */
 
 public class DistanceCalculations {
 
+    // Radians formula
     public static double rad(double x) {
         return x * Math.PI / 180;
     }
-
-    public static int checkFlagDistances(LatLng userLocation,double[][] arrFlags) {
+    // Loop through all flags and calculate distance
+    public static int checkFlagDistances(LatLng userLocation, ArrayList<double[]> arrFlags) {
         double R = 6378137; // Earth’s mean radius in meter
         int count = 0;
-        while (count < arrFlags.length){
-            double[] flag = arrFlags[count];
+        for(double[] flag: arrFlags){
             double dLat = rad(flag[0] - userLocation.latitude);
             double dLong = rad(flag[1] - userLocation.longitude);
             double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
@@ -28,29 +31,13 @@ public class DistanceCalculations {
             double d = R * c;
 
             if (d < 15) {
+                arrFlags.remove(flag);
                 return count;
             }
             count++;
         }
 
         return -1;
-    }
-
-    public static boolean checkCapturedDistance(LatLng userLocation,double[] flagCaught) {
-        double R = 6378137; // Earth’s mean radius in meter
-        int count = 0;
-        double dLat = rad(flagCaught[0] - userLocation.latitude);
-        double dLong = rad(flagCaught[1] - userLocation.longitude);
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(rad(userLocation.latitude)) * Math.cos(rad(flagCaught[0])) *
-                        Math.sin(dLong / 2) * Math.sin(dLong / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double d = R * c;
-
-
-        if (d > 100)return true;
-
-        return false;
     }
 
 }

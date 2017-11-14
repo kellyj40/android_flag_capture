@@ -3,16 +3,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -27,48 +18,37 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.GroundOverlay;
-import com.google.android.gms.maps.model.GroundOverlayOptions;
+
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+
+
+import java.util.ArrayList;
 
 // Activity for the private game
 public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
-    private boolean hasFlag = false;
-    private double[] locationFlagCaptured = new double[2];
     private GoogleMap mMap;
-    private GroundOverlay overLayReference;
+
     private int flagsCaptured = 0;
-    Vibrator v;
+    private Vibrator vib;
+
     // Step instance
     private int numSteps;
-    //Object wit hthe step stuff
     private SensorObject stepObject;
-//    private TextView StepsTaken; THIS NEEDS WORK
 
     //stats db
-    Databasehelperclass myDb;
+    private ArrayList <double[]> arrFlags; // Coordinates of all flags on map
+    private FlagsOnMap flagsOnMap;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    private PrivateFlagRequest getFlagLocation = new PrivateFlagRequest();;
 
-
-    private double[][] arrFlags; // Coordinates of all flags on map
-
-    LocationManager locationManager;
-    LocationListener locationListener;
-    private GroundOverlay[] overLayReferenceFlags;
-    private Marker[] objectReferenceFlags; // array of flag objects - make into an instance variable of MapHelper?
+    private Databasehelperclass myDb;
     private DataBaseManagement referenceDataBase;
-    private Cursor c;
     private LatLng userLocation;
-
-
 
 
     @Override
@@ -77,38 +57,32 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
         setContentView(R.layout.activity_maps);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        // Set up database
         createDatabaseTable();
+        // Get location of user
         getLocation();
-        //initialiseStepSensor();
-        stepObject = new SensorObject();
-        numSteps= stepObject.numSteps;
-        stepObject.initialiseStepSensor(this);
-        //StepsTaken = (TextView) findViewById(R.id.tv_steps);
+        // Set up sensor technology
+        setUpSensors();
 
+        // Make new flags that will be used on the map
+        newFlags();
 
-
-
-        // initialising flags
-        PrivateFlagRequest getFlagsObject = new PrivateFlagRequest();
-        arrFlags = getFlagsObject.requestFlags(userLocation);
-
-        //Set up stats page db
+        // Set up stats page db
         myDb = new Databasehelperclass(this);
-
 
     }
 
     public void createDatabaseTable() {
+
         //Making table to store all the values of the flags collected by user
         try{
             SQLiteDatabase userDatabase = this.openOrCreateDatabase("UserData", MODE_PRIVATE, null);
             referenceDataBase = new DataBaseManagement(userDatabase);
 
-            flagsCaptured= referenceDataBase.makeLocalFlagTable();
+            flagsCaptured = referenceDataBase.makeLocalFlagTable();
 
             TextView textView = (TextView) findViewById(R.id.distance);
             textView.setText("Captured: " + Integer.toString(flagsCaptured));
@@ -120,13 +94,12 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
     public void getLocation() {
         // getting location
         Intent intent = getIntent();
+
         Double startingLat = intent.getDoubleExtra("LAT", 0.0);
         Double startingLon = intent.getDoubleExtra("LON", 0.0);
 
         userLocation = new LatLng(startingLat, startingLon);
         showToast(userLocation.toString());
-
-
     }
 
 
@@ -135,158 +108,58 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
     public void onMapReady(GoogleMap googleMap) {
         // Set the map
         mMap = googleMap;
+
         // Used for getting access to the systems location service
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-
-        //------- FLAG LOGIC -------
-        // drawing the flags onto the map
-        int flagIndex = 0; // index of the current flag
-        double[] flagLocation; // stores the lat/long of the current flag
-
-        //
-        objectReferenceFlags = new Marker[arrFlags.length];
-        overLayReferenceFlags = new GroundOverlay[arrFlags.length];
-
-        // loops over each flag
-        while(flagIndex<arrFlags.length){
-            flagLocation = arrFlags[flagIndex];
-            LatLng position = new LatLng(flagLocation[0], flagLocation[1]);
-
-            objectReferenceFlags[flagIndex] = mMap.addMarker(new MarkerOptions().position(position).title("Flag").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-
-
-            int radiusGet = 15;
-            // drawing circle
-            int d = 15; // diameter
-            Bitmap bm = Bitmap.createBitmap(d, d, Bitmap.Config.ARGB_8888);
-            Canvas c = new Canvas(bm);
-            Paint p = new Paint();
-            p.setColor(Color.GREEN);
-
-            c.drawCircle(d/2, d/2, d/2, p);
-
-            // generate BitmapDescriptor from circle Bitmap
-            BitmapDescriptor bmD = BitmapDescriptorFactory.fromBitmap(bm);
-
-            //Add the circle
-            overLayReferenceFlags[flagIndex] =  mMap.addGroundOverlay(new GroundOverlayOptions().
-                    image(bmD).
-                    position(position,radiusGet*2,radiusGet*2).transparency(0.4f));
-
-            flagIndex++;
-
-        }
+        // Set up Marker Object for a given map
+        flagsOnMap = new FlagsOnMap(mMap);
+        // Place markers onto the map
+        flagsOnMap.drawFlagsToMap(arrFlags);
 
 
         // Add listener for GPS movement
         locationListener = new LocationListener() {
 
 
-            public void onLocationChanged(Location location) {
+        public void onLocationChanged(Location location) {
+            //Get the users new location and update variable
+            userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+            // Call method to see if in range to collect flag
+            checkIfCapturedFlag();
+        }
 
-                userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
 
-                // Calculate the distance to all the flags
-                int value = DistanceCalculations.checkFlagDistances(userLocation, arrFlags);
+        }
+        @Override
+        public void onProviderEnabled(String s) {
 
+        }
+        @Override
+        public void onProviderDisabled(String s) {
 
-                if (value>=0 && !hasFlag) {
-
-                    int radiusM = 100;
-
-                    double latitude = location.getLatitude();
-                    double longitude = location.getLongitude();
-                    LatLng latLng = new LatLng(latitude,longitude);
-
-                    // drawing circle
-                    int d = 500; // diameter
-                    Bitmap bm = Bitmap.createBitmap(d, d, Bitmap.Config.ARGB_8888);
-                    Canvas c = new Canvas(bm);
-                    Paint p = new Paint();
-                    p.setColor(Color.RED);
-
-                    c.drawCircle(d/2, d/2, d/2, p);
-
-                    // generate BitmapDescriptor from circle Bitmap
-                    BitmapDescriptor bmD = BitmapDescriptorFactory.fromBitmap(bm);
-
-                    //Add the circle
-                    overLayReference = mMap.addGroundOverlay(new GroundOverlayOptions().
-                            image(bmD).
-                            position(latLng,radiusM*2,radiusM*2).transparency(0.4f));
-
-                    // Remove the flag
-                    objectReferenceFlags[value].remove();
-                    overLayReferenceFlags[value].remove();
-                    locationFlagCaptured[0] = latitude;
-                    locationFlagCaptured[1] = longitude;
-                    hasFlag = true;
-                    v.vibrate(500);
-                }
-                if (hasFlag){
-                    boolean successCapture = DistanceCalculations.checkCapturedDistance(userLocation, locationFlagCaptured);
-                    if (successCapture){
-
-                        overLayReference.remove();
-                        hasFlag = false;
-                        Toast.makeText(PrivateMap.this, R.string.flag_collected, Toast.LENGTH_SHORT).show();
-//                        Add captured flag
-                        referenceDataBase.updateLocalFlagTable();
-                        flagsCaptured++;
-
-                        TextView textView = (TextView) findViewById(R.id.distance);
-                        textView.setText("Captured: " + Integer.toString(flagsCaptured));
-                        v.vibrate(1000);
-
-                    }
-                }
-                // Keep camera on the user
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
-            }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-
-            }
+        }
 
         };
 
 
         // Must be after the location listener is made
-        // Once the map is ready put the location onto the map
         if (Build.VERSION.SDK_INT < 23) {
-            Toast.makeText(PrivateMap.this, "Update", Toast.LENGTH_SHORT).show();
             // check for permision, and then start requesting location updates. Otherwise, request permission
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
                 mMap.setMyLocationEnabled(true);
             } else {
-                // ask for permission
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        8034);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},8034);
             }
         } else {
-//            Toast.makeText(PrivateMap.this, "Last Location", Toast.LENGTH_SHORT).show();
+
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != getPackageManager().PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-//                Toast.makeText(this, "Map initialized", Toast.LENGTH_SHORT).show();
             }
-            //Use this for when opening the map
             // Move camera to the location of the user
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16));
             mMap.setMyLocationEnabled(true);
@@ -296,8 +169,56 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public void checkIfCapturedFlag(){
+        // Calculate the distance to all the flags
+        int value = DistanceCalculations.checkFlagDistances(userLocation, arrFlags);
 
+        if (value>=0) {
+
+//            vib.vibrate(500);
+            // Remove the flag from the map
+            flagsOnMap.removeFlagFromMap(value);
+            // Increment number of flags
+            flagsCaptured++;
+            // Make toast that flag was captured
+            showToast("Flag captured :) ");
+            // Update the local database
+            referenceDataBase.updateLocalFlagTable();
+
+            // Up date the text view of the number of captured flags
+            TextView textView = (TextView) findViewById(R.id.distance);
+            textView.setText("Captured: " + Integer.toString(flagsCaptured));
+
+            // If there is no more flags make new ones
+            if (flagsOnMap.numberOfFlagsRemaining<=0){
+                newFlags();
+                //Put the new flags onto the map
+                flagsOnMap.drawFlagsToMap(arrFlags);
+            }
+        }
+    }
+
+
+    public void setUpSensors(){
+        stepObject = new SensorObject();
+        numSteps= stepObject.numSteps;
+        stepObject.initialiseStepSensor(this);
+    }
+
+    public void newFlags(){
+        arrFlags = getFlagLocation.requestFlags(userLocation);
+    }
+
+    public void showToast(String message) {
+        Context context = getApplicationContext();
+        CharSequence text = message;
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         return true;
@@ -309,8 +230,8 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
                 // passes steps to stats page
                 Intent registerIntent = new Intent(this, StatsActivity.class);
                 int x = stepObject.numSteps;
-                //adds current steps to db
-                //myDb.addSteps(new Steps(x));
+                // adds current steps to db
+                // myDb.addSteps(new Steps(x));
                 registerIntent.putExtra("numSteps", x);
                 startActivity(registerIntent);
                 return true;
@@ -323,35 +244,13 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
     }
 
-
-    protected void onStart() {
-
-        super.onStart();
-    }
-    protected void onPause() {
-        super.onPause();
-        //saveSteps = numSteps;
-        //Toast.makeText(PrivateMap.this, saveSteps+"Pause", Toast.LENGTH_SHORT).show();
-        //myDb.addSteps(new Steps(numSteps));
-    }
-    protected void onResume() {
-        super.onResume();
-       // Toast.makeText(PrivateMap.this, saveSteps+"Resume", Toast.LENGTH_SHORT).show();
-        //numSteps = saveSteps;
-        //myDb.addSteps(new Steps(numSteps));
-    }
     protected void onStop() {
         super.onStop();
-        //Toast.makeText(PrivateMap.this, saveSteps+"Saving to database", Toast.LENGTH_SHORT).show();
         myDb.addSteps(new Steps(stepObject.numSteps));
     }
+    protected void onStart() {super.onStart();}
+    protected void onPause() {super.onPause();}
+    protected void onResume() {super.onResume();}
 
-    public void showToast(String message) {
-        Context context = getApplicationContext();
-        CharSequence text = message;
-        int duration = Toast.LENGTH_SHORT;
 
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
 }

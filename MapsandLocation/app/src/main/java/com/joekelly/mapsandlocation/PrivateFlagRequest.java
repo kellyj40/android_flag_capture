@@ -2,6 +2,7 @@ package com.joekelly.mapsandlocation;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -9,17 +10,19 @@ import java.util.Random;
  */
 
 // Creates array of flags based on user location
-// To be used in private game (PrivateMap)
+// To be used in private game (PrivateMap)x
 public class PrivateFlagRequest {
 
+    public ArrayList<double[]> arrFlags = new ArrayList<double[]>();
+    public double[][] placeholder;
 
-    public double[][] requestFlags(LatLng point) {
+    public ArrayList<double[]> requestFlags(LatLng point) {
         int radius = 500;
-        int numberPins = 4;
-        double[][] arrFlags = new double[numberPins][2];
+        int numberPins = 2;
 
         //This is to generate 10 random points
         for(int i = 0; i<numberPins; i++) {
+
             double x0 = point.latitude;
             double y0 = point.longitude;
 
@@ -40,9 +43,13 @@ public class PrivateFlagRequest {
 
             double foundLatitude = new_x + x0;
             double foundLongitude = y + y0;
-            arrFlags[i][0] = foundLatitude;
-            arrFlags[i][1] = foundLongitude;
+            double[]placeholder = {foundLatitude,foundLongitude};
+
+            arrFlags.add(placeholder);
+
         }
+
+
         //Get nearest point to the centre
         return arrFlags;
     }
