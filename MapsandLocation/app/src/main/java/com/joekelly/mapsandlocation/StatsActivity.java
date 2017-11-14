@@ -25,6 +25,11 @@ public class StatsActivity extends AppCompatActivity {
 
     Databasehelperclass myDb;
 
+    //Variable with the current steps
+    private int numSteps;
+    //Object which contains the step listeners;
+    private SensorObject stepObject;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +53,14 @@ public class StatsActivity extends AppCompatActivity {
         TextView today_steps;
         TextView week_steps;
         TextView overall_steps;
+
+        //Step stuff
+
+        stepObject = new SensorObject();
+        numSteps= stepObject.numSteps;
+        stepObject.initialiseStepSensor(this);
+
+
         //taken from graphView examples
         GraphView graph = (GraphView) findViewById(R.id.gGraph);
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {
@@ -55,8 +68,6 @@ public class StatsActivity extends AppCompatActivity {
                 new DataPoint (0, todayssteps),
                 new DataPoint(2, week),
                 new DataPoint(4, overall)
-
-
 
         });
         graph.addSeries(series);
@@ -92,6 +103,13 @@ public class StatsActivity extends AppCompatActivity {
         overall_steps.append(""+overall);
 
 
+    }
+
+
+    protected void onStop() {
+        super.onStop();
+        //Toast.makeText(PrivateMap.this, saveSteps+"Saving to database", Toast.LENGTH_SHORT).show();
+        myDb.addSteps(new Steps(stepObject.numSteps));
     }
 
 

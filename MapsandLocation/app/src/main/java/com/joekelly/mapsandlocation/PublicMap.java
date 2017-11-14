@@ -40,6 +40,15 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
     LocationManager locationManager;
     LocationListener locationListener;
 
+    // Step instance
+    private int numSteps;
+    //Object wit hthe step stuff
+    private SensorObject stepObject;
+//    private TextView StepsTaken; THIS NEEDS WORK
+
+    //stats db
+    Databasehelperclass myDb;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +60,11 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         mapFragment.getMapAsync(this);
 
         getLocation();
+
+        //initialiseStepSensor();
+        stepObject = new SensorObject();
+        numSteps= stepObject.numSteps;
+        stepObject.initialiseStepSensor(this);
     }
 
     @Override
@@ -206,6 +220,8 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         GeoFire geoFire = new GeoFire(ref);
         geoFire.removeLocation(userId);
         locationManager.removeUpdates(locationListener);
+        myDb.addSteps(new Steps(stepObject.numSteps));
+
     }
 
     public void showToast(String message) {
