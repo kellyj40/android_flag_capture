@@ -245,15 +245,9 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
     protected void onStop() {
         super.onStop();
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds");
-//
-//        // Telling GeoFire where we want to store it
-//        GeoFire geoFire = new GeoFire(ref);
-//        geoFire.removeLocation(userId);
-//        ref.child(userId).removeValue();
-//        locationManager.removeUpdates(locationListener);
+        userManager.removeUserFromPlaying();
+        locationManager.removeUpdates(locationListener);
     }
 
     public void showToast(String message) {

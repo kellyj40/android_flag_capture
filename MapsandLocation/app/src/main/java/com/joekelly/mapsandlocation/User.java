@@ -1,5 +1,7 @@
 package com.joekelly.mapsandlocation;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -30,12 +32,15 @@ public class User {
     }
 
     public void makePlayerRef() {
-            playerRef = FirebaseDatabase.getInstance().getReference("usersPlaying").child(playerId).child("l");
+            playerRef = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds").child(playerId).child("l");
             playerRef.addValueEventListener(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    Log.d("             playerId ", playerId);
+
                     if(dataSnapshot.exists()){
+//                        Log.d("             playerId ", playerId);
                         List<Object> map = (List<Object>) dataSnapshot.getValue();
                         double locationLat = 0;
                         double locationLng = 0;
