@@ -50,9 +50,9 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
     Vibrator v;
     // Step instance
     private int numSteps;
-    //Object wit hthe step stuff
+    //Object with the step stuff
     private SensorObject stepObject;
-//    private TextView StepsTaken; THIS NEEDS WORK
+    private TextView StepsTaken;
 
     //stats db
     Databasehelperclass myDb;
@@ -84,10 +84,13 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
         createDatabaseTable();
         getLocation();
         //initialiseStepSensor();
+        StepsTaken = (TextView) findViewById(R.id.tv_steps);
         stepObject = new SensorObject();
         numSteps= stepObject.numSteps;
-        stepObject.initialiseStepSensor(this);
-        //StepsTaken = (TextView) findViewById(R.id.tv_steps);
+        stepObject.passTextView(StepsTaken);
+        stepObject.initialiseStepSensor(this, StepsTaken);
+
+
 
 
 
@@ -98,8 +101,7 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
         //Set up stats page db
         myDb = new Databasehelperclass(this);
-
-
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     public void createDatabaseTable() {
@@ -354,4 +356,6 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
     }
+
+
 }
