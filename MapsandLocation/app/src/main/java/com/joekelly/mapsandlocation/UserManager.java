@@ -31,7 +31,8 @@ import java.util.Map;
 public class UserManager {
 //    private ArrayList<String> users = new ArrayList<String>();
     Map<String, Object> users;
-    Map<String, DatabaseReference> playerRefMap = new HashMap<String, DatabaseReference>();
+//    Map<String, DatabaseReference> playerRefMap = new HashMap<String, DatabaseReference>();
+    Map<String, User> userMap = new HashMap<String, User>();
 
     // These deal with the user of the app - not other users
     private String userId;
@@ -69,7 +70,7 @@ public class UserManager {
 //                        collectIDs((Map<String,Object>) dataSnapshot.getValue());
                         users = (Map<String, Object>) dataSnapshot.getValue();
                         makePlayerRefMap(users);
-                        Log.d("         playerRefMap: ", playerRefMap.toString());
+//                        Log.d("         playerRefMap: ", playerRefMap.toString());
 //                        Log.d("                -- ", users.toString());
                     }
 
@@ -105,12 +106,14 @@ public class UserManager {
         for (Map.Entry<String, Object> entry : users.entrySet()) {
 
             String playerId = entry.getKey();
-            DatabaseReference playerRef = makePlayerRef(playerId);
+//            DatabaseReference playerRef = makePlayerRef(playerId);
+            User newUser = new User(playerId, mMap);
 
 //            Log.d("              ---", playerId);
 //            Log.d("              ---", this.userId);
 
-            playerRefMap.put(playerId, playerRef);
+//            playerRefMap.put(playerId, playerRef);
+            userMap.put(playerId, newUser);
         }
     }
 
@@ -119,13 +122,16 @@ public class UserManager {
 //     And then make a hashmap of User objects in usermanager?
     public DatabaseReference makePlayerRef(String playerId) {
 
-//        String playerId = "ubd6f4rfl8aiPi8RzwahEjgTyBn2";
+//        String playerId = "w2O2eboiQnMOySIICEGBiQINBns2"; // use this??
+//        String newPlayerID = "w2O2eboiQnMOySIICEGBiQINBns2";
+//        DatabaseReference playerRef = FirebaseDatabase.getInstance().getReference("usersPlaying").child(newPlayerID).child("l");
+
         DatabaseReference playerRef = FirebaseDatabase.getInstance().getReference("usersPlaying").child(playerId).child("l");
 
         playerRef.addValueEventListener(new ValueEventListener() {
 
             // Not sure if this should be placed here.
-            Marker userMarkerRef = null;
+            Marker userMarkerRef;
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -154,3 +160,6 @@ public class UserManager {
         return playerRef;
     }
 }
+
+
+// Why don't we see eachother on the map?
