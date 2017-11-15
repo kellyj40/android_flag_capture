@@ -41,6 +41,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
     private GoogleMap mMap;
     private LatLng userLocation;
     private boolean hasFlag=false;
+    private UserManager userManager;
 
     LocationManager locationManager;
     LocationListener locationListener;
@@ -62,34 +63,12 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
     public void onMapReady(GoogleMap googleMap) {
         // Set the map
         mMap = googleMap;
+        userManager = new UserManager(mMap);
+        userManager.setUserLocation(userLocation);
+
         // Used for getting access to the systems location service
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-        // Add listener for GPS movement - Check if collect flag, update to fireBase,
-        locationListener = new LocationListener() {
-            // Each time the user moves
-            public void onLocationChanged(Location location) {
-                //Get new location
-                userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                // Update user on FireBase so other users can see
-                updateUserLocationFirebase();
-            }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-
-            }
-        };
+        locationListener = createLocationListener();
 
         // Must be after the location listener is made
         // Ask for permissions and zoom in on the user
@@ -114,8 +93,44 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
         }
         // Add listener to all the users
-        upDateUsers();
+//        upDateUsers();
+//        userManager.getUsers();
     }
+
+
+    public LocationListener createLocationListener() {
+        // Add listener for GPS movement - Check if collect flag, update to fireBase,
+        LocationListener newLocationListener = new LocationListener() {
+            // Each time the user moves
+            public void onLocationChanged(Location location) {
+                //Get new location
+                userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                // Update user on FireBase so other users can see
+//                updateUserLocationFirebase();
+                userManager.setUserLocation(userLocation);
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String s) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String s) {
+
+            }
+        };
+
+        return newLocationListener;
+    }
+
+
+
 
     public void getLocation() {
         PrivateFlagRequest getFlagsObject = new PrivateFlagRequest();
@@ -131,11 +146,14 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
 
     private Marker userMarkerRef;
+
+
     public void upDateUsers(){
 
 
         //Get reference to database
         DatabaseReference playerRef = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds");
+
         //Get snap shot of the database
         playerRef.addListenerForSingleValueEvent(
                 new ValueEventListener() {
@@ -165,12 +183,15 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 //            phoneNumbers.add((Boolean) singleUser.get("hasFlag"));
         }
         showToast(userIds.get(0).toString());
+
+
+        // Logic for listening from firebase, and drawing marker to map
 //        String playerId = "ubd6f4rfl8aiPi8RzwahEjgTyBn2";
 //        DatabaseReference playerRef = FirebaseDatabase.getInstance().getReference("usersPlaying").child(playerId).child("l");
 //
 //        playerRef.addValueEventListener(new ValueEventListener() {
 //            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
+//            public void [(DataSnapshot dataSnapshot) {
 //                if(dataSnapshot.exists()){
 //                    List<Object> map = (List<Object>) dataSnapshot.getValue();
 //                    double locationLat = 0;
@@ -195,16 +216,16 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
     }
 
 
-    public void updateUserLocationFirebase(){
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds");
-
-        // Telling GeoFire where we want to store it
-        GeoFire geoFire = new GeoFire(ref);
-        geoFire.setLocation(userId, new GeoLocation(userLocation.latitude, userLocation.longitude));
-        ref.child(userId).child("hasFlag").setValue(hasFlag);
-    }
+//    public void updateUserLocationFirebase(){
+//        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+//
+//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds");
+//
+//        // Telling GeoFire where we want to store it
+//        GeoFire geoFire = new GeoFire(ref);
+//        geoFire.setLocation(userId, new GeoLocation(userLocation.latitude, userLocation.longitude));
+//        ref.child(userId).child("hasFlag").setValue(hasFlag);
+//    }
 
     protected void onPause() {
         super.onPause();
