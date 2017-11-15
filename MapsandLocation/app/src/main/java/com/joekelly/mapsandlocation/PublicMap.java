@@ -19,6 +19,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -27,15 +28,19 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 // Activity for the public game
 public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
     private GoogleMap mMap;
     private LatLng userLocation;
+    private boolean hasFlag=false;
 
     LocationManager locationManager;
     LocationListener locationListener;
@@ -49,37 +54,25 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
+        // Get user location
         getLocation();
     }
 
-    @Override
+    @Override // Called once the map is ready by google
     public void onMapReady(GoogleMap googleMap) {
         // Set the map
         mMap = googleMap;
         // Used for getting access to the systems location service
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-
-        // Add listener for GPS movement
+        // Add listener for GPS movement - Check if collect flag, update to fireBase,
         locationListener = new LocationListener() {
-
-
+            // Each time the user moves
             public void onLocationChanged(Location location) {
-
-                LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-
-                // Keep camera on the user
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(userLocation));
-
-                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("usersPlaying");
-
-                // Telling GeoFire where we want to store it
-                GeoFire geoFire = new GeoFire(ref);
-                geoFire.setLocation(userId, new GeoLocation(location.getLatitude(), location.getLongitude()));
-
+                //Get new location
+                userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                // Update user on FireBase so other users can see
+                updateUserLocationFirebase();
             }
 
             @Override
@@ -99,37 +92,29 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         };
 
         // Must be after the location listener is made
-        // Once the map is ready put the location onto the map
+        // Ask for permissions and zoom in on the user
         if (Build.VERSION.SDK_INT < 23) {
-            Toast.makeText(PublicMap.this, "UPdate", Toast.LENGTH_SHORT).show();
             // check for permision, and then start requesting location updates. Otherwise, request permission
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
                 mMap.setMyLocationEnabled(true);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
             } else {
-                // ask for permission
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                        8034);
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},8034);
             }
 
         } else {
-//            Toast.makeText(PublicMap.this, "Last Location", Toast.LENGTH_SHORT).show();
+
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != getPackageManager().PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             } else {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
             }
-            //Use this for when opening the map
-
             // Move camera to the location of the user
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 16));
             mMap.setMyLocationEnabled(true);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
         }
+        // Add listener to all the users
         upDateUsers();
-
     }
 
     public void getLocation() {
@@ -147,49 +132,90 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
     private Marker userMarkerRef;
     public void upDateUsers(){
-        String playerId = "ubd6f4rfl8aiPi8RzwahEjgTyBn2";
 
-        DatabaseReference playerRef = FirebaseDatabase.getInstance().getReference("usersPlaying").child(playerId).child("l");
 
-        playerRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    List<Object> map = (List<Object>) dataSnapshot.getValue();
-                    double locationLat = 0;
-                    double locationLng = 0;
-                    if (map.get(0) != null){
-                        locationLat = Double.parseDouble(map.get(0).toString());
-                        locationLng = Double.parseDouble(map.get(1).toString());
+        //Get reference to database
+        DatabaseReference playerRef = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds");
+        //Get snap shot of the database
+        playerRef.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //Get map of users in datasnapshot
+                        collectIds((Map<String,Object>) dataSnapshot.getValue());
                     }
-                    LatLng playerLatLng = new LatLng(locationLat, locationLng);
-                    if(userMarkerRef != null){
-                        userMarkerRef.remove();
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        //handle databaseError
                     }
-                    userMarkerRef = mMap.addMarker(new MarkerOptions().position(playerLatLng));
-                }
-            }
+                });
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+    }
+    private void collectIds(Map<String, Object> users) {
+        ArrayList<Object> userIds = new ArrayList<>();
 
-            }
-        });
+        //iterate through each user, ignoring their UID
+        for (Map.Entry<String, Object> entry : users.entrySet()) {
 
-
+            //Get user map
+            Map singleUser = (Map) entry.getValue();
+            userIds.add(singleUser);
+            //Get phone field and append to list
+//            phoneNumbers.add((Boolean) singleUser.get("hasFlag"));
+        }
+        showToast(userIds.get(0).toString());
+//        String playerId = "ubd6f4rfl8aiPi8RzwahEjgTyBn2";
+//        DatabaseReference playerRef = FirebaseDatabase.getInstance().getReference("usersPlaying").child(playerId).child("l");
+//
+//        playerRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if(dataSnapshot.exists()){
+//                    List<Object> map = (List<Object>) dataSnapshot.getValue();
+//                    double locationLat = 0;
+//                    double locationLng = 0;
+//                    if (map.get(0) != null){
+//                        locationLat = Double.parseDouble(map.get(0).toString());
+//                        locationLng = Double.parseDouble(map.get(1).toString());
+//                    }
+//                    LatLng playerLatLng = new LatLng(locationLat, locationLng);
+//                    if(userMarkerRef != null){
+//                        userMarkerRef.remove();
+//                    }
+//                    userMarkerRef = mMap.addMarker(new MarkerOptions().position(playerLatLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.otherusers)));;
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
 
+    public void updateUserLocationFirebase(){
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds");
+
+        // Telling GeoFire where we want to store it
+        GeoFire geoFire = new GeoFire(ref);
+        geoFire.setLocation(userId, new GeoLocation(userLocation.latitude, userLocation.longitude));
+        ref.child(userId).child("hasFlag").setValue(hasFlag);
+    }
 
     protected void onPause() {
         super.onPause();
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("usersPlaying");
-
-        // Telling GeoFire where we want to store it
-        GeoFire geoFire = new GeoFire(ref);
-        geoFire.removeLocation(userId);
+//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds");
+//
+//        // Telling GeoFire where we want to store it
+//        GeoFire geoFire = new GeoFire(ref);
+//        geoFire.removeLocation(userId);
+//        ref.child(userId).removeValue();
     }
 
     protected void onStart() {
@@ -200,12 +226,13 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         super.onStop();
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("usersPlaying");
-
-        // Telling GeoFire where we want to store it
-        GeoFire geoFire = new GeoFire(ref);
-        geoFire.removeLocation(userId);
-        locationManager.removeUpdates(locationListener);
+//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds");
+//
+//        // Telling GeoFire where we want to store it
+//        GeoFire geoFire = new GeoFire(ref);
+//        geoFire.removeLocation(userId);
+//        ref.child(userId).removeValue();
+//        locationManager.removeUpdates(locationListener);
     }
 
     public void showToast(String message) {

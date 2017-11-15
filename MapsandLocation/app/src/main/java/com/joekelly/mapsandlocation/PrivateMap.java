@@ -30,8 +30,8 @@ import java.util.ArrayList;
 
 // Activity for the private game
 public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
-    private GoogleMap mMap;
 
+    private GoogleMap mMap;
     private int flagsCaptured = 0;
     private Vibrator vib;
 
