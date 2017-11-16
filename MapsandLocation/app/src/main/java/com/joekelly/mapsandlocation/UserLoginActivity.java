@@ -30,10 +30,6 @@ public class UserLoginActivity extends AppCompatActivity {
     protected Double mLongitudeText;
 
 
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

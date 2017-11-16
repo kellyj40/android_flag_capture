@@ -95,9 +95,22 @@ public class UserManager {
 
             if (playerId != this.userId) {
                 User newUser = new User(playerId, mMap);
-
                 userMap.put(playerId, newUser);
             }
+        }
+    }
+    // This method is to check if the player exists before adding to map when new user comes in
+    public boolean checkIfPlayerExists(String playerId){
+        if (playerId != this.userId)
+            return userMap.containsValue(playerId);
+
+        return true;
+    }
+    // When its a new user, add player to data structure and put on map
+    public void addPlayerToHashMap(String playerId) {
+        if (playerId != this.userId) {
+            User newUser = new User(playerId, mMap);
+            userMap.put(playerId, newUser);
         }
     }
 }
