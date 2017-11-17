@@ -25,13 +25,36 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:text="Weather"
-                android:background="@drawable/scenery"
-                android:layout_height="match_parent" />
-            <ImageView
+                android:layout_height="match_parent"
+                android:background="@drawable/sunny"
+                android:fontFamily="sans-serif-condensed"
+                android:shadowColor="#000000"
+                android:shadowDx="3"
+                android:shadowDy="4"
+                android:shadowRadius="3"
+                android:text="13oC  "
+                android:textAlignment="textEnd"
+                android:textColor="@android:color/white"
+                android:textSize="40dp"
+                android:gravity="end" />
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/sun"/>
+                android:background="@drawable/sunny"
+                android:fontFamily="sans-serif-condensed"
+                android:shadowColor="#000000"
+                android:shadowDx="3"
+                android:shadowDy="4"
+                android:shadowRadius="3"
+                android:text="13oC  "
+                android:textAlignment="textEnd"
+                android:textColor="@color/yellow"
+                android:textSize="40dp"
+                android:gravity="end" />
+            <!--<ImageView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:src="@drawable/sun"/>-->
 
 
 
@@ -58,7 +81,6 @@
             android:shadowRadius="3"
             android:text="So far today you've wallked 2 Kilometeres, Keep it up!"
             android:textAlignment="center"
-            android:textAllCaps="true"
             android:textColor="@android:color/white"
             android:textSize="30dp"
             android:textStyle="italic" />

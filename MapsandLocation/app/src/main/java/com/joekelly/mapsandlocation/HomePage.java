@@ -17,6 +17,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
+import org.json.JSONObject;
+
 public class HomePage extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
@@ -52,9 +54,8 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         stepObject.initialiseStepSensor(this);
 
         myDb = new Databasehelperclass(this);
-//        new Thread(){
-//        final JSONObject weather = GetWeather.getJSON(this, "Dublin, IE");
-//    };
+
+        final JSONObject weather = GetWeather.getJSON(this, "Dublin, IE");
 //        Toast.makeText(this, weather.toString(), Toast.LENGTH_LONG).show();
 
     }
