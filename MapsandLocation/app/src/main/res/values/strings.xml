@@ -5,4 +5,7 @@
     <string name="title_activity_abouter">Abouter</string>
     <string name="title_activity_private_map">Map</string>
     <string name="no_location_detected">Cant find location</string>
+    <string name="flags_captured">Flags Captured:</string>
+    <string name="steps_taken">Steps Taken:</string>
+    <string name="openweathermaps_api_key">df9195ca1794965f11aecbdfe1c94bd4</string>
 </resources>

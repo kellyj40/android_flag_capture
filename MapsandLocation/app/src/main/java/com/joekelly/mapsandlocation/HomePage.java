@@ -52,6 +52,11 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         stepObject.initialiseStepSensor(this);
 
         myDb = new Databasehelperclass(this);
+//        new Thread(){
+//        final JSONObject weather = GetWeather.getJSON(this, "Dublin, IE");
+//    };
+//        Toast.makeText(this, weather.toString(), Toast.LENGTH_LONG).show();
+
     }
 
     @Override

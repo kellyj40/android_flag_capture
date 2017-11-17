@@ -1,0 +1,70 @@
+<HorizontalScrollView android:layout_width="match_parent"
+    android:id="@+id/horizontalScrollView"
+    android:layout_below="@+id/scroll"
+    android:scrollbars="none"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="2dp">
+
+
+        <android.support.v7.widget.CardView
+            android:layout_width="300dp"
+            android:layout_marginLeft="16dp"
+            android:layout_height="match_parent"
+            android:padding="2dp"
+            android:id="@+id/weather"
+            app:cardCornerRadius="20dp"
+            android:background="@color/gray">
+            <!--android:layout_centerHorizontal="true"-->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:text="Weather"
+                android:background="@drawable/scenery"
+                android:layout_height="match_parent" />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/sun"/>
+
+
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/walking"
+        app:cardCornerRadius="20dp"
+        android:background="@color/gray"
+        android:layout_toRightOf="@+id/weather">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/walking_scene"
+            android:fontFamily="sans-serif-condensed"
+            android:shadowColor="#000000"
+            android:shadowDx="3"
+            android:shadowDy="4"
+            android:shadowRadius="3"
+            android:text="So far today you've wallked 2 Kilometeres, Keep it up!"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:textSize="30dp"
+            android:textStyle="italic" />
+
+    </android.support.v7.widget.CardView>
+
+
+    </RelativeLayout>
+    </HorizontalScrollView>

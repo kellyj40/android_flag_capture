@@ -85,7 +85,7 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
             flagsCaptured = referenceDataBase.makeLocalFlagTable();
             // Update text with number of flags captured from other games
             TextView textView = (TextView) findViewById(R.id.distance);
-            textView.setText("Captured: " + Integer.toString(flagsCaptured));
+            textView.setText("Flags Captured: " + Integer.toString(flagsCaptured));
         }catch (Exception e){
             Toast.makeText(PrivateMap.this, "Error in Database", Toast.LENGTH_SHORT).show();
         }
@@ -190,7 +190,7 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
             // Up date the text view of the number of captured flags
             TextView textView = (TextView) findViewById(R.id.distance);
-            textView.setText("Captured: " + Integer.toString(flagsCaptured));
+            textView.setText("Flags Captured: " + Integer.toString(flagsCaptured));
 
             // If there is no more flags make new ones
             if (flagsOnMap.numberOfFlagsRemaining<=0){
