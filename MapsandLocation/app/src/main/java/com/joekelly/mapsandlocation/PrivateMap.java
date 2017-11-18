@@ -74,13 +74,6 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
         // Set up stats page db
         myDb = new Databasehelperclass(this);
 
-        //Initialise Step Sensor
-        StepsTaken = (TextView) findViewById(R.id.tv_steps);
-        stepObject = new SensorObject();
-        numSteps= stepObject.numSteps;
-        stepObject.passTextView(StepsTaken);
-        stepObject.initialiseStepSensor(this, StepsTaken);
-
         //Initialise vibration
         vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -215,9 +208,12 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
 
     public void setUpSensors(){
+        StepsTaken = (TextView) findViewById(R.id.tv_steps);
         stepObject = new SensorObject();
         numSteps= stepObject.numSteps;
-        stepObject.initialiseStepSensor(this);
+        stepObject.passTextView(StepsTaken);
+        stepObject.initialiseStepSensor(this, StepsTaken);
+
     }
 
     public void newFlags(){

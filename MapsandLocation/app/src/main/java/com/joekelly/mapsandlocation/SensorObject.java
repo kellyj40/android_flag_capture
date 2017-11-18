@@ -21,7 +21,7 @@ public class SensorObject implements SensorEventListener, StepListener {
     public StepDetector simpleStepDetector;
     public SensorManager sensorManager;
     public Sensor accel;
-    public static final String TEXT_NUM_STEPS = "Number of steps taken:";
+    public static final String TEXT_NUM_STEPS = "Step taken: ";
     public int numSteps;
     int saveSteps;
     public TextView StepsTaken;

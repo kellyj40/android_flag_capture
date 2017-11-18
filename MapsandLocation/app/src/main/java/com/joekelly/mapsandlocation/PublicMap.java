@@ -8,9 +8,11 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
@@ -46,6 +48,16 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
     LocationManager locationManager;
     LocationListener locationListener;
+
+    private Vibrator vib;
+
+    // Step instance
+    private int numSteps;
+    private SensorObject stepObject;
+    private TextView StepsTaken;
+
+    //Step database
+    private Databasehelperclass myDb;
 
 
     @Override
@@ -93,6 +105,15 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
             }
         };
         ref.addChildEventListener(childEventListener);
+
+        // Set up stats page db
+        myDb = new Databasehelperclass(this);
+
+        // Set up sensor technology
+        setUpSensors();
+
+        //Initialise vibration
+        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
     }
 
@@ -201,6 +222,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
         userManager.removeUserFromPlaying();
         locationManager.removeUpdates(locationListener);
+        myDb.addSteps(new Steps(stepObject.numSteps));
     }
 
     public void showToast(String message) {
@@ -210,6 +232,15 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+    }
+
+    public void setUpSensors(){
+        StepsTaken = (TextView) findViewById(R.id.tv_steps);
+        stepObject = new SensorObject();
+        numSteps= stepObject.numSteps;
+        stepObject.passTextView(StepsTaken);
+        stepObject.initialiseStepSensor(this, StepsTaken);
+
     }
 }
 
