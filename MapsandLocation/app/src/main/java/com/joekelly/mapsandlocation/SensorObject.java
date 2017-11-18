@@ -1,5 +1,6 @@
 package com.joekelly.mapsandlocation;
 
+import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -23,19 +24,42 @@ public class SensorObject implements SensorEventListener, StepListener {
     public static final String TEXT_NUM_STEPS = "Number of steps taken:";
     public int numSteps;
     int saveSteps;
-    private TextView StepsTaken;
+    public TextView StepsTaken;
+    Context contextNotification;
+    TextView txtView;
+    boolean textPresent;
 
     public void initialiseStepSensor(Context context) {
+        // Get an instance of the SensorManager
+        //txtView =new TextView(null);
+        sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
+        accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        simpleStepDetector = new StepDetector();
+        simpleStepDetector.registerListener(this);
+        textPresent=false;
+        //StepsTaken = (TextView) ((Activity)context).findViewById(R.id.tv_steps);
+        numSteps = 0;
+        sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
+        //v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        contextNotification=context;
+
+    } public void initialiseStepSensor(Context context, TextView textView) {
         // Get an instance of the SensorManager
         sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         simpleStepDetector = new StepDetector();
         simpleStepDetector.registerListener(this);
-        //StepsTaken = (TextView) findViewById(R.id.tv_steps);
+        //StepsTaken = (TextView) ((Activity)context).findViewById(R.id.tv_steps);
         numSteps = 0;
+        textPresent=true;
         sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
         //v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        contextNotification=context;
+        txtView = textView;
+
     }
+
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -54,10 +78,28 @@ public class SensorObject implements SensorEventListener, StepListener {
         numSteps++;
 
         //need to get the notifier working as there are issues with textview
+//        updateUi(StepsTaken);
 
-        //StepsTaken.setText(TEXT_NUM_STEPS + numSteps);
-        //if (numSteps == 110){
-            //Notification.notifier(this);
+//        StepsTaken = (TextView) findViewById(R.id.tv_steps);
+        if (textPresent)
+            txtView.setText(TEXT_NUM_STEPS + numSteps);
+
+        if (numSteps == 110) {
+            Notification.notifier(contextNotification);
         }
     }
 
+
+
+    public void passTextView(TextView updateText){
+
+        StepsTaken= updateText;
+    }
+
+
+    public void updateUi(TextView txt){
+
+        txt.setText(TEXT_NUM_STEPS + numSteps);
+    }
+
+}

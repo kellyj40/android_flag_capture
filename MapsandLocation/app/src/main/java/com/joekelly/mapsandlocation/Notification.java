@@ -20,7 +20,7 @@ public class Notification {
         Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.walking_scene);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.walking_scene)
+                        .setSmallIcon(R.drawable.walking)
                         .setContentTitle("1KM walked Today!")
                         .setContentText("Congrats! You have walked a kilometer today!")
                         .setLargeIcon(icon);

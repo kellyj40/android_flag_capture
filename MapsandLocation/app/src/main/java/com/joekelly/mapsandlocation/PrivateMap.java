@@ -38,6 +38,7 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
     // Step instance
     private int numSteps;
     private SensorObject stepObject;
+    private TextView StepsTaken;
 
     //stats db
     private ArrayList <double[]> arrFlags; // Coordinates of all flags on map
@@ -72,6 +73,17 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
         // Set up stats page db
         myDb = new Databasehelperclass(this);
+
+        //Initialise Step Sensor
+        StepsTaken = (TextView) findViewById(R.id.tv_steps);
+        stepObject = new SensorObject();
+        numSteps= stepObject.numSteps;
+        stepObject.passTextView(StepsTaken);
+        stepObject.initialiseStepSensor(this, StepsTaken);
+
+        //Initialise vibration
+        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
 
     }
 
@@ -178,7 +190,7 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
         // if with in distance, value will be >= to zero if the index
         if (value>=0) {
 
-//            vib.vibrate(500);
+            vib.vibrate(500);
             // Remove the flag from the map
             flagsOnMap.removeFlagFromMap(value);
             // Increment number of flags collected by the user
