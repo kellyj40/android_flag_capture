@@ -25,6 +25,11 @@ public class StatsActivity extends AppCompatActivity {
 
     Databasehelperclass myDb;
 
+    //Variable with the current steps
+    private int numSteps;
+    //Object which contains the step listeners;
+    private SensorObject stepObject;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,8 +97,18 @@ public class StatsActivity extends AppCompatActivity {
         overall_steps.append(""+overall);
 
 
+        //Step stuff
+
+        stepObject = new SensorObject();
+        numSteps= stepObject.numSteps;
+        stepObject.initialiseStepSensor(this);
+
     }
 
-
+    protected void onStop() {
+        super.onStop();
+        //Toast.makeText(PrivateMap.this, saveSteps+"Saving to database", Toast.LENGTH_SHORT).show();
+        myDb.addSteps(new Steps(stepObject.numSteps));
+    }
 
 }
