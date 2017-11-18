@@ -44,7 +44,6 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
     private FlagsOnMap flagsOnMap;
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private PrivateFlagRequest getFlagLocation = new PrivateFlagRequest();;
 
     private Databasehelperclass myDb;
     private DataBaseManagement referenceDataBase;
@@ -210,7 +209,7 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
     public void newFlags(){
         // Make a flagRequest for new flags from the users location
-        arrFlags = getFlagLocation.requestFlags(userLocation);
+        arrFlags = PrivateFlagRequest.requestFlags(userLocation);
     }
 
     public void showToast(String message) {

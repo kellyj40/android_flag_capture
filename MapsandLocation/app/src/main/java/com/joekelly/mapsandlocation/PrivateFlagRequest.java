@@ -13,10 +13,8 @@ import java.util.Random;
 // To be used in private game (PrivateMap)x
 public class PrivateFlagRequest {
 
-    public ArrayList<double[]> arrFlags = new ArrayList<double[]>();
-    public double[][] placeholder;
-
-    public ArrayList<double[]> requestFlags(LatLng point) {
+    public static ArrayList<double[]> requestFlags(LatLng point) {
+        ArrayList<double[]> arrFlags = new ArrayList<double[]>();
         int radius = 500;
         int numberPins = 2;
 
@@ -49,7 +47,6 @@ public class PrivateFlagRequest {
             arrFlags.add(placeholder);
 
         }
-
 
         //Get nearest point to the centre
         return arrFlags;

@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +28,12 @@ import java.util.Map;
 
 // Manages all users - updates their location on map, keeps track of how many are playing
 public class UserManager {
+
+
+
+
+
+
 //    Map<String, Object> users;
     Map<String, User> userMap = new HashMap<String, User>();
 
@@ -34,6 +41,8 @@ public class UserManager {
     private String userId;
     private boolean hasFlag = false;
     private GoogleMap mMap;
+
+    private DatabaseReference childListenerRef;
 
 
     public UserManager(GoogleMap mMap) {
@@ -46,11 +55,16 @@ public class UserManager {
     // sets user location in firebase
     public void setUserLocation(LatLng userLocation) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds");
+        ref.child(userId).child("hasFlag").setValue(hasFlag);
 
         // Telling GeoFire where we want to store it
         GeoFire geoFire = new GeoFire(ref);
         geoFire.setLocation(userId, new GeoLocation(userLocation.latitude, userLocation.longitude));
-        ref.child(userId).child("hasFlag").setValue(hasFlag);
+    }
+
+    // Change the "hasFlag" value on firebase
+    public void changeFlagValue() {
+
     }
 
     public void removeUserFromPlaying() {
@@ -81,6 +95,60 @@ public class UserManager {
                         //handle databaseError
                     }
                 });
+
+        // Listener for when children are added or removed
+        ChildEventListener childEventListener = new ChildEventListener() {
+
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d("         ", dataSnapshot.getKey().toString());
+
+//                Log.d("         ", dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//            Log.d("         ", dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//            Log.d("         ", dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//            Log.d("         ", dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        childListenerRef = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds");
+        childListenerRef.addChildEventListener(childEventListener);
+//        testListener();
+    }
+
+
+    public void testListener() {
+        childListenerRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Log.d("         Snapshot ", "Has Snapshot");
+                } else {
+                    Log.d("         Snapshot ", "No Snapshot");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
