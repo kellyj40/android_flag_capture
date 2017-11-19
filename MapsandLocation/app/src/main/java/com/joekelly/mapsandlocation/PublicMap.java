@@ -173,43 +173,42 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             //First get all the data within the radius of user and add to the list
-              @Override
-              public void onKeyEntered(String key, GeoLocation location) {
-                  flagMap.put(key, location);
-              }
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+                flagMap.put(key, location);
+            }
 
-              @Override
-              public void onKeyExited(String key) {
+            @Override
+            public void onKeyExited(String key) {
 
-              }
+            }
 
-              @Override
-              public void onKeyMoved(String key, GeoLocation location) {
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
 
-              }
+            }
             // Once all finished on the initial call of the flags, plot onto the map and add listener to each
-              @Override
-              public void onGeoQueryReady() {
+            @Override
+            public void onGeoQueryReady() {
 //                  Log.i("Flag map: ", Double.toString(flagMap.get("keyvalue1").latitude));
-                  Log.i("Flag map ", flagMap.toString());
-                  Log.i("Flag map ", userLocation.toString());
-                  Iterator it = flagMap.entrySet().iterator();
-                  while (it.hasNext()) {
-                      Map.Entry flag = (Map.Entry)it.next();
-                      Object key = flag.getKey();
-                      LatLng positionFlag = new LatLng(flagMap.get(key).latitude, flagMap.get(key).longitude);
+                Log.i("Flag map ", flagMap.toString());
+                Iterator it = flagMap.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry flag = (Map.Entry)it.next();
+                    Object key = flag.getKey();
+                    LatLng positionFlag = new LatLng(flagMap.get(key).latitude, flagMap.get(key).longitude);
 
-                      mMap.addMarker(new MarkerOptions().position(positionFlag).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapicon)));
+                    mMap.addMarker(new MarkerOptions().position(positionFlag).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapicon)));
 
-                      it.remove(); // avoids a ConcurrentModificationException
-                  }
-              }
+                    it.remove(); // avoids a ConcurrentModificationException
+                }
+            }
 
-              @Override
-              public void onGeoQueryError(DatabaseError error) {
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
 
-              }
-          });
+            }
+        });
     }
 
 
