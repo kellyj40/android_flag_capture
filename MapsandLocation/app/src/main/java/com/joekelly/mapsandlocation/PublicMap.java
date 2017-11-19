@@ -12,11 +12,14 @@ import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -35,6 +38,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +64,10 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
     //Step database
     private Databasehelperclass myDb;
 
+    //Flag Queries
+    private DatabaseReference mDataBase;
+    private GeoFire mGeoFire;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +87,6 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (!userManager.checkIfPlayerExists(dataSnapshot.getKey())){
-                    showToast(dataSnapshot.getKey());
                     userManager.addPlayerToHashMap(dataSnapshot.getKey().toString());
                 }
             }
@@ -151,6 +159,59 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
         }
 
+        //getFlags
+        mDataBase = FirebaseDatabase.getInstance().getReference();
+        mGeoFire  = new GeoFire(mDataBase.child("flags"));
+
+        getFlags();
+
+    }
+
+    public void getFlags(){
+        GeoQuery geoQuery = mGeoFire.queryAtLocation(new GeoLocation(userLocation.latitude, userLocation.longitude),10000.0);
+        final Map<String, GeoLocation> flagMap = new HashMap<String, GeoLocation>();
+
+        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            //First get all the data within the radius of user and add to the list
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+                // Add to hashMap the key and location of flags in vicinity
+                flagMap.put(key, location);
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+
+            }
+            // Once all finished on the initial call of the flags, plot onto the map and add listener to each
+            @Override
+            public void onGeoQueryReady() {
+//                  Log.i("Flag map: ", Double.toString(flagMap.get("keyvalue1").latitude));
+                Log.i("Flag map ", flagMap.toString());
+                Iterator it = flagMap.entrySet().iterator();
+                // Iteratorate through flags and put on map
+                while (it.hasNext()) {
+                    Map.Entry flag = (Map.Entry)it.next();
+                    Object key = flag.getKey();
+                    // get position from hash map
+                    LatLng positionFlag = new LatLng(flagMap.get(key).latitude, flagMap.get(key).longitude);
+                    //marker the flag
+                    mMap.addMarker(new MarkerOptions().position(positionFlag).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapicon)));
+                    //Remove from itorator
+                    it.remove(); // avoids a ConcurrentModificationException
+                }
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+
+            }
+        });
     }
 
 
@@ -162,7 +223,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
                 //Get new location
                 userLocation = new LatLng(location.getLatitude(), location.getLongitude());
                 // Update user on FireBase so other users can see
-//                updateUserLocationFirebase();
+                // updateUserLocationFirebase();
                 userManager.setUserLocation(userLocation);
             }
 
@@ -204,13 +265,6 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
     protected void onPause() {
         super.onPause();
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds");
-//
-//        // Telling GeoFire where we want to store it
-//        GeoFire geoFire = new GeoFire(ref);
-//        geoFire.removeLocation(userId);
-//        ref.child(userId).removeValue();
     }
 
     protected void onStart() {

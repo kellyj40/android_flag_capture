@@ -27,7 +27,7 @@ import java.util.Map;
 
 // Manages all users - updates their location on map, keeps track of how many are playing
 public class UserManager {
-//    Map<String, Object> users;
+    //    Map<String, Object> users;
     Map<String, User> userMap = new HashMap<String, User>();
 
     // These deal with the user of the app - not other users
