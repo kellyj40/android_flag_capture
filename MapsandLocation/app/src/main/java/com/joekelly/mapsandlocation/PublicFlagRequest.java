@@ -10,7 +10,10 @@ import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -23,6 +26,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -45,6 +49,7 @@ public class PublicFlagRequest {
     private LatLng userLocation;
     private GoogleMap mMap;
     private Map<String, GeoLocation> flagMap = new HashMap<String, GeoLocation>();
+    private Map<String, Marker> markerMap = new HashMap<String, Marker>();
     private PrivateFlagRequest flagRequest = new PrivateFlagRequest();
 
 
@@ -94,7 +99,7 @@ public class PublicFlagRequest {
                     // get position from hash map
                     LatLng positionFlag = new LatLng(flagMap.get(key).latitude, flagMap.get(key).longitude);
                     //marker the flag
-                    mMap.addMarker(new MarkerOptions().position(positionFlag).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapicon)));
+                    markerMap.put(key.toString(), mMap.addMarker(new MarkerOptions().position(positionFlag).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapicon))));
                 }
 
                 Log.i("Map size", Integer.toString(flagMap.size()));
@@ -110,6 +115,57 @@ public class PublicFlagRequest {
             }
         });
 
+
+        // Get reference for flags to add a listener
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("flags");
+
+        // Set up listener for new players to add to map
+        ChildEventListener childEventListener = new ChildEventListener() {
+
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                // If it is not present in the hashFunction
+                if (!flagMap.containsValue(dataSnapshot.getKey().toString())){
+
+                    // Get the map from the datasnapshot
+                    Map<String, Object> value = (Map<String, Object>) dataSnapshot.getValue();
+                    // Its a string representation of an array, split on "," and remove "[" and  "]"
+                    String[] locationString = value.get("l").toString().substring(1).split(",");
+                    // Parse to Doubles
+                    Double lat = Double.parseDouble(locationString[0]);
+                    Double lng = Double.parseDouble(locationString[1].substring(0,locationString[1].length()-1));
+                    // Add to the hash table
+                    flagMap.put(dataSnapshot.getKey().toString(),new GeoLocation(lat, lng));
+                    //Draw on the map
+                    addToMap(dataSnapshot.getKey().toString(), new LatLng(lat, lng));
+                }
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        ref.addChildEventListener(childEventListener);
+
     }
 
     // If there is no flags within 2km, then make more and update the database
@@ -117,20 +173,28 @@ public class PublicFlagRequest {
         // Make flags around user
         ArrayList<double[]> flags = flagRequest.requestFlags(userLocation);
 
-        // Push flags up to the fireBase
+        // ------- Push flags up to the fireBase ---------- \\
+        //Reference database
         DatabaseReference flagRef = FirebaseDatabase.getInstance().getReference("flags");
 
+        // Use Firebase for special requests
         GeoFire flagGeoFire = new GeoFire(flagRef);
-//        flagGeoFire.setLocation(userLocation);
 
-
+        //Loop through all the flags to push up
         for(double[] flag:flags){
+            // Push to generate hash key
             String ref1 = flagRef.push().getKey();
-            Log.i("Make Flags ref1 ", ref1.toString());
+            // Using hash key, use geofire to child "l"
             flagGeoFire.setLocation(ref1.toString(), new GeoLocation(flag[0], flag[1]));
-
+            // As it updates the firebase, it will notify the listener in which will then add to the map automatically
         }
 
+    }
+
+    // When the fireBase is updated with new data
+    public void addToMap(String key, LatLng Location){
+        // Update on the map the flags
+        markerMap.put(key, mMap.addMarker(new MarkerOptions().position(Location).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapicon))));
     }
 
 
