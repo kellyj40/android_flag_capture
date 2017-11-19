@@ -51,6 +51,28 @@
                 android:textColor="@color/yellow"
                 android:textSize="40dp"
                 android:gravity="end" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+            <Button
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/play"
+                android:onClick="spotifyPlay"
+                /> <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/pause"
+            android:onClick="spotifyPause"
+            /> <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/next"
+            android:onClick="spotifyNext"
+            />
+            </LinearLayout>
             <!--<ImageView-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="match_parent"-->

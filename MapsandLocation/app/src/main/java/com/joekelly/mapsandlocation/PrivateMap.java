@@ -1,4 +1,5 @@
 package com.joekelly.mapsandlocation;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -18,13 +19,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-
 import com.google.android.gms.maps.model.LatLng;
-
 
 import java.util.ArrayList;
 
@@ -77,7 +77,6 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
         //Initialise vibration
         vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
 
     }
 
@@ -241,7 +240,7 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.about:
+            case R.id.statsMenu:
                 // passes steps to stats page
                 Intent registerIntent = new Intent(this, StatsActivity.class);
                 int x = stepObject.numSteps;
@@ -249,6 +248,7 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
                 // myDb.addSteps(new Steps(x));
                 registerIntent.putExtra("numSteps", x);
                 startActivity(registerIntent);
+//                finish();
                 return true;
             case R.id.help:
                 startActivity(new Intent(this, Abouter.class));
@@ -266,6 +266,5 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
     protected void onStart() {super.onStart();}
     protected void onPause() {super.onPause();}
     protected void onResume() {super.onResume();}
-
 
 }

@@ -56,7 +56,7 @@
         <activity android:name=".UserLoginActivity" />
         <activity
             android:name=".PublicMap"
-            android:label="@string/title_activity_private_map"></activity>
+            android:label="@string/title_activity_private_map" />
     </application>
 
 

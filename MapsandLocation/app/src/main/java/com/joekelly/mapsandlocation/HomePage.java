@@ -2,6 +2,7 @@ package com.joekelly.mapsandlocation;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -212,5 +214,48 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         //saveSteps = numSteps;
         //Toast.makeText(PrivateMap.this, saveSteps+"Pause", Toast.LENGTH_SHORT).show();
         //myDb.addSteps(new Steps(stepObject.numSteps));
+    }
+
+//    public void spotify(View view){
+////        String uri = "spotify:track:0IcSLT53eE07Jmok64Ppo3";
+////        Intent launcher = new Intent( Intent.ACTION_VIEW, Uri.parse(uri) );
+////        launcher.addFlags(Intent.FLAG_FROM_BACKGROUND);
+//
+//        Intent launcher = new Intent("com.spotify.mobile.android.ui.widget.NEXT");
+//
+//        launcher.setPackage("com.spotify.music");
+//
+//        sendBroadcast(launcher);
+//    }
+
+    public void spotifyPlay(View view) {
+        Intent i = new Intent(Intent.ACTION_MEDIA_BUTTON);
+        i.setComponent(new ComponentName("com.spotify.music", "com.spotify.music.internal.receiver.MediaButtonReceiver"));
+        i.putExtra(Intent.EXTRA_KEY_EVENT,new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY));
+        sendOrderedBroadcast(i, null);
+
+        i = new Intent(Intent.ACTION_MEDIA_BUTTON);
+        i.setComponent(new ComponentName("com.spotify.music", "com.spotify.music.internal.receiver.MediaButtonReceiver"));
+        i.putExtra(Intent.EXTRA_KEY_EVENT,new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY));
+        sendOrderedBroadcast(i, null);
+    }
+
+    public void spotifyPause(View view){
+        String uri = "spotifyPause:track:0IcSLT53eE07Jmok64Ppo3";
+//        Intent launcher = new Intent( Intent.ACTION_VIEW, Uri.parse(uri) );
+////        launcher.addFlags(Intent.FLAG_FROM_BACKGROUND);
+//
+        Intent launcher = new Intent("com.spotify.mobile.android.ui.widget.PLAY");
+//
+        launcher.setPackage("com.spotify.music");
+    }
+
+    public void spotifyNext(View view) {
+        Intent launcher = new Intent("com.spotify.mobile.android.ui.widget.NEXT");
+
+        launcher.setPackage("com.spotify.music");
+
+        sendBroadcast(launcher);
+
     }
 }
