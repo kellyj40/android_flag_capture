@@ -52,7 +52,8 @@ public class User {
                         if(userMarkerRef != null){
                             userMarkerRef.remove();
                         }
-                        userMarkerRef = mMap.addMarker(new MarkerOptions().position(playerLatLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.otherusers)));;
+                        userMarkerRef = mMap.addMarker(new MarkerOptions().position(playerLatLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.otherusers)));
+                        Log.d("             playerId ", playerId);
                     }
                 }
 
