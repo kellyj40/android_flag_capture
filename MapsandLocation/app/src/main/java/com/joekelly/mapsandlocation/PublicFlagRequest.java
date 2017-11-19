@@ -150,7 +150,7 @@ public class PublicFlagRequest {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                removeFromMap(dataSnapshot.getKey().toString());
             }
 
             @Override
@@ -191,10 +191,20 @@ public class PublicFlagRequest {
 
     }
 
+
+
     // When the fireBase is updated with new data
     public void addToMap(String key, LatLng Location){
         // Update on the map the flags
         markerMap.put(key, mMap.addMarker(new MarkerOptions().position(Location).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapicon))));
+    }
+
+    // When the fireBase is updated with new data
+    public void removeFromMap(String key){
+        // Update on the map the flags
+
+        Marker ref = markerMap.get(key);
+        ref.remove();
     }
 
 
