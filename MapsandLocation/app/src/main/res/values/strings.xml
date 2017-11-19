@@ -10,4 +10,6 @@
     <string name="openweathermaps_api_key">df9195ca1794965f11aecbdfe1c94bd4</string>
     <string name="weight">Weight</string>
     <string name="height">Height</string>
+    <string name="motivation_widget">So far you\'ve walked %1$d steps today! Keep it up</string>
+    <string name="steps_walked">Steps Walked: %1$d</string>
 </resources>

@@ -11,6 +11,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -50,6 +51,7 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         //Step stuff
 
         stepObject = new SensorObject();
+
         numSteps= stepObject.numSteps;
         stepObject.initialiseStepSensor(this);
 
@@ -57,6 +59,20 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
 
         final JSONObject weather = GetWeather.getJSON(this, "Dublin, IE");
 //        Toast.makeText(this, weather.toString(), Toast.LENGTH_LONG).show();
+
+        stepWidget();
+
+    }
+
+    private void stepWidget() {
+        int today = myDb.todaysSteps() + numSteps;
+        TextView stepsWidget = findViewById(R.id.step_widget);
+
+        String getString = getResources().getString(R.string.motivation_widget);
+        String setMessage = String.format(getString, today);
+        stepsWidget.setText(setMessage);
+        stepObject.initialiseStepSensor(this, getString, stepsWidget, today);
+
 
     }
 
@@ -197,6 +213,4 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         //Toast.makeText(PrivateMap.this, saveSteps+"Pause", Toast.LENGTH_SHORT).show();
         //myDb.addSteps(new Steps(stepObject.numSteps));
     }
-
-
 }

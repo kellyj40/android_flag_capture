@@ -71,6 +71,7 @@
         android:layout_toRightOf="@+id/weather">
 
         <TextView
+            android:id="@+id/step_widget"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/walking_scene"
@@ -79,7 +80,7 @@
             android:shadowDx="3"
             android:shadowDy="4"
             android:shadowRadius="3"
-            android:text="So far today you've wallked 2 Kilometeres, Keep it up!"
+            android:text="@string/motivation_widget"
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textSize="30dp"

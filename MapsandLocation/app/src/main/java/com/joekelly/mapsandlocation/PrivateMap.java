@@ -45,11 +45,12 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
     private FlagsOnMap flagsOnMap;
     private LocationManager locationManager;
     private LocationListener locationListener;
-    private PrivateFlagRequest getFlagLocation = new PrivateFlagRequest();;
+    private PrivateFlagRequest getFlagLocation = new PrivateFlagRequest();
 
     private Databasehelperclass myDb;
     private DataBaseManagement referenceDataBase;
     private LatLng userLocation;
+    private String message;
 
 
     @Override
@@ -212,7 +213,8 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
         stepObject = new SensorObject();
         numSteps= stepObject.numSteps;
         stepObject.passTextView(StepsTaken);
-        stepObject.initialiseStepSensor(this, StepsTaken);
+        message = getResources().getString(R.string.steps_walked);
+        stepObject.initialiseStepSensor(this, message, StepsTaken, 0);
 
     }
 

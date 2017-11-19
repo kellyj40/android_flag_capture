@@ -1,12 +1,10 @@
 package com.joekelly.mapsandlocation;
 
-import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Vibrator;
 import android.widget.TextView;
 
 import static android.content.Context.SENSOR_SERVICE;
@@ -21,7 +19,9 @@ public class SensorObject implements SensorEventListener, StepListener {
     public StepDetector simpleStepDetector;
     public SensorManager sensorManager;
     public Sensor accel;
-    public static final String TEXT_NUM_STEPS = "Step taken: ";
+    public static String TEXT_NUM_STEPS;
+    private int extraStep;
+
     public int numSteps;
     int saveSteps;
     public TextView StepsTaken;
@@ -43,7 +43,9 @@ public class SensorObject implements SensorEventListener, StepListener {
         //v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         contextNotification=context;
 
-    } public void initialiseStepSensor(Context context, TextView textView) {
+    } public void initialiseStepSensor(Context context, String text, TextView textView, int additionalSteps) {
+        TEXT_NUM_STEPS = text;
+        extraStep = additionalSteps;
         // Get an instance of the SensorManager
         sensorManager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -82,7 +84,7 @@ public class SensorObject implements SensorEventListener, StepListener {
 
 //        StepsTaken = (TextView) findViewById(R.id.tv_steps);
         if (textPresent)
-            txtView.setText(TEXT_NUM_STEPS + numSteps);
+            txtView.setText(String.format(TEXT_NUM_STEPS, extraStep+numSteps));
 
         if (numSteps == 110) {
             Notification.notifier(contextNotification);
