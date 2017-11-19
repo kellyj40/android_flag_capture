@@ -175,6 +175,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
             //First get all the data within the radius of user and add to the list
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
+                // Add to hashMap the key and location of flags in vicinity
                 flagMap.put(key, location);
             }
 
@@ -193,13 +194,15 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 //                  Log.i("Flag map: ", Double.toString(flagMap.get("keyvalue1").latitude));
                 Log.i("Flag map ", flagMap.toString());
                 Iterator it = flagMap.entrySet().iterator();
+                // Iteratorate through flags and put on map
                 while (it.hasNext()) {
                     Map.Entry flag = (Map.Entry)it.next();
                     Object key = flag.getKey();
+                    // get position from hash map
                     LatLng positionFlag = new LatLng(flagMap.get(key).latitude, flagMap.get(key).longitude);
-
+                    //marker the flag
                     mMap.addMarker(new MarkerOptions().position(positionFlag).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapicon)));
-
+                    //Remove from itorator
                     it.remove(); // avoids a ConcurrentModificationException
                 }
             }
