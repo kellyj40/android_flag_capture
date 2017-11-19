@@ -3,6 +3,18 @@ package com.joekelly.mapsandlocation;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,6 +26,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -24,92 +39,100 @@ import java.util.concurrent.ExecutionException;
 
 // Requests array of flags from database - for the public game
 public class PublicFlagRequest {
+    //Flag Queries
+    private DatabaseReference mDataBase;
+    private GeoFire mGeoFire;
+    private LatLng userLocation;
+    private GoogleMap mMap;
+    private Map<String, GeoLocation> flagMap = new HashMap<String, GeoLocation>();
+    private PrivateFlagRequest flagRequest = new PrivateFlagRequest();
 
 
-    public double[][] requestFlags(){
-
-//        DownloadTask getFlags = new DownloadTask();
-//        String result = null;
-//        try {
-//            result = getFlags.execute("https://dublinbusplanners.com/flagsGame/getAll").get();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        } catch (ExecutionException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//
-//            JSONObject jsonObject = new JSONObject(result);
-//
-//            String info = jsonObject.getString("positions");
-//
-//            JSONArray flagArr = jsonObject.getJSONArray("positions");
-//
-//            double[][] arr = new double[flagArr.length()][2];
-//
-//            for (int i=0; i<flagArr.length(); i++){
-//                JSONArray flagArrCoor = flagArr.getJSONArray(i);
-//                for (int j=0; j<flagArrCoor.length(); j++){
-//                    arr[i][j] = flagArrCoor.getDouble(j);
-//                }
-//            }
-//            return arr;
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-
-
-        double[][] arrFlags ={{53.267685, -6.119695},
-                              {53.268288, -6.115382},
-                              {53.270912, -6.120339},
-                              {53.269751, -6.121927},
-                              {53.308807, -6.215731},
-                              {53.309126, -6.219639},
-                              {53.307005, -6.222331}};
-        return arrFlags;
-
+    public PublicFlagRequest(LatLng userLocation, GoogleMap mMap){
+        //getFlags
+        mDataBase = FirebaseDatabase.getInstance().getReference();
+        mGeoFire  = new GeoFire(mDataBase.child("flags"));
+        this.userLocation = userLocation;
+        this.mMap = mMap;
+        getFlags();
     }
 
-    // Request for flags
-    public class DownloadTask extends AsyncTask<String, Void, String>{
 
-        @Override
-        protected String doInBackground(String... urls) {
 
-            String result = "";
-            URL url;
+    public void getFlags(){
+        GeoQuery geoQuery = mGeoFire.queryAtLocation(new GeoLocation(userLocation.latitude, userLocation.longitude),10000);
 
-            HttpURLConnection urlConnection = null;
 
-            try{
-                url = new URL(urls[0]);
-                urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = urlConnection.getInputStream();
-                InputStreamReader reader = new InputStreamReader(in);
-
-                int data = reader.read();
-
-                while (data!=-1){
-
-                    char current = (char) data;
-                    result += current;
-                    data = reader.read();
-
-                }
-                return result;
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            //First get all the data within the radius of user and add to the list
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+                // Add to hashMap the key and location of flags in vicinity
+                flagMap.put(key, location);
             }
 
-            return null;
-        }
+            @Override
+            public void onKeyExited(String key) {
 
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+
+            }
+
+            // Once all finished on the initial call of the flags, plot onto the map and add listener to each
+            @Override
+            public void onGeoQueryReady() {
+                //Log.i("Flag map: ", Double.toString(flagMap.get("keyvalue1").latitude));
+                Log.i("Flag map ", flagMap.toString());
+                Iterator it = flagMap.entrySet().iterator();
+                // Iteratorate through flags and put on map
+                while (it.hasNext()) {
+                    Map.Entry flag = (Map.Entry)it.next();
+                    Object key = flag.getKey();
+                    // get position from hash map
+                    LatLng positionFlag = new LatLng(flagMap.get(key).latitude, flagMap.get(key).longitude);
+                    //marker the flag
+                    mMap.addMarker(new MarkerOptions().position(positionFlag).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapicon)));
+                }
+
+                Log.i("Map size", Integer.toString(flagMap.size()));
+                if (flagMap.size()<5){
+                    makeFlags();
+                }
+
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+
+            }
+        });
 
     }
+
+    // If there is no flags within 2km, then make more and update the database
+    public void makeFlags(){
+        // Make flags around user
+        ArrayList<double[]> flags = flagRequest.requestFlags(userLocation);
+
+        // Push flags up to the fireBase
+        DatabaseReference flagRef = FirebaseDatabase.getInstance().getReference("flags");
+
+        GeoFire flagGeoFire = new GeoFire(flagRef);
+//        flagGeoFire.setLocation(userLocation);
+
+
+        for(double[] flag:flags){
+            String ref1 = flagRef.push().getKey();
+            Log.i("Make Flags ref1 ", ref1.toString());
+            flagGeoFire.setLocation(ref1.toString(), new GeoLocation(flag[0], flag[1]));
+
+        }
+
+    }
+
+
 
 }
