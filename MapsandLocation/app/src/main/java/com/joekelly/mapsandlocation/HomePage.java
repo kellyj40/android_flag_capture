@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -50,7 +52,8 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         //Step stuff
 
         stepObject = new SensorObject();
-        numSteps= stepObject.numSteps;
+
+        numSteps = stepObject.numSteps;
         stepObject.initialiseStepSensor(this);
 
         myDb = new Databasehelperclass(this);
@@ -58,16 +61,30 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         final JSONObject weather = GetWeather.getJSON(this, "Dublin, IE");
 //        Toast.makeText(this, weather.toString(), Toast.LENGTH_LONG).show();
 
+        stepWidget();
+//        Spotify.setContext(this);
+
+    }
+
+    private void stepWidget() {
+        int today = myDb.todaysSteps() + numSteps;
+        TextView stepsWidget = findViewById(R.id.step_widget);
+
+        String getString = getResources().getString(R.string.motivation_widget);
+        String setMessage = String.format(getString, today);
+        stepsWidget.setText(setMessage);
+        stepObject.initialiseStepSensor(this, getString, stepsWidget, today);
+
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        stepObject.numSteps=0;
+        stepObject.numSteps = 0;
 //        getLocationPermission(this, this);
 //        buildGoogleApiClient();
     }
-
 
 
     public static void getLocationPermission(Context context, Activity activity) {
@@ -112,12 +129,13 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         toast.show();
     }
 
-    
+
     public void publicGameLauncher(View view) {
         getLocation();
         Intent intent = new Intent(this, UserLoginActivity.class);
         intent.putExtra("LAT", mLatitudeText);
         intent.putExtra("LON", mLongitudeText);
+        myDb.addSteps(new Steps(stepObject.numSteps));
 
         // check if we have successfully recieved user's location
         // if not, ask them to check their settings
@@ -133,6 +151,7 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         Intent intent = new Intent(HomePage.this, PrivateMap.class);
         intent.putExtra("LAT", mLatitudeText);
         intent.putExtra("LON", mLongitudeText);
+        myDb.addSteps(new Steps(stepObject.numSteps));
 
         // check if we have successfully recieved user's location
         // if not, ask them to check their settings
@@ -153,7 +172,9 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
 
     public void scoreLauncher(View view) {
         Intent intent = new Intent(this, Abouter.class);
+        myDb.addSteps(new Steps(stepObject.numSteps));
         startActivity(intent);
+
     }
 
     public void onConnected(Bundle connectionHint) {
@@ -198,5 +219,66 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         //myDb.addSteps(new Steps(stepObject.numSteps));
     }
 
+    protected void onResume() {
+        super.onResume();
+        stepWidget();
+}
 
+//    public void spotify(View view){
+////        String uri = "spotify:track:0IcSLT53eE07Jmok64Ppo3";
+////        Intent launcher = new Intent( Intent.ACTION_VIEW, Uri.parse(uri) );
+////        launcher.addFlags(Intent.FLAG_FROM_BACKGROUND);
+//
+//        Intent launcher = new Intent("com.spotify.mobile.android.ui.widget.NEXT");
+//
+//        launcher.setPackage("com.spotify.music");
+//
+//        sendBroadcast(launcher);
+//    }
+
+//    public void spotifyPlay(View view) {
+//        Intent i = new Intent(Intent.ACTION_MEDIA_BUTTON);
+//        i.setComponent(new ComponentName("com.spotify.music", "com.spotify.music.internal.receiver.MediaButtonReceiver"));
+//        i.putExtra(Intent.EXTRA_KEY_EVENT,new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY));
+//        sendOrderedBroadcast(i, null);
+//
+//        i = new Intent(Intent.ACTION_MEDIA_BUTTON);
+//        i.setComponent(new ComponentName("com.spotify.music", "com.spotify.music.internal.receiver.MediaButtonReceiver"));
+//        i.putExtra(Intent.EXTRA_KEY_EVENT,new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY));
+//        sendOrderedBroadcast(i, null);
+//    }
+
+    public void spotifyPlayPause(View view){
+//        String uri = "spotifyPause:track:0IcSLT53eE07Jmok64Ppo3";
+//        Intent launcher = new Intent( Intent.ACTION_VIEW, Uri.parse(uri) );
+////        launcher.addFlags(Intent.FLAG_FROM_BACKGROUND);
+//
+//        Intent launcher = new Intent("com.spotify.mobile.android.ui.widget.PAUSE");
+//
+//        launcher.setPackage("com.spotify.music");
+        int keyCode = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
+//
+//            if (!mAudioManager.isMusicActive() && !isSpotifyRunning()) {
+//            startMusicPlayer();
+//            }
+
+            Intent i = new Intent(Intent.ACTION_MEDIA_BUTTON);
+            i.setPackage("com.spotify.music");
+    synchronized (this) {
+            i.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));
+            sendOrderedBroadcast(i, null);
+
+            i.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_UP, keyCode));
+            sendOrderedBroadcast(i, null);
+            }
+    }
+
+    public void spotifyNext(View view) {
+        Intent launcher = new Intent("com.spotify.mobile.android.ui.widget.NEXT");
+
+        launcher.setPackage("com.spotify.music");
+
+        sendBroadcast(launcher);
+
+    }
 }

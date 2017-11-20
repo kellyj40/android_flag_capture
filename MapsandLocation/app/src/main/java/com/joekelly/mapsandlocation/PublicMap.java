@@ -26,7 +26,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -34,13 +33,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 // Activity for the public game
@@ -268,7 +263,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         stepObject = new SensorObject();
         numSteps= stepObject.numSteps;
         stepObject.passTextView(StepsTaken);
-        stepObject.initialiseStepSensor(this, StepsTaken);
+        stepObject.initialiseStepSensor(this, "Steps Taken:", StepsTaken, 0);
     }
 
 }

@@ -7,7 +7,7 @@
         <!--android:orderInCategory="100"-->
         <!--android:title="Search..."-->
         <!--app:showAsAction="always"/>-->
-    <item android:id="@+id/about"
+    <item android:id="@+id/statsMenu"
         android:title="Stats"
         android:icon="@drawable/joe"/>
     <item android:id="@+id/help"
