@@ -113,4 +113,12 @@ public class UserManager {
             userMap.put(playerId, newUser);
         }
     }
+    public void setHasFlag(boolean value){
+        hasFlag = value;
+    }
+    public boolean getHasFlag(){
+        return hasFlag;
+    }
+
+
 }

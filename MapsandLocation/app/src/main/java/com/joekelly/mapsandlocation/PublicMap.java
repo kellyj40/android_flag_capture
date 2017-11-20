@@ -43,7 +43,6 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
     private GoogleMap mMap;
     private LatLng userLocation;
-    private boolean hasFlag=false;
     private UserManager userManager;
 
     LocationManager locationManager;
@@ -59,9 +58,9 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
     //Step database
     private Databasehelperclass myDb;
 
-    //Flag Queries
-    private DatabaseReference mDataBase;
-    private GeoFire mGeoFire;
+    //Flag instance
+    PublicFlagRequest flagRequest;
+
 
 
     @Override
@@ -72,11 +71,14 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
         // Get user location
         getLocation();
 
+        // Get reference for playing users
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds");
 
+        // Set up listener for new players to add to map
         ChildEventListener childEventListener = new ChildEventListener() {
 
             @Override
@@ -107,6 +109,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
             }
         };
+
         ref.addChildEventListener(childEventListener);
 
         // Set up stats page db
@@ -115,7 +118,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         // Set up sensor technology
         setUpSensors();
 
-        //Initialise vibration
+        // Initialise vibration
         vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
     }
@@ -154,60 +157,12 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
         }
 
-        //getFlags
-        mDataBase = FirebaseDatabase.getInstance().getReference();
-        mGeoFire  = new GeoFire(mDataBase.child("flags"));
-
-        getFlags();
+        // Set up flags
+        flagRequest = new PublicFlagRequest(userLocation, mMap);
 
     }
 
-    public void getFlags(){
-        GeoQuery geoQuery = mGeoFire.queryAtLocation(new GeoLocation(userLocation.latitude, userLocation.longitude),10000.0);
-        final Map<String, GeoLocation> flagMap = new HashMap<String, GeoLocation>();
 
-        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
-            //First get all the data within the radius of user and add to the list
-            @Override
-            public void onKeyEntered(String key, GeoLocation location) {
-                // Add to hashMap the key and location of flags in vicinity
-                flagMap.put(key, location);
-            }
-
-            @Override
-            public void onKeyExited(String key) {
-
-            }
-
-            @Override
-            public void onKeyMoved(String key, GeoLocation location) {
-
-            }
-            // Once all finished on the initial call of the flags, plot onto the map and add listener to each
-            @Override
-            public void onGeoQueryReady() {
-//                  Log.i("Flag map: ", Double.toString(flagMap.get("keyvalue1").latitude));
-                Log.i("Flag map ", flagMap.toString());
-                Iterator it = flagMap.entrySet().iterator();
-                // Iteratorate through flags and put on map
-                while (it.hasNext()) {
-                    Map.Entry flag = (Map.Entry)it.next();
-                    Object key = flag.getKey();
-                    // get position from hash map
-                    LatLng positionFlag = new LatLng(flagMap.get(key).latitude, flagMap.get(key).longitude);
-                    //marker the flag
-                    mMap.addMarker(new MarkerOptions().position(positionFlag).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapicon)));
-                    //Remove from itorator
-                    it.remove(); // avoids a ConcurrentModificationException
-                }
-            }
-
-            @Override
-            public void onGeoQueryError(DatabaseError error) {
-
-            }
-        });
-    }
 
 
     public LocationListener createLocationListener() {
@@ -217,9 +172,31 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
             public void onLocationChanged(Location location) {
                 //Get new location
                 userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
                 // Update user on FireBase so other users can see
-                // updateUserLocationFirebase();
                 userManager.setUserLocation(userLocation);
+
+                //Check to make sure doest have flag
+                if (!userManager.getHasFlag()){
+
+                    // If user doesnt have a flag check if captured flag
+                    boolean checker = flagRequest.checkIfCapturedFlag(userLocation);
+                    // If the user can collect flag, set the userManager object to have flag
+                    if(checker){
+                        userManager.setHasFlag(true);
+                    }
+
+                }else{
+                    // otherwise check if walked 200 meters with flag.
+                    if (DistanceCalculations.checkedWalkedDistance(userLocation)){
+                        // If walked 200m with flag, allow to capture flags again
+                        userManager.setHasFlag(false);
+                        // Update database score
+                        
+                    }
+                }
+
+
             }
 
             @Override
@@ -250,10 +227,8 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         Intent intent = getIntent();
         Double startingLat = intent.getDoubleExtra("LAT", 0.0);
         Double startingLon = intent.getDoubleExtra("LON", 0.0);
-//        Toast.makeText(this, "for real "+startingLat+" "+startingLon, Toast.LENGTH_LONG).show();
 
         userLocation = new LatLng(startingLat, startingLon);
-        showToast(userLocation.toString());
     }
 
 
@@ -289,8 +264,8 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         numSteps= stepObject.numSteps;
         stepObject.passTextView(StepsTaken);
         stepObject.initialiseStepSensor(this, "Steps Taken:", StepsTaken, 0);
-
     }
+
 }
 
 
