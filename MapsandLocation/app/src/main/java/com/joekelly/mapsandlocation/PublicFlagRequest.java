@@ -1,6 +1,5 @@
 package com.joekelly.mapsandlocation;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.firebase.geofire.GeoFire;
@@ -12,6 +11,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -20,15 +20,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
+/*
  * Created by joekelly on 26/10/2017.
  * This class is used for the game flags logic
  * Queries the database, crowd sources flags and checks if flags were captured
- *
  */
 
 // Requests array of flags from database - for the public game
 public class PublicFlagRequest {
+
     // Flag Queries
     private DatabaseReference mDataBase;
     // GeoFire requests to generate around users
@@ -92,7 +92,7 @@ public class PublicFlagRequest {
             @Override
             public void onGeoQueryReady() {
                 // If when first put down there is not enough flags then generate them
-                if (flagLocations.size()<5){
+                if (flagLocations.size()<15){
                     // Generate more flags using PrivateFlagRequest
                     makeFlags();
                 }
@@ -130,8 +130,6 @@ public class PublicFlagRequest {
 
     }
 
-
-
     // ---------------- When the fireBase is updated with new data put onto the map ---------------\\
     public void addToMap(String key, LatLng Location){
         // Update on the map the flags
@@ -150,21 +148,31 @@ public class PublicFlagRequest {
         flagLocations.remove(key);
     }
 
-    // ------------- Game Logic, check if captured flag, if so update the database ------------------------- \\
+    // ------------- Game Logic, check if captured flag, if so update the database ------------------ \\
     //      1. Remove flag from database(This will sync in listener to remove from map)
     //      2. Update user so that they appear different colour
-    public void checkIfCapturedFlag(LatLng userLocation){
+    public boolean checkIfCapturedFlag(LatLng userLocation){
 
         String capturedFlag = DistanceCalculations.checkFlagDistancesPublic(userLocation, flagLocations);
         if (capturedFlag != null){
+            // Reference the flag
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("flags");
-//            Telling GeoFire where we want to remove from
-//            GeoFire geoFire = new GeoFire(ref);
-//            geoFire.removeLocation(capturedFlag);
+            // Remove the value from the database
             ref.child(capturedFlag).removeValue();
+
+            // Update DataBase user has a flag.
+            // get User Id
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            // Get child
+            DatabaseReference playerRef = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds").child(userId);
+            // Set value to be true
+            playerRef.child("hasFlag").setValue(true);
+
+            // Return true to prevent player from getting more flags
+            return true;
         }
+        return false;
 
     }
-
 
 }

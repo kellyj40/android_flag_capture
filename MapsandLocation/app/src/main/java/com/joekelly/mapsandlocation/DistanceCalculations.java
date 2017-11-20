@@ -16,23 +16,35 @@ import java.util.Map;
 
 public class DistanceCalculations {
 
+    private static LatLng pickedUpFlagLocation;
+
     // Radians formula
     public static double rad(double x) {
         return x * Math.PI / 180;
     }
+
+    public static double distance(double lat1, double lng1, double lat2, double lng2){
+
+        double R = 6378137; // Earth’s mean radius in meter
+
+        // Calculate the distance for each flag against the user location
+        double dLat = rad(lat1 - lat2);
+        double dLong = rad(lng1 - lng2);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(rad(lat2)) * Math.cos(rad(lat1)) *
+                        Math.sin(dLong / 2) * Math.sin(dLong / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+
+    }
+
     // Loop through all flags and calculate distance
     public static int checkFlagDistances(LatLng userLocation, ArrayList<double[]> arrFlags) {
-        double R = 6378137; // Earth’s mean radius in meter
+        // Counter is for the array position to remove it
         int count = 0;
         for(double[] flag: arrFlags){
-            // Calculate the distance for each flag against the user location
-            double dLat = rad(flag[0] - userLocation.latitude);
-            double dLong = rad(flag[1] - userLocation.longitude);
-            double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                    Math.cos(rad(userLocation.latitude)) * Math.cos(rad(flag[0])) *
-                            Math.sin(dLong / 2) * Math.sin(dLong / 2);
-            double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            double d = R * c;
+
+            double d = distance(flag[0], flag[1], userLocation.latitude, userLocation.longitude);
 
             if (d < 15) {
                 // If within the distance, then remove from the linkedList
@@ -53,26 +65,33 @@ public class DistanceCalculations {
         Iterator flags = flagLocations.entrySet().iterator();
         while (flags.hasNext()) {
             Map.Entry flag = (Map.Entry) flags.next();
-
             // Get key
             Object key = flag.getKey();
 
-            // Calculate distance from flag
-            double dLat = rad(flagLocations.get(key.toString()).latitude - userLocation.latitude);
-            double dLong = rad(flagLocations.get(key.toString()).longitude - userLocation.longitude);
-            double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                    Math.cos(rad(userLocation.latitude)) * Math.cos(rad(flagLocations.get(key.toString()).latitude)) *
-                            Math.sin(dLong / 2) * Math.sin(dLong / 2);
-            double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            double d = R * c;
+            // Distance
+            double d = distance(flagLocations.get(key.toString()).latitude,flagLocations.get(key.toString()).longitude, userLocation.latitude,userLocation.longitude);
 
             // Check if within distance
-            if (d < 15) {
+            if (d < 30) {
                 // Retrun key of the flag
+                pickedUpFlagLocation = new LatLng(flagLocations.get(key.toString()).latitude, flagLocations.get(key.toString()).longitude);
                 return key.toString();
             }
         }
         return null;
     }
+
+    public static boolean checkedWalkedDistance(LatLng userLocation){
+
+        double d = distance(pickedUpFlagLocation.latitude,pickedUpFlagLocation.longitude, userLocation.latitude,userLocation.longitude);
+
+        // Check if within distance
+        if (d > 200) {
+            return true;
+        }
+
+        return false;
+    }
+
 
 }

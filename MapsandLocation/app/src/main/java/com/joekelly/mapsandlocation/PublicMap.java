@@ -48,7 +48,6 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
     private GoogleMap mMap;
     private LatLng userLocation;
-    private boolean hasFlag=false;
     private UserManager userManager;
 
     LocationManager locationManager;
@@ -63,9 +62,11 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
     //Step database
     private Databasehelperclass myDb;
-    
+
     //Flag instance
     PublicFlagRequest flagRequest;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,12 +177,31 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
             public void onLocationChanged(Location location) {
                 //Get new location
                 userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
                 // Update user on FireBase so other users can see
-                // updateUserLocationFirebase();
                 userManager.setUserLocation(userLocation);
 
-                //Check if captured flag
-                flagRequest.checkIfCapturedFlag(userLocation);
+                //Check to make sure doest have flag
+                if (!userManager.getHasFlag()){
+
+                    // If user doesnt have a flag check if captured flag
+                    boolean checker = flagRequest.checkIfCapturedFlag(userLocation);
+                    // If the user can collect flag, set the userManager object to have flag
+                    if(checker){
+                        userManager.setHasFlag(true);
+                    }
+
+                }else{
+                    // otherwise check if walked 200 meters with flag.
+                    if (DistanceCalculations.checkedWalkedDistance(userLocation)){
+                        // If walked 200m with flag, allow to capture flags again
+                        userManager.setHasFlag(false);
+                        // Update database score
+                        
+                    }
+                }
+
+
             }
 
             @Override
@@ -212,7 +232,6 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         Intent intent = getIntent();
         Double startingLat = intent.getDoubleExtra("LAT", 0.0);
         Double startingLon = intent.getDoubleExtra("LON", 0.0);
-//        Toast.makeText(this, "for real "+startingLat+" "+startingLon, Toast.LENGTH_LONG).show();
 
         userLocation = new LatLng(startingLat, startingLon);
     }
