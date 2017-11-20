@@ -65,7 +65,7 @@ public class PublicFlagRequest {
 
 
     public void getFlags(){
-        GeoQuery geoQuery = mGeoFire.queryAtLocation(new GeoLocation(userLocation.latitude, userLocation.longitude),10000);
+        GeoQuery geoQuery = mGeoFire.queryAtLocation(new GeoLocation(userLocation.latitude, userLocation.longitude),100);
 
 
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
@@ -73,12 +73,19 @@ public class PublicFlagRequest {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 // Add to hashMap the key and location of flags in vicinity
-                flagMap.put(key, location);
+                Log.i("New Key Entered", key);
+                if (!flagMap.containsValue(key)){
+                    // Add to the hash table
+                    flagMap.put(key,location);
+                    //Draw on the map
+                    addToMap(key, new LatLng(location.latitude, location.longitude));
+                }
+
             }
 
             @Override
             public void onKeyExited(String key) {
-
+                removeFromMap(key);
             }
 
             @Override
@@ -89,20 +96,7 @@ public class PublicFlagRequest {
             // Once all finished on the initial call of the flags, plot onto the map and add listener to each
             @Override
             public void onGeoQueryReady() {
-                //Log.i("Flag map: ", Double.toString(flagMap.get("keyvalue1").latitude));
-                Log.i("Flag map ", flagMap.toString());
-                Iterator it = flagMap.entrySet().iterator();
-                // Iteratorate through flags and put on map
-                while (it.hasNext()) {
-                    Map.Entry flag = (Map.Entry)it.next();
-                    Object key = flag.getKey();
-                    // get position from hash map
-                    LatLng positionFlag = new LatLng(flagMap.get(key).latitude, flagMap.get(key).longitude);
-                    //marker the flag
-                    markerMap.put(key.toString(), mMap.addMarker(new MarkerOptions().position(positionFlag).icon(BitmapDescriptorFactory.fromResource(R.drawable.mapicon))));
-                }
-
-                Log.i("Map size", Integer.toString(flagMap.size()));
+                // If when first put down there is not enough flags then generate them
                 if (flagMap.size()<5){
                     makeFlags();
                 }
@@ -125,20 +119,20 @@ public class PublicFlagRequest {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 // If it is not present in the hashFunction
-                if (!flagMap.containsValue(dataSnapshot.getKey().toString())){
-
-                    // Get the map from the datasnapshot
-                    Map<String, Object> value = (Map<String, Object>) dataSnapshot.getValue();
-                    // Its a string representation of an array, split on "," and remove "[" and  "]"
-                    String[] locationString = value.get("l").toString().substring(1).split(",");
-                    // Parse to Doubles
-                    Double lat = Double.parseDouble(locationString[0]);
-                    Double lng = Double.parseDouble(locationString[1].substring(0,locationString[1].length()-1));
-                    // Add to the hash table
-                    flagMap.put(dataSnapshot.getKey().toString(),new GeoLocation(lat, lng));
-                    //Draw on the map
-                    addToMap(dataSnapshot.getKey().toString(), new LatLng(lat, lng));
-                }
+//                if (!flagMap.containsValue(dataSnapshot.getKey().toString())){
+//
+//                    // Get the map from the datasnapshot
+//                    Map<String, Object> value = (Map<String, Object>) dataSnapshot.getValue();
+//                    // Its a string representation of an array, split on "," and remove "[" and  "]"
+//                    String[] locationString = value.get("l").toString().substring(1).split(",");
+//                    // Parse to Doubles
+//                    Double lat = Double.parseDouble(locationString[0]);
+//                    Double lng = Double.parseDouble(locationString[1].substring(0,locationString[1].length()-1));
+//                    // Add to the hash table
+//                    flagMap.put(dataSnapshot.getKey().toString(),new GeoLocation(lat, lng));
+//                    //Draw on the map
+//                    addToMap(dataSnapshot.getKey().toString(), new LatLng(lat, lng));
+//                }
 
             }
 
@@ -150,7 +144,7 @@ public class PublicFlagRequest {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                removeFromMap(dataSnapshot.getKey().toString());
+//                removeFromMap(dataSnapshot.getKey().toString());
             }
 
             @Override
@@ -202,11 +196,14 @@ public class PublicFlagRequest {
     // When the fireBase is updated with new data
     public void removeFromMap(String key){
         // Update on the map the flags
-
         Marker ref = markerMap.get(key);
+        // Remove from the map
         ref.remove();
+        // Remove from marker hash table
+        markerMap.remove(key);
+        // Remove from flag hash table
+        flagMap.remove(key);
     }
-
 
 
 }
