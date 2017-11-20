@@ -12,14 +12,11 @@
         android:id="@+id/tvTodaySteps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="32dp"
         android:text="Todays Steps: "
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintVertical_bias="0.429"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/gGraph" />
 
     <TextView
         android:id="@+id/tvWeeklySteps"
@@ -28,9 +25,9 @@
         android:text="Weekly Steps: "
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvTodaySteps"
-        app:layout_constraintHorizontal_bias="0.501" />
+        app:layout_constraintHorizontal_bias="0.501"
+        android:layout_marginTop="23dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvCaloriesToday" />
 
     <TextView
         android:id="@+id/tvOverallSteps"
@@ -39,25 +36,9 @@
         android:text="Overall Steps: "
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvWeeklySteps"
         app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/tvCurrentSession"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Current Session Steps: "
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="157dp"
-        app:layout_constraintHorizontal_bias="0.502"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/tvTodaySteps" />
+        android:layout_marginTop="17dp"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <com.jjoe64.graphview.helper.GraphViewXML
         android:id="@+id/gGraph"
@@ -71,80 +52,159 @@
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/tvCurrentSession"
-        app:layout_constraintVertical_bias="0.602"
+        android:layout_marginTop="98dp"
         app:layout_constraintHorizontal_bias="0.508" />
 
     <EditText
         android:id="@+id/weight"
-        android:layout_width="73dp"
-        android:layout_height="34dp"
+        android:layout_width="60dp"
+        android:layout_height="35dp"
         android:layout_gravity="center_horizontal"
         android:ems="6"
         android:hint="Weight(Kg)"
         android:inputType="number|numberDecimal"
         android:textSize="10sp"
+        app:layout_constraintLeft_toRightOf="@+id/height"
+        android:layout_marginLeft="8dp"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintRight_toLeftOf="@+id/tgsex"
-        android:layout_marginRight="8dp" />
+        android:layout_marginTop="8dp" />
 
     <EditText
         android:id="@+id/height"
-        android:layout_width="74dp"
+        android:layout_width="60dp"
         android:layout_height="35dp"
         android:layout_gravity="center_horizontal"
         android:ems="6"
         android:hint="Height(cm)"
         android:inputType="number|numberDecimal"
         android:textSize="10sp"
+        app:layout_constraintLeft_toRightOf="@+id/age"
+        android:layout_marginLeft="8dp"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintRight_toLeftOf="@+id/weight"
-        android:layout_marginRight="0dp" />
+        android:layout_marginTop="8dp" />
     <EditText
         android:id="@+id/age"
-        android:layout_width="77dp"
-        android:layout_height="34dp"
+        android:layout_width="60dp"
+        android:layout_height="35dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="8dp"
         android:ems="6"
         android:hint="Age"
         android:inputType="number|numberDecimal"
         android:textSize="10sp"
+        android:layout_marginLeft="6dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintRight_toLeftOf="@+id/height"
-        android:layout_marginRight="8dp"
-        app:layout_constraintHorizontal_bias="0.888" />
+        android:layout_marginTop="8dp" />
 
 
     <Button
         android:id="@+id/calc"
-        android:layout_width="58dp"
-        android:layout_height="32dp"
+        android:layout_width="60dp"
+        android:layout_height="35dp"
         android:layout_gravity="center_horizontal"
         android:text="Save"
         android:textSize="8sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="321dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/tgsex"
+        android:layout_marginLeft="8dp"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp" />
 
     <ToggleButton
         android:id="@+id/tgsex"
-        android:layout_width="64dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="60dp"
+        android:layout_height="35dp"
         android:text="ToggleButton"
         android:textOff="Male"
         android:textOn="Female"
         android:textSize="8sp"
+        app:layout_constraintLeft_toRightOf="@+id/weight"
+        android:layout_marginLeft="8dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/calc"
-        android:layout_marginRight="8dp" />
+        android:layout_marginTop="8dp" />
+
+    <TextView
+        android:id="@+id/tvWeeklyDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Weekly Distance: "
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvWeeklySteps" />
+
+    <TextView
+        android:id="@+id/tvTodaysDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Todays Distance: "
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvTodaySteps"
+        tools:layout_editor_absoluteX="112dp" />
+
+    <TextView
+        android:id="@+id/tvOverallDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Overall Distance: "
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        android:layout_marginTop="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvOverallSteps"
+        tools:layout_editor_absoluteY="431dp"
+        tools:layout_editor_absoluteX="112dp" />
+
+    <TextView
+        android:id="@+id/tvCaloriesToday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvTodaysDistance"
+        app:layout_constraintHorizontal_bias="0.505"
+        tools:layout_editor_absoluteX="144dp"
+        tools:layout_editor_absoluteY="259dp" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvWeeklyDistance"
+        tools:layout_editor_absoluteY="365dp"
+        tools:layout_editor_absoluteX="138dp" />
+
+    <TextView
+        android:id="@+id/tvOverallCalories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvOverallDistance" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="16dp"
+        android:text="*estimates based on your activity and the information you provided"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

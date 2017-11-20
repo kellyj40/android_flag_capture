@@ -39,7 +39,7 @@ public class StatsActivity extends AppCompatActivity {
     public float loadWeight;
     public double stepLength;
     public double BMI;
-    public double caloriesBurnt;
+    public double BMR;
 
 
     public static final String MyPREFERENCES = "MyPrefs";
@@ -51,6 +51,10 @@ public class StatsActivity extends AppCompatActivity {
 
     Databasehelperclass myDb;
 
+    public int todayssteps;
+    public int week;
+    public int overall;
+
     //Variable with the current steps
     private int numSteps;
     //Object which contains the step listeners;
@@ -60,25 +64,28 @@ public class StatsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
+        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
 
         Intent intent = getIntent();
         int numsteps = intent.getIntExtra("numSteps", 0);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Maybe email stats to yourself?", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Maybe email stats to yourself?", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
         myDb = new Databasehelperclass(this);
-        int todayssteps = myDb.todaysSteps() + numsteps;
-        int week = myDb.weeksSteps() + numsteps;
-        int overall = myDb.overallSteps() + numsteps;
-        TextView current_steps;
+        todayssteps = myDb.todaysSteps() + numsteps;
+        week = myDb.weeksSteps() + numsteps;
+        overall = myDb.overallSteps() + numsteps;
         TextView today_steps;
         TextView week_steps;
         TextView overall_steps;
+
+
+
         //taken from graphView examples
         GraphView graph = (GraphView) findViewById(R.id.gGraph);
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {
@@ -112,15 +119,41 @@ public class StatsActivity extends AppCompatActivity {
 
 
 
-        current_steps = (TextView) findViewById(R.id.tvCurrentSession);
+
         today_steps = (TextView) findViewById(R.id.tvTodaySteps);
         week_steps = (TextView) findViewById(R.id.tvWeeklySteps);
         overall_steps = (TextView) findViewById(R.id.tvOverallSteps);
 
-        current_steps.append(""+numsteps);
+        loadSharedPreferences();
+
+        TextView distance_today = (TextView) findViewById(R.id.tvTodaysDistance);
+        TextView distance_week = (TextView) findViewById(R.id.tvWeeklyDistance);
+        TextView distance_overall = (TextView) findViewById(R.id.tvOverallDistance);
+
+        //current_steps.append(""+numsteps);
         today_steps.append(""+todayssteps);
         week_steps.append(""+week);
         overall_steps.append(""+overall);
+        //float distanceday = (Math.round(stepLength*week*100))/100.0f;
+        //float distanceweek = (Math.round(stepLength*todayssteps*100))/100.0f;
+        //float distanceoverall = (Math.round(stepLength*overall*100))/100.0f;
+
+        distance_today.append(""+ (Math.round(stepLength*todayssteps*100))/100.0f + " km");
+        distance_week.append(""+ (Math.round(stepLength*week*100))/100.0f + " km");
+        distance_overall.append(""+ (Math.round(stepLength*overall*100))/100.0f + " km") ;
+
+        if (BMI != 0.0 ){
+        TextView calories_today = (TextView) findViewById(R.id.tvCaloriesToday);
+        TextView calories_week = (TextView) findViewById(R.id.textView5);
+        TextView calories_overall = (TextView) findViewById(R.id.tvOverallCalories);
+
+            calories_today.append("Calories Burnt: "+ Math.round((BMR/24)*2.9*(((Math.round(stepLength*todayssteps*100))/100.0f)/5)));
+            calories_week.append("Calories Burnt: "+ Math.round((BMR/24)*2.9*(((Math.round(stepLength*week*100))/100.0f)/5)));
+            calories_overall.append("Calories Burnt: "+ Math.round((BMR/24)*2.9*((Math.round(stepLength*overall*100))/100.0f)/5));
+
+
+        }
+
 
 
         //Step stuff
@@ -129,13 +162,14 @@ public class StatsActivity extends AppCompatActivity {
         numSteps= stepObject.numSteps;
         stepObject.initialiseStepSensor(this);
 
+
         //height weight and BMI:
         height = (EditText) findViewById(R.id.height);
         weight = (EditText) findViewById(R.id.weight);
         age = (EditText) findViewById(R.id.age);
         sex = (ToggleButton)findViewById(R.id.tgsex);
         b1 = (Button)findViewById(R.id.calc);
-        sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
 
         b1.setOnClickListener(new View.OnClickListener() {
 
@@ -170,6 +204,8 @@ public class StatsActivity extends AppCompatActivity {
     }
 
     private void loadSharedPreferences() {
+
+
         if (sharedpreferences != null) {
             loadHeight= sharedpreferences.getFloat(
                     Height , 0);
@@ -180,28 +216,40 @@ public class StatsActivity extends AppCompatActivity {
             loadSex =  sharedpreferences.getBoolean(
                     Sex, true);
             if (loadHeight != 0 && loadWeight!= 0 && loadAge!=0 ) {
-                stepLength = (loadHeight * 0.413)/1000;
+                stepLength = (loadHeight * 0.413)/100000;
                 BMI = loadWeight / loadHeight * loadHeight;
-                //For males: BMR = (13.75 x WKG) + (5 x HC) - (6.76 x age) + 66
-                //For females: BMR = (9.56 x WKG) + (1.85 x HC) - (4.68 x age) + 655
+
+//                Calculator Formulas
+//                Calorie Burn = (BMR / 24) x MET x T
+//                where
+//
+//                For males: BMR = (13.75 x WKG) + (5 x HC) - (6.76 x age) + 66
+//                For females: BMR = (9.56 x WKG) + (1.85 x HC) - (4.68 x age) + 655
+//
+//                and
+//
+//                        BMR = Basal Metabolic Rate (over 24 hours)
+//                MET = Metabolic Equivalent (for selected activity)
+//                T = Activity duration time (in hours)
+//                HC = Height (in centimetres)
+//                WKG = Weight (in kilograms)
+//                Time = (distance /average walking speed 5km/h)
+
                 if (loadSex == true) {
-                    caloriesBurnt = (((9.56*loadWeight)+(1.85*loadHeight) - (4.68*loadAge)+ 655)/24)*2.9;
+                    BMR = ((9.56*loadWeight)+(1.85*loadHeight) - (4.68*loadAge)+ 655);
                 }
                 else {
-                    caloriesBurnt = (((13.57*loadWeight)+(5*loadHeight) - (6.76*loadAge)+ 66)/24)*2.9;
+                    BMR = ((13.57*loadWeight)+(5*loadHeight) - (6.76*loadAge)+ 66);
                 }
 
             }
 
         }
         else {
-            stepLength = 74/1000;
+            stepLength = 0.74/1000;
         }
 
-        Toast.makeText(StatsActivity.this,"Stride"+stepLength,Toast.LENGTH_SHORT).show();
-        Toast.makeText(StatsActivity.this,"BMI"+BMI,Toast.LENGTH_SHORT).show();
-        Toast.makeText(StatsActivity.this,"calories"+caloriesBurnt,Toast.LENGTH_SHORT).show();
-        Toast.makeText(StatsActivity.this,"female"+loadSex, Toast.LENGTH_SHORT).show();
+
     }
 
 
