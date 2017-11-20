@@ -63,6 +63,9 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
     //Step database
     private Databasehelperclass myDb;
+    
+    //Flag instance
+    PublicFlagRequest flagRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,7 +162,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         }
 
         // Set up flags
-        PublicFlagRequest flagRequest = new PublicFlagRequest(userLocation, mMap);
+        flagRequest = new PublicFlagRequest(userLocation, mMap);
 
     }
 
@@ -176,6 +179,9 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
                 // Update user on FireBase so other users can see
                 // updateUserLocationFirebase();
                 userManager.setUserLocation(userLocation);
+
+                //Check if captured flag
+                flagRequest.checkIfCapturedFlag(userLocation);
             }
 
             @Override
