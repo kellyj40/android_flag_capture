@@ -185,7 +185,7 @@ public class StatsActivity extends AppCompatActivity {
 
                 if (!"".equals(heightStr)
                         && !"".equals(weightStr) && !"".equals(ageStr)) {
-                    float x = Float.parseFloat(heightStr) / 100; //needs to be metres
+                    float x = Float.parseFloat(heightStr) / 100.0f; //needs to be metres
                     float y = Float.parseFloat(weightStr);
                     float z = Float.parseFloat(ageStr);
 
@@ -216,7 +216,7 @@ public class StatsActivity extends AppCompatActivity {
             loadSex =  sharedpreferences.getBoolean(
                     Sex, true);
             if (loadHeight != 0 && loadWeight!= 0 && loadAge!=0 ) {
-                stepLength = (loadHeight * 0.413)/100000;
+                stepLength = (loadHeight * 1.05)/1000;
                 BMI = loadWeight / loadHeight * loadHeight;
 
 //                Calculator Formulas
@@ -246,15 +246,14 @@ public class StatsActivity extends AppCompatActivity {
 
         }
         else {
-            stepLength = 0.74/1000;
+            stepLength = 0.74/1000; //average step length
         }
 
 
     }
 
 
-    private void saveWeightHeight(float weightValue, float heightValue, float age, boolean female) {
-        float bmi = weightValue / (heightValue * heightValue);
+    private void saveWeightHeight(float heightValue, float weightValue,  float age, boolean female) {
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putFloat(Weight, weightValue);
         editor.putFloat(Height, heightValue);
