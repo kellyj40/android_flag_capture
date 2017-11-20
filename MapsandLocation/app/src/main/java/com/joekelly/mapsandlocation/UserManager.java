@@ -34,12 +34,33 @@ public class UserManager {
     private String userId;
     private boolean hasFlag = false;
     private GoogleMap mMap;
-
+    private int numberOfFlagsCollected;
+    private int numberOfFlagsStolen;
 
     public UserManager(GoogleMap mMap) {
         // get this user's ID
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         this.mMap = mMap;
+
+        // -------- Get previous score -------\\
+        // Get reference to database
+        DatabaseReference playerRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+        //Get snap shot of the database
+        playerRef.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Map<String, Object> scoreMap = (Map<String, Object>) dataSnapshot.getValue();
+                        numberOfFlagsCollected = Integer.parseInt(scoreMap.get("flags collected").toString());
+                        numberOfFlagsStolen = Integer.parseInt(scoreMap.get("flags stolen").toString());
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        //handle databaseError
+                    }
+                });
+
         getUsers();
     }
 
@@ -51,6 +72,7 @@ public class UserManager {
         GeoFire geoFire = new GeoFire(ref);
         geoFire.setLocation(userId, new GeoLocation(userLocation.latitude, userLocation.longitude));
         ref.child(userId).child("hasFlag").setValue(hasFlag);
+
     }
 
     public void removeUserFromPlaying() {
@@ -118,6 +140,14 @@ public class UserManager {
     }
     public boolean getHasFlag(){
         return hasFlag;
+    }
+
+    public void capturedFlagUpdate(){
+        numberOfFlagsCollected++;
+        // Update Database
+        DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
+        current_user_db.child("flags collected").setValue(numberOfFlagsCollected);
+
     }
 
 

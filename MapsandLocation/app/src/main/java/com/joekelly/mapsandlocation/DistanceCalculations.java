@@ -4,6 +4,8 @@ import android.widget.Toast;
 
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -86,11 +88,11 @@ public class DistanceCalculations {
         double d = distance(pickedUpFlagLocation.latitude,pickedUpFlagLocation.longitude, userLocation.latitude,userLocation.longitude);
 
         // Check if within distance
-        if (d > 200) {
+//        if (d > 200) {
             return true;
-        }
+//        }
 
-        return false;
+//        return false;
     }
 
 

@@ -79,8 +79,10 @@ public class UserLoginActivity extends AppCompatActivity {
                         }else{
                             // If successful save same of the imformation to the database, user_id
                             String user_id = mAuth.getCurrentUser().getUid();
-                            DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("users").child(user_id).child("name");
-                            current_user_db.setValue(email);
+                            DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("users").child(user_id);
+                            current_user_db.child("name").setValue(email);
+                            current_user_db.child("flags collected").setValue(0);
+                            current_user_db.child("flags stolen").setValue(0);
                         }
                     }
                 });

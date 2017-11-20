@@ -192,6 +192,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
                         // If walked 200m with flag, allow to capture flags again
                         userManager.setHasFlag(false);
                         // Update database score
+                        userManager.capturedFlagUpdate();
                         
                     }
                 }
@@ -217,8 +218,6 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
         return newLocationListener;
     }
-
-
 
 
     public void getLocation() {
