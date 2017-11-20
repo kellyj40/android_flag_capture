@@ -14,6 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by danieljordan on 15/11/2017.
@@ -32,36 +33,45 @@ public class User {
     }
 
     public void makePlayerRef() {
-            playerRef = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds").child(playerId).child("l");
-            playerRef.addValueEventListener(new ValueEventListener() {
+        playerRef = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds").child(playerId);
+        playerRef.addValueEventListener(new ValueEventListener() {
 
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.d("             playerId ", playerId);
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("             playerId ", playerId);
 
-                    if(dataSnapshot.exists()){
-//                        Log.d("             playerId ", playerId);
-                        List<Object> map = (List<Object>) dataSnapshot.getValue();
-                        double locationLat = 0;
-                        double locationLng = 0;
-                        if (map.get(0) != null){
-                            locationLat = Double.parseDouble(map.get(0).toString());
-                            locationLng = Double.parseDouble(map.get(1).toString());
-                        }
-                        LatLng playerLatLng = new LatLng(locationLat, locationLng);
-                        if(userMarkerRef != null){
-                            userMarkerRef.remove();
-                        }
-                        userMarkerRef = mMap.addMarker(new MarkerOptions().position(playerLatLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.otherusers)));
-                        Log.d("             playerId ", playerId);
+                if(dataSnapshot.exists()){
+
+                    Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
+                    boolean hasFlag =(boolean) userMap.get("hasFlag");
+
+                    List<Object> map = (List<Object>) userMap.get("l");
+                    double locationLat = 0;
+                    double locationLng = 0;
+                    if (map.get(0) != null){
+                        locationLat = Double.parseDouble(map.get(0).toString());
+                        locationLng = Double.parseDouble(map.get(1).toString());
                     }
-                }
+                    LatLng playerLatLng = new LatLng(locationLat, locationLng);
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+                    if(userMarkerRef != null){
+                        userMarkerRef.remove();
+                    }
+                    if(hasFlag){
+                        userMarkerRef = mMap.addMarker(new MarkerOptions().position(playerLatLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.userwithflag)));
+                    }else{
+                        userMarkerRef = mMap.addMarker(new MarkerOptions().position(playerLatLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.otherusers)));
+                    }
 
+                    Log.d("             playerId ", playerId);
                 }
-            });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
