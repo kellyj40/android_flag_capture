@@ -52,8 +52,8 @@ public class Abouter extends AppCompatActivity {
                                 Map<String, Object> scoreMap = (Map<String, Object>) issue.getValue();
 //                                Log.i("value", scoreMap.get("flags collect").toString());
 
-                                String value2 = "Rank "+Integer.toString(size-counter)+": "+scoreMap.get("name").toString() +" \nflags captured: " +scoreMap.get("flags collected").toString()
-                                        +" \nflags stolen: " +scoreMap.get("flags stolen").toString();
+                                String value2 = "Rank "+Integer.toString(size-counter)+": "+scoreMap.get("name").toString() +" \nFlags captured: " +scoreMap.get("flags collected").toString()
+                                        +" \nFlags stolen: " +scoreMap.get("flags stolen").toString();
                                 list.add(0, value2);
                                 counter++;
                             }
