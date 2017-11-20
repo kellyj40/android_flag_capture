@@ -15,10 +15,11 @@ import static android.content.Context.SENSOR_SERVICE;
 
 public class SensorObject implements SensorEventListener, StepListener {
     //Step Sensor variables, need to fix textview
-
     public StepDetector simpleStepDetector;
     public SensorManager sensorManager;
     public Sensor accel;
+
+
     public static String TEXT_NUM_STEPS;
     private int extraStep;
 
@@ -43,6 +44,7 @@ public class SensorObject implements SensorEventListener, StepListener {
         //v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         contextNotification=context;
 
+
     } public void initialiseStepSensor(Context context, String text, TextView textView, int additionalSteps) {
         TEXT_NUM_STEPS = text;
         extraStep = additionalSteps;
@@ -60,8 +62,6 @@ public class SensorObject implements SensorEventListener, StepListener {
         txtView = textView;
 
     }
-
-
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -88,6 +88,7 @@ public class SensorObject implements SensorEventListener, StepListener {
 
         if (numSteps == 110) {
             Notification.notifier(contextNotification);
+
         }
     }
 
@@ -102,6 +103,7 @@ public class SensorObject implements SensorEventListener, StepListener {
     public void updateUi(TextView txt){
 
         txt.setText(TEXT_NUM_STEPS + numSteps);
+
     }
 
 }

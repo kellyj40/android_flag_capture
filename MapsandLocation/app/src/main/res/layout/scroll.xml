@@ -59,20 +59,23 @@
             <Button
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:id="@+id/playButton"
                 android:background="@drawable/play"
-                android:onClick="spotifyPlay"
+                android:onClick="spotifyPlayPause"
                 /> <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/pause"
-            android:onClick="spotifyPause"
-            /> <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/next"
-            android:onClick="spotifyNext"
-            />
-            </LinearLayout>
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/pause"
+                android:id="@+id/pauseButton"
+                android:onClick="spotifyPlayPause"
+                /> <Button
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/next"
+                android:id="@+id/nextButton"
+                android:onClick="spotifyNext"
+                />
+                </LinearLayout>
             <!--<ImageView-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="match_parent"-->
