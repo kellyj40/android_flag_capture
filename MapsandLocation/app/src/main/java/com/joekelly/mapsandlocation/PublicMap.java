@@ -16,27 +16,17 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.geofire.GeoFire;
-import com.firebase.geofire.GeoLocation;
-import com.firebase.geofire.GeoQuery;
-import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 // Activity for the public game
 public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
@@ -192,6 +182,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
                         // If walked 200m with flag, allow to capture flags again
                         userManager.setHasFlag(false);
                         // Update database score
+                        userManager.capturedFlagUpdate();
                         
                     }
                 }
@@ -217,8 +208,6 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
         return newLocationListener;
     }
-
-
 
 
     public void getLocation() {

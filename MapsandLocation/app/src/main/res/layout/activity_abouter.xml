@@ -6,21 +6,30 @@
     android:layout_height="match_parent"
     tools:context="com.joekelly.mapsandlocation.Abouter">
 
-    <android.support.design.widget.AppBarLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:orientation="vertical">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <TextView
+            android:id="@+id/textView"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="wrap_content"
+            android:text="World Scores"
+            android:textAlignment="center"
+            android:textColor="@color/colorPrimary"
+            android:textSize="30sp" />
 
-    </android.support.design.widget.AppBarLayout>
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="0dp"
+            tools:layout_editor_absoluteY="57dp" >
 
-    <include layout="@layout/content_abouter" />
+        </ListView>
+
+    </LinearLayout>
 
 
 </android.support.design.widget.CoordinatorLayout>
