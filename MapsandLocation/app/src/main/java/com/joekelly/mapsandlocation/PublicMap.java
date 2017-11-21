@@ -13,6 +13,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -109,7 +112,34 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         setUpSensors();
 
         // Initialise vibration
-        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.statsMenu:
+                // passes steps to stats page
+                Intent registerIntent = new Intent(this, StatsActivity.class);
+                int x = stepObject.numSteps;
+                // adds current steps to db
+                // myDb.addSteps(new Steps(x));
+                registerIntent.putExtra("numSteps", x);
+                startActivity(registerIntent);
+//                finish();
+                return true;
+            case R.id.help:
+                startActivity(new Intent(this, Abouter.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+
 
     }
 
