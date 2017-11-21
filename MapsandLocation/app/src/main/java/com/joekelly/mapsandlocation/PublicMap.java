@@ -56,7 +56,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_public_map);
+        setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -252,7 +252,9 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         stepObject = new SensorObject();
         numSteps= stepObject.numSteps;
         stepObject.passTextView(StepsTaken);
-        stepObject.initialiseStepSensor(this, "Steps Taken:", StepsTaken, 0);
+        String message = getResources().getString(R.string.steps_walked);
+
+        stepObject.initialiseStepSensor(this, message, StepsTaken, 0);
     }
 
 }

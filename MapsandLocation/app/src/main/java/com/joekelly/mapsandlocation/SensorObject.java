@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 import android.widget.TextView;
 
 import static android.content.Context.SENSOR_SERVICE;
@@ -84,6 +85,7 @@ public class SensorObject implements SensorEventListener, StepListener {
 
 //        StepsTaken = (TextView) findViewById(R.id.tv_steps);
         if (textPresent)
+            
             txtView.setText(String.format(TEXT_NUM_STEPS, extraStep+numSteps));
 
         if (numSteps == 110) {
