@@ -253,6 +253,7 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
 //    }
 
     public void spotifyPlayPause(View view){
+        try{
 //        String uri = "spotifyPause:track:0IcSLT53eE07Jmok64Ppo3";
 //        Intent launcher = new Intent( Intent.ACTION_VIEW, Uri.parse(uri) );
 ////        launcher.addFlags(Intent.FLAG_FROM_BACKGROUND);
@@ -276,23 +277,37 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
             sendOrderedBroadcast(i, null);
             }
     }
+        catch (Exception e) {
+        Toast.makeText(this, "Spotify not installed", Toast.LENGTH_LONG).show();
+    }
+
+}
 
     public void spotifyNext(View view) {
-        Intent launcher = new Intent("com.spotify.mobile.android.ui.widget.NEXT");
+        try {
+            Intent launcher = new Intent("com.spotify.mobile.android.ui.widget.NEXT");
 
-        launcher.setPackage("com.spotify.music");
+            launcher.setPackage("com.spotify.music");
 
-        sendBroadcast(launcher);
-
+            sendBroadcast(launcher);
+        }
+        catch (Exception e) {
+            Toast.makeText(this, "Spotify not installed", Toast.LENGTH_LONG).show();
+        }
     }
 
-    public void openSpotify(View view){
-        String uri = "spotify:track:53qU2K55RJgfs9F50irpB3";
-        Intent launcher = new Intent( Intent.ACTION_VIEW, Uri.parse(uri) );
+    public void openSpotify(View view) {
+        try {
+            String uri = "spotify:track:53qU2K55RJgfs9F50irpB3";
+            Intent launcher = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 //        launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        startActivity(launcher);
+            startActivity(launcher);
+        } catch (Exception e) {
+            Toast.makeText(this, "Spotify not installed", Toast.LENGTH_LONG).show();
+        }
     }
+
 //    public void getCurrentlyPlaying(){
 //        Intent launcher = new Intent("com.spotify.music.metadatachanged");
 //        launcher.setPackage("com.spotify.music");
