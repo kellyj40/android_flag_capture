@@ -17,7 +17,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 public class Notification {
 
     public static void notifier(Context context) {
-        Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.walking_scene);
+        Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.walking);
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.walking)

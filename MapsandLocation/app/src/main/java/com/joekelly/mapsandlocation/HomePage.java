@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -63,6 +64,7 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
 
         stepWidget();
 //        Spotify.setContext(this);
+//        getCurrentlyPlaying();
 
     }
 
@@ -135,7 +137,7 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         Intent intent = new Intent(this, UserLoginActivity.class);
         intent.putExtra("LAT", mLatitudeText);
         intent.putExtra("LON", mLongitudeText);
-        myDb.addSteps(new Steps(stepObject.numSteps));
+//        myDb.addSteps(new Steps(stepObject.numSteps));
 
         // check if we have successfully recieved user's location
         // if not, ask them to check their settings
@@ -151,7 +153,7 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         Intent intent = new Intent(HomePage.this, PrivateMap.class);
         intent.putExtra("LAT", mLatitudeText);
         intent.putExtra("LON", mLongitudeText);
-        myDb.addSteps(new Steps(stepObject.numSteps));
+//        myDb.addSteps(new Steps(stepObject.numSteps));
 
         // check if we have successfully recieved user's location
         // if not, ask them to check their settings
@@ -166,13 +168,13 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         Intent intent = new Intent(this, StatsActivity.class);
 
         //Add steps to DB
-        myDb.addSteps(new Steps(stepObject.numSteps));
+//        myDb.addSteps(new Steps(stepObject.numSteps));
         startActivity(intent);
     }
 
     public void scoreLauncher(View view) {
         Intent intent = new Intent(this, Abouter.class);
-        myDb.addSteps(new Steps(stepObject.numSteps));
+//        myDb.addSteps(new Steps(stepObject.numSteps));
         startActivity(intent);
 
     }
@@ -208,6 +210,8 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
     //Andrea
     protected void onStop() {
         super.onStop();
+        myDb.addSteps(new Steps(stepObject.numSteps));
+
         //Toast.makeText(PrivateMap.this, saveSteps+"Saving to database", Toast.LENGTH_SHORT).show();
         //myDb.addSteps(new Steps(stepObject.numSteps));
     }
@@ -281,4 +285,19 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         sendBroadcast(launcher);
 
     }
+
+    public void openSpotify(View view){
+        String uri = "spotify:track:53qU2K55RJgfs9F50irpB3";
+        Intent launcher = new Intent( Intent.ACTION_VIEW, Uri.parse(uri) );
+//        launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        startActivity(launcher);
+    }
+//    public void getCurrentlyPlaying(){
+//        Intent launcher = new Intent("com.spotify.music.metadatachanged");
+//        launcher.setPackage("com.spotify.music");
+//
+//        sendBroadcast(launcher);
+//
+//    }
 }

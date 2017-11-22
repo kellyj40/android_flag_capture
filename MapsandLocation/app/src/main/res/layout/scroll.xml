@@ -23,59 +23,82 @@
             android:background="@color/gray">
             <!--android:layout_centerHorizontal="true"-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/sunny"
-                android:fontFamily="sans-serif-condensed"
-                android:shadowColor="#000000"
-                android:shadowDx="3"
-                android:shadowDy="4"
-                android:shadowRadius="3"
-                android:text="13oC  "
-                android:textAlignment="textEnd"
-                android:textColor="@android:color/white"
-                android:textSize="40dp"
-                android:gravity="end" />
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/sunny"
-                android:fontFamily="sans-serif-condensed"
-                android:shadowColor="#000000"
-                android:shadowDx="3"
-                android:shadowDy="4"
-                android:shadowRadius="3"
-                android:text="13oC  "
-                android:textAlignment="textEnd"
-                android:textColor="@color/yellow"
-                android:textSize="40dp"
-                android:gravity="end" />
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:background="@drawable/sunny"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:textSize="40dp"-->
+                <!--android:gravity="end" />-->
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:background="@drawable/gradient_colour"
+                >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="16dp"
+                android:orientation="vertical"
+                >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:orientation="horizontal">
             <Button
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="45dp"
+                android:layout_height="40dp"
                 android:id="@+id/playButton"
-                android:background="@drawable/play"
+                android:background="@drawable/play_final"
+                android:padding="0dp"
                 android:onClick="spotifyPlayPause"
+                android:layout_marginRight="15dp"
                 /> <Button
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/pause"
+                android:layout_width="45dp"
+                android:layout_height="40dp"
+                android:background="@drawable/pause_final"
                 android:id="@+id/pauseButton"
                 android:onClick="spotifyPlayPause"
+                android:layout_marginRight="15dp"
+
                 /> <Button
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/next"
+                android:layout_width="45dp"
+                android:layout_height="40dp"
+                android:background="@drawable/next_final"
                 android:id="@+id/nextButton"
                 android:onClick="spotifyNext"
                 />
                 </LinearLayout>
+
+                <Button
+                    android:id="@+id/launchSpotify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:clickable="true"
+                    android:fontFamily="sans-serif-condensed"
+                    android:onClick="openSpotify"
+                    android:text="@string/spotify_playlist"
+                    android:textAllCaps="false"
+                    android:textColor="#00D95F"
+                    android:textSize="20dp"
+                    android:textStyle="italic"
+                    android:typeface="monospace" />
+
+            </LinearLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/spotify_logo"
+                    android:layout_marginBottom="20dp"
+                    android:padding="5dp"/>
+        </LinearLayout>
             <!--<ImageView-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="match_parent"-->

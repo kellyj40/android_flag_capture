@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -271,7 +269,7 @@ public class StatsActivity extends AppCompatActivity {
 
     protected void onStop() {
         super.onStop();
-        myDb.addSteps(new Steps(stepObject.numSteps));
+//        myDb.addSteps(new Steps(stepObject.numSteps));
     }
     protected void onPause(){
         super.onPause();
