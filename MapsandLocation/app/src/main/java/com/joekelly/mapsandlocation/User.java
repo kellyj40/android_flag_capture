@@ -38,6 +38,7 @@ public class User {
     public void makePlayerRef() {
         // Reference the database
         playerRef = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds").child(playerId);
+        //Listener for all users
         playerRef.addValueEventListener(new ValueEventListener() {
             //Create listener for changing data in child
             @Override
@@ -47,7 +48,14 @@ public class User {
                 if(dataSnapshot.exists()){
                     //Get snapshot of change
                     Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
-                    boolean hasFlag =(boolean) userMap.get("hasFlag");
+                    boolean hasFlag = false;
+                    // Issue with updating the flags, needs to be set to false
+                    try {
+                        hasFlag =(boolean) userMap.get("hasFlag");
+                    }catch (Exception e){
+                        hasFlag = false;
+                    }
+
 
                     // Get the lat and lng position of user
                     List<Object> map = (List<Object>) userMap.get("l");
