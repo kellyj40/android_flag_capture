@@ -112,7 +112,7 @@ public class UserLoginActivity extends AppCompatActivity {
         super.onStart();
         mAuth.addAuthStateListener(firebaseAuthListener);
     }
-    // when finsed
+    // when finished
     @Override
     protected void onStop() {
         super.onStop();

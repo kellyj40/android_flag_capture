@@ -138,7 +138,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
                 startActivity(registerIntent);
 //                finish();
                 return true;
-            case R.id.help:
+            case R.id.leaderboard:
                 startActivity(new Intent(this, Abouter.class));
                 return true;
             case R.id.logout:

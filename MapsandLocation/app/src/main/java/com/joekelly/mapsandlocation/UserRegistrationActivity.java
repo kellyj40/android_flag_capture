@@ -20,7 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class UserRegistrationActivity extends AppCompatActivity {
 
-    private EditText mEmail, mPassword;
+    private EditText mUsername, mEmail, mPassword;
 
     private Button mRegisterButton;
 
@@ -64,6 +64,7 @@ public class UserRegistrationActivity extends AppCompatActivity {
 //        mEmail = (EditText) findViewById(R.id.email);
 //        mPassword = (EditText) findViewById(R.id.password);
 
+        mUsername = (EditText) findViewById(R.id.username);
         mEmail = (EditText) findViewById(R.id.input_email);
         mPassword = (EditText) findViewById(R.id.input_password);
 
@@ -75,6 +76,7 @@ public class UserRegistrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Going to pass the email and password up to the database
+                final String username = mUsername.getText().toString();
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
                 if ((email.length() > 0) && (password.length() > 0)) {
@@ -88,7 +90,7 @@ public class UserRegistrationActivity extends AppCompatActivity {
                                 // If successful save same of the imformation to the database, user_id
                                 String user_id = mAuth.getCurrentUser().getUid();
                                 DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("users").child(user_id);
-                                current_user_db.child("name").setValue(email);
+                                current_user_db.child("name").setValue(username);
                                 current_user_db.child("flags collected").setValue(0);
                                 current_user_db.child("flags stolen").setValue(0);
                             }
