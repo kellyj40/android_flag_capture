@@ -1,5 +1,9 @@
 package com.joekelly.mapsandlocation;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 
 import com.firebase.geofire.GeoFire;
@@ -7,7 +11,10 @@ import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.GroundOverlay;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -43,6 +50,8 @@ public class PublicFlagRequest {
     private Map<String, Marker> markerMap = new HashMap<String, Marker>();
     // Flag request used to generate flags
     private PrivateFlagRequest flagRequest = new PrivateFlagRequest();
+    // Reference to the overlay of distance to walk
+    private GroundOverlay distanceToWalkOverLay;
 
     // Constructor for map, and user location to plot the flags
     public PublicFlagRequest(LatLng userLocation, GoogleMap mMap){
@@ -59,7 +68,7 @@ public class PublicFlagRequest {
     // --------------- This method is used to query database around the users location and make listeners -----------\\
     public void getFlags(){
         // Query reference
-        GeoQuery geoQuery = mGeoFire.queryAtLocation(new GeoLocation(userLocation.latitude, userLocation.longitude),100);
+        GeoQuery geoQuery = mGeoFire.queryAtLocation(new GeoLocation(userLocation.latitude, userLocation.longitude),1);
 
         // Listeners for original request, new flags and removed flags
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
@@ -92,7 +101,7 @@ public class PublicFlagRequest {
             @Override
             public void onGeoQueryReady() {
                 // If when first put down there is not enough flags then generate them
-                if (flagLocations.size()<15){
+                if (flagLocations.size()<10){
                     // Generate more flags using PrivateFlagRequest
                     makeFlags();
                 }
@@ -174,5 +183,32 @@ public class PublicFlagRequest {
         return false;
 
     }
+
+    //This method will draw 200 meter distance to walk if flag captured
+    public void drawPerimeterDistanceToWalk(){
+        // drawing circle
+        int d = 200; // diameter
+        Bitmap bm = Bitmap.createBitmap(d, d, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bm);
+        Paint p = new Paint();
+        p.setColor(Color.RED);
+
+        c.drawCircle(d/2, d/2, d/2, p);
+
+        // generate BitmapDescriptor from circle Bitmap
+        BitmapDescriptor bmD = BitmapDescriptorFactory.fromBitmap(bm);
+        int radiusM = 100;
+
+        //Add the circle
+        distanceToWalkOverLay = mMap.addGroundOverlay(new GroundOverlayOptions().
+                image(bmD).
+                position(userLocation,radiusM*2,radiusM*2).transparency(0.4f));
+    }
+
+    public void removePerimeterDistanceToWalk(){
+        distanceToWalkOverLay.remove();
+    }
+
+
 
 }

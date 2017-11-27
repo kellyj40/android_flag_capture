@@ -203,17 +203,31 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
                     boolean checker = flagRequest.checkIfCapturedFlag(userLocation);
                     // If the user can collect flag, set the userManager object to have flag
                     if(checker){
+                        showToast("Walk outside boundry to keep flag !");
+                        
+                        // Update object to having flag
                         userManager.setHasFlag(true);
+
+                        // Draw radius for user to walk
+                        flagRequest.drawPerimeterDistanceToWalk();
+
                     }
 
                 }else{
                     // otherwise check if walked 200 meters with flag.
                     if (DistanceCalculations.checkedWalkedDistance(userLocation)){
+                        showToast("Flag collected :)");
+
                         // If walked 200m with flag, allow to capture flags again
                         userManager.setHasFlag(false);
+
+                        // Remove radius for user to walk
+                        flagRequest.removePerimeterDistanceToWalk();
+
                         // Update database score
                         userManager.capturedFlagUpdate();
-                        
+
+
                     }
                 }
 
