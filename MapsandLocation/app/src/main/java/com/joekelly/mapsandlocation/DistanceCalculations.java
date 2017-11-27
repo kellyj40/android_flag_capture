@@ -88,11 +88,10 @@ public class DistanceCalculations {
         double d = distance(pickedUpFlagLocation.latitude,pickedUpFlagLocation.longitude, userLocation.latitude,userLocation.longitude);
 
         // Check if within distance
-//        if (d > 200) {
+        if (d > 200) {
             return true;
-//        }
-
-//        return false;
+        }
+        return false;
     }
 
 

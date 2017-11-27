@@ -88,6 +88,8 @@ public class User {
             }
         });
     }
-
+    public void removePlayerFromMap() {
+        userMarkerRef.remove();
+    }
 
 }

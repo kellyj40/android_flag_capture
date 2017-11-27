@@ -12,6 +12,7 @@ import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -91,7 +92,10 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                Log.i("Child removed", dataSnapshot.getKey().toString());
+                if (userManager.checkIfPlayerExists(dataSnapshot.getKey())) {
+                      userManager.removePlayerFromHashMap(dataSnapshot.getKey().toString());
+                }
             }
 
             @Override
@@ -212,7 +216,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
                     // If the user can collect flag, set the userManager object to have flag
                     if(checker){
                         showToast("Walk outside boundry to keep flag !");
-                        
+                        vib.vibrate(500);
                         // Update object to having flag
                         userManager.setHasFlag(true);
 
@@ -225,7 +229,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
                     // otherwise check if walked 200 meters with flag.
                     if (DistanceCalculations.checkedWalkedDistance(userLocation)){
                         showToast("Flag collected :)");
-
+                        vib.vibrate(1000);
                         // If walked 200m with flag, allow to capture flags again
                         userManager.setHasFlag(false);
 

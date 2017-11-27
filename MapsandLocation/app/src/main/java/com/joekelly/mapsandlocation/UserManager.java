@@ -109,19 +109,29 @@ public class UserManager {
 
     // Populates hashmap with user objects, one for each other user on the firebase Backend who's playing
     public void makePlayerHashMap(Map<String, Object> users) {
-//        ArrayList<Object> userIds = new ArrayList<>();
-
         //iterate through each user, making User object, and then adding them to userMap
         for (Map.Entry<String, Object> entry : users.entrySet()) {
 
             String playerId = entry.getKey();
 
-            if (playerId != this.userId) {
-                User newUser = new User(playerId, mMap);
-                userMap.put(playerId, newUser);
+            if (playerId != this.userId){
+                if (!userMap.containsValue(playerId)) {
+                    User newUser = new User(playerId, mMap);
+                    userMap.put(playerId, newUser);
+                }
             }
         }
     }
+
+    //When player leaves map, remove them from hashMap and Map
+    public void removePlayerFromHashMap(String playerId) {
+        if (playerId != this.userId) {
+            User userBeingRemoved = userMap.get(playerId);
+            userBeingRemoved.removePlayerFromMap();
+            userMap.remove(playerId);
+        }
+    }
+
     // This method is to check if the player exists before adding to map when new user comes in
     public boolean checkIfPlayerExists(String playerId){
         if (playerId != this.userId)

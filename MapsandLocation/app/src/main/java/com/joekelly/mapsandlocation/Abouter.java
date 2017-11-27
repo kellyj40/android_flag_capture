@@ -1,9 +1,12 @@
 package com.joekelly.mapsandlocation;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
@@ -24,7 +27,7 @@ public class Abouter extends AppCompatActivity {
 
 
     ListView listView;
-    List list = new ArrayList<>();
+    List listOfScores = new ArrayList<>();
     Adapter arrayAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +57,7 @@ public class Abouter extends AppCompatActivity {
 
                                 String value2 = "Rank "+Integer.toString(size-counter)+": "+scoreMap.get("name").toString() +" \nFlags captured: " +scoreMap.get("flags collected").toString()
                                         +" \nFlags stolen: " +scoreMap.get("flags stolen").toString();
-                                list.add(0, value2);
+                                listOfScores.add(0, value2);
                                 counter++;
                             }
                             listAdapterSetup();
@@ -73,7 +76,22 @@ public class Abouter extends AppCompatActivity {
     public void listAdapterSetup(){
         //Initialise values
         listView = (ListView) findViewById(R.id.listView);
-        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, list);
+        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, listOfScores){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent){
+                // Get the current item from ListView
+                View view = super.getView(position,convertView,parent);
+                if(position%2 == 1) {
+                    // Set a background color for ListView regular row/item
+                    view.setBackgroundColor(Color.parseColor("#f4f9f9"));
+                }
+                else {
+                    // Set the background color for alternate row/item
+                    view.setBackgroundColor(Color.parseColor("#7fbfbf"));
+                }
+                return view;
+            }
+        };
         listView.setAdapter((ListAdapter) arrayAdapter);
     }
 
