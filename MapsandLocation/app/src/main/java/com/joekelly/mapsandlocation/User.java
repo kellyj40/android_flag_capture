@@ -61,10 +61,14 @@ public class User {
                     List<Object> map = (List<Object>) userMap.get("l");
                     double locationLat = 0;
                     double locationLng = 0;
+                    Log.d("             MapID", map.toString());
+
                     if (map.get(0) != null){
                         locationLat = Double.parseDouble(map.get(0).toString());
                         locationLng = Double.parseDouble(map.get(1).toString());
                     }
+
+
                     LatLng playerLatLng = new LatLng(locationLat, locationLng);
 
                     //Remove all marker of user
@@ -78,7 +82,6 @@ public class User {
                         userMarkerRef = mMap.addMarker(new MarkerOptions().position(playerLatLng).icon(BitmapDescriptorFactory.fromResource(R.drawable.otherusers)));
                     }
 
-                    Log.d("             playerId ", playerId);
                 }
             }
 

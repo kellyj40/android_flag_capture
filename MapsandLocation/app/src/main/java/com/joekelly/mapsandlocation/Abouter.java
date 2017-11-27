@@ -33,7 +33,10 @@ public class Abouter extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_abouter);
+        setContentView(R.layout.activity_abouter);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         // Connect to database
         // Get reference to database
         DatabaseReference allUserRef = FirebaseDatabase.getInstance().getReference("users");

@@ -93,7 +93,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Log.i("Child removed", dataSnapshot.getKey().toString());
-                if (userManager.checkIfPlayerExists(dataSnapshot.getKey())) {
+                if (!userManager.checkIfPlayerExists(dataSnapshot.getKey())) {
                       userManager.removePlayerFromHashMap(dataSnapshot.getKey().toString());
                 }
             }
@@ -159,8 +159,10 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
     public void onMapReady(GoogleMap googleMap) {
         // Set the map
         mMap = googleMap;
+        // Set up user and sync to the database
         userManager = new UserManager(mMap);
         userManager.setUserLocation(userLocation);
+        userManager.setHasFlag(false);
 
         // Used for getting access to the systems location service
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
