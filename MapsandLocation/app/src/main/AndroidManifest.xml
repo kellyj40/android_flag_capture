@@ -58,14 +58,17 @@
             android:name=".StatsActivity"
             android:label="Personal Stats"
             android:parentActivityName=".HomePage" />
-        <activity android:name=".UserLoginActivity" />
+        <activity
+            android:name=".UserLoginActivity"
+            android:parentActivityName=".HomePage"/>
         <activity
             android:name=".PublicMap"
             android:label="@string/title_activity_private_map"
             android:parentActivityName=".HomePage" />
         <activity
             android:name=".UserRegistrationActivity"
-            android:label="@string/title_activity_user_registration"></activity>
+            android:label="@string/title_activity_user_registration"
+            android:parentActivityName=".UserLoginActivity"></activity>
     </application>
 
 </manifest>

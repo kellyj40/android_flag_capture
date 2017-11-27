@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -14,14 +15,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class UserLoginActivity extends AppCompatActivity {
 
 
     private EditText mEmail, mPassword;
-    private Button mLogin, mRegistration;
+
+    private Button mLogin;
+    private TextView mRegistrationLink;
 
     //Listener for when auth state changes
     private FirebaseAuth mAuth;
@@ -57,45 +58,14 @@ public class UserLoginActivity extends AppCompatActivity {
         };
 
 
-        mEmail = (EditText) findViewById(R.id.email);
-        mPassword = (EditText) findViewById(R.id.password);
+//        mEmail = (EditText) findViewById(R.id.email);
+//        mPassword = (EditText) findViewById(R.id.password);
+
+        mEmail = (EditText) findViewById(R.id.input_email);
+        mPassword = (EditText) findViewById(R.id.input_password);
 
         mLogin = (Button) findViewById(R.id.login);
-        mRegistration = (Button) findViewById(R.id.registration);
-
-
-        // Registration listener
-        mRegistration.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Going to pass the email and password up to the database
-                final String email = mEmail.getText().toString();
-                final String password = mPassword.getText().toString();
-                if ((email.length() > 0) && (password.length() > 0)) {
-                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(UserLoginActivity.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(!task.isSuccessful()){
-                                String errorMessage = task.getException().getMessage();
-                                Toast.makeText(UserLoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                            }else{
-                                // If successful save same of the imformation to the database, user_id
-                                String user_id = mAuth.getCurrentUser().getUid();
-                                DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("users").child(user_id);
-                                current_user_db.child("name").setValue(email);
-                                current_user_db.child("flags collected").setValue(0);
-                                current_user_db.child("flags stolen").setValue(0);
-                            }
-                        }
-                    });
-                } else {
-                    Toast.makeText(UserLoginActivity.this, "Please enter an email and password", Toast.LENGTH_SHORT).show();
-                }
-
-
-            }
-        });
-
+        mRegistrationLink = (TextView) findViewById(R.id.link_registration);
 
         // Just logging in with old info
         mLogin.setOnClickListener(new View.OnClickListener() {
@@ -117,10 +87,20 @@ public class UserLoginActivity extends AppCompatActivity {
                 else {
                     Toast.makeText(UserLoginActivity.this, "Please enter an email and password", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
+
+        // Registration link listener
+        mRegistrationLink.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // Start the Signup activity
+                Intent intent = new Intent(getApplicationContext(), UserRegistrationActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     // When ever activity is called want to start the listener for the info
