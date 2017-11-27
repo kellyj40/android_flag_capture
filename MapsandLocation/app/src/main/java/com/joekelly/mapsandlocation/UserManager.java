@@ -69,11 +69,9 @@ public class UserManager {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("usersPlaying").child("userIds");
 
         // Telling GeoFire where we want to store it
-        ref.child(userId).child("hasFlag").setValue(hasFlag);
         GeoFire geoFire = new GeoFire(ref);
         geoFire.setLocation(userId, new GeoLocation(userLocation.latitude, userLocation.longitude));
-
-
+        ref.child(userId).child("hasFlag").setValue(hasFlag);
     }
 
     public void removeUserFromPlaying() {
@@ -146,6 +144,7 @@ public class UserManager {
             userMap.put(playerId, newUser);
         }
     }
+
     public void setHasFlag(boolean value){
         hasFlag = value;
     }
