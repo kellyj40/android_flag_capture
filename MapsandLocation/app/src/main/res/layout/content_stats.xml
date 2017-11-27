@@ -3,208 +3,335 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.joekelly.mapsandlocation.StatsActivity"
-    tools:showIn="@layout/activity_stats">
+    tools:showIn="@layout/activity_stats"
+    tools:layout_editor_absoluteY="81dp"
+    tools:layout_editor_absoluteX="0dp">
 
-    <TextView
-        android:id="@+id/tvTodaySteps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Todays Steps: "
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@+id/gGraph" />
 
-    <TextView
-        android:id="@+id/tvWeeklySteps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Weekly Steps: "
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        android:layout_marginTop="23dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvCaloriesToday" />
 
-    <TextView
-        android:id="@+id/tvOverallSteps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Overall Steps: "
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        android:layout_marginTop="17dp"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
 
     <com.jjoe64.graphview.helper.GraphViewXML
         android:id="@+id/gGraph"
-        android:layout_width="309dp"
-        android:layout_height="81dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
         app:seriesColor="#ffffff"
         app:seriesData="0=0;2=0;4=0;"
         app:seriesType="bar"
-        android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="98dp"
-        app:layout_constraintHorizontal_bias="0.508" />
-
-    <EditText
-        android:id="@+id/weight"
-        android:layout_width="60dp"
-        android:layout_height="35dp"
-        android:layout_gravity="center_horizontal"
-        android:ems="6"
-        android:hint="Weight(Kg)"
-        android:inputType="number|numberDecimal"
-        android:textSize="10sp"
-        app:layout_constraintLeft_toRightOf="@+id/height"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@+id/coordinatorLayout"
         android:layout_marginLeft="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp" />
+        android:layout_marginRight="8dp" />
 
-    <EditText
-        android:id="@+id/height"
-        android:layout_width="60dp"
-        android:layout_height="35dp"
-        android:layout_gravity="center_horizontal"
-        android:ems="6"
-        android:hint="Height(cm)"
-        android:inputType="number|numberDecimal"
-        android:textSize="10sp"
-        app:layout_constraintLeft_toRightOf="@+id/age"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp" />
-    <EditText
-        android:id="@+id/age"
-        android:layout_width="60dp"
-        android:layout_height="35dp"
-        android:layout_gravity="center_horizontal"
-        android:ems="6"
-        android:hint="Age"
-        android:inputType="number|numberDecimal"
-        android:textSize="10sp"
-        android:layout_marginLeft="6dp"
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp" />
+        android:id="@+id/coordinatorLayout">
 
 
-    <Button
-        android:id="@+id/calc"
-        android:layout_width="60dp"
-        android:layout_height="35dp"
-        android:layout_gravity="center_horizontal"
-        android:text="Save"
-        android:textSize="8sp"
+        <LinearLayout
+            android:id="@+id/layout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:weightSum="5"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            >
+
+
+
+            <EditText
+                android:id="@+id/weight"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginRight="4dp"
+                android:ems="6"
+                android:hint="Weight(Kg)"
+                android:inputType="number|numberDecimal"
+                android:textSize="12sp"
+                app:layout_constraintRight_toLeftOf="@+id/tgsex"
+                tools:layout_editor_absoluteY="7dp" />
+
+            <EditText
+                android:id="@+id/height"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginRight="4dp"
+                android:ems="6"
+                android:hint="Height(cm)"
+                android:inputType="number|numberDecimal"
+                android:textSize="12sp"
+                app:layout_constraintRight_toLeftOf="@+id/weight"
+                tools:layout_editor_absoluteY="7dp" />
+
+            <EditText
+                android:id="@+id/age"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginStart="4dp"
+                android:ems="6"
+                android:hint="Age"
+                android:inputType="number|numberDecimal"
+                android:textSize="12sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/height"
+                tools:layout_editor_absoluteY="7dp" />
+
+
+            <ToggleButton
+                android:id="@+id/tgsex"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginRight="4dp"
+                android:text="ToggleButton"
+                android:textOff="Male"
+                android:textOn="Female"
+                android:textSize="10sp"
+                app:layout_constraintRight_toLeftOf="@+id/calc" />
+
+            <Button
+                android:id="@+id/calc"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="Save"
+                android:textSize="12sp"
+                />
+
+        </LinearLayout>
+
+
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/tgsex"
         android:layout_marginLeft="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp" />
-
-    <ToggleButton
-        android:id="@+id/tgsex"
-        android:layout_width="60dp"
-        android:layout_height="35dp"
-        android:text="ToggleButton"
-        android:textOff="Male"
-        android:textOn="Female"
-        android:textSize="8sp"
-        app:layout_constraintLeft_toRightOf="@+id/weight"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp" />
-
-    <TextView
-        android:id="@+id/tvWeeklyDistance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="8dp"
-        android:text="Weekly Distance: "
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvWeeklySteps" />
+        android:layout_marginBottom="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/gGraph">
 
-    <TextView
-        android:id="@+id/tvTodaysDistance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Todays Distance: "
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvTodaySteps"
-        tools:layout_editor_absoluteX="112dp" />
 
-    <TextView
-        android:id="@+id/tvOverallDistance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Overall Distance: "
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvOverallSteps"
-        tools:layout_editor_absoluteY="431dp"
-        tools:layout_editor_absoluteX="112dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:padding="16dp"
+            app:layout_constraintTop_toBottomOf="@+id/gGraph"
+            app:layout_constraintHorizontal_bias="0.0">
 
-    <TextView
-        android:id="@+id/tvCaloriesToday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvTodaysDistance"
-        app:layout_constraintHorizontal_bias="0.505"
-        tools:layout_editor_absoluteX="144dp"
-        tools:layout_editor_absoluteY="259dp" />
+                <TextView
+                    android:id="@+id/tvToday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Today"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="25sp"
+                    tools:layout_editor_absoluteX="38dp"
+                    tools:layout_editor_absoluteY="206dp" />
+                <TextView
+                    android:id="@+id/tvTodaysFlags"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="Flags: "
+                    tools:layout_editor_absoluteX="153dp"
+                    tools:layout_editor_absoluteY="211dp" />
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvWeeklyDistance"
-        tools:layout_editor_absoluteY="365dp"
-        tools:layout_editor_absoluteX="138dp" />
+                <TextView
+                    android:id="@+id/tvTodaySteps"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="Steps: "
+                    tools:layout_editor_absoluteX="153dp"
+                    tools:layout_editor_absoluteY="189dp" />
+                <TextView
+                    android:id="@+id/tvTodaysDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="Distance: "
+                    tools:layout_editor_absoluteX="144dp"
+                    tools:layout_editor_absoluteY="232dp" />
+                <TextView
+                    android:id="@+id/tvCaloriesToday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:layout_editor_absoluteX="176dp"
+                    android:textSize="20sp"
+                    tools:layout_editor_absoluteY="249dp"
+                    android:paddingBottom="20dp"/>
 
-    <TextView
-        android:id="@+id/tvOverallCalories"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintHorizontal_bias="0.505"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/tvOverallDistance" />
 
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_marginLeft="16dp"
-        android:text="*estimates based on your activity and the information you provided"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="8sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/tvWeekly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Weekly"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="25sp"
+                    tools:layout_editor_absoluteX="38dp"
+                    tools:layout_editor_absoluteY="290dp" />
+
+
+
+
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="Flags: "
+                    tools:layout_editor_absoluteX="154dp"
+                    tools:layout_editor_absoluteY="296dp" />
+
+
+
+
+
+                <TextView
+                    android:id="@+id/tvWeeklySteps"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Steps: "
+                    android:textSize="20sp"
+                    tools:layout_editor_absoluteX="153dp"
+                    tools:layout_editor_absoluteY="273dp" />
+
+
+                <TextView
+                    android:id="@+id/tvWeeklyDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Distance: "
+                    tools:layout_editor_absoluteX="144dp"
+                    android:textSize="20sp"
+                    tools:layout_editor_absoluteY="320dp" />
+
+                <TextView
+                    android:id="@+id/textView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    tools:layout_editor_absoluteX="175dp"
+                    tools:layout_editor_absoluteY="343dp"
+                    android:paddingBottom="20dp"/>
+
+
+
+
+                <TextView
+                    android:id="@+id/tvOverall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Overall"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="25sp"
+                    tools:layout_editor_absoluteX="38dp"
+                    tools:layout_editor_absoluteY="385dp" />
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="Flags: "
+                    tools:layout_editor_absoluteX="153dp"
+                    tools:layout_editor_absoluteY="400dp" />
+
+                <TextView
+                    android:id="@+id/tvOverallSteps"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+
+                    android:text="Steps: "
+                    tools:layout_editor_absoluteX="153dp"
+                    tools:layout_editor_absoluteY="383dp" />
+
+
+                <TextView
+                    android:id="@+id/tvOverallDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+
+                    android:text="Distance:  "
+                    tools:layout_editor_absoluteX="144dp"
+                    tools:layout_editor_absoluteY="417dp" />
+
+
+
+
+
+
+
+
+
+                <TextView
+                    android:id="@+id/tvOverallCalories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:paddingBottom="8dp"
+                    tools:layout_editor_absoluteX="176dp"
+                    tools:layout_editor_absoluteY="441dp" />
+
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="*estimates based on your activity and the information you provided"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="8sp"
+                    android:gravity="left"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="495dp"
+                    android:paddingBottom="8dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dip"
+                android:background="@color/colorPrimaryDark"
+                android:paddingBottom="50dp"/>
+
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
 
 </android.support.constraint.ConstraintLayout>

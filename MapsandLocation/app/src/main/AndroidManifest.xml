@@ -51,7 +51,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".StatsActivity"
-            android:label="stats"
+            android:label="Personal Stats"
             android:parentActivityName=".HomePage" />
         <activity android:name=".UserLoginActivity" />
         <activity

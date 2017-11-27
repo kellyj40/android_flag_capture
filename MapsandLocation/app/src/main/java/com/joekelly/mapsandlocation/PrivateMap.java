@@ -32,7 +32,7 @@ import java.util.ArrayList;
 public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
     private GoogleMap mMap;
-    private int flagsCaptured = 0;
+    private int flagsCaptured;
     private Vibrator vib;
 
     // Step instance
@@ -48,7 +48,8 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
     private PrivateFlagRequest getFlagLocation = new PrivateFlagRequest();
 
     private Databasehelperclass myDb;
-    private DataBaseManagement referenceDataBase;
+    private DataBaseManagement flagsDb;
+    //private DataBaseManagement referenceDataBase;
     private LatLng userLocation;
     private String message;
 
@@ -63,7 +64,7 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
         mapFragment.getMapAsync(this);
 
         // Set up database
-        createDatabaseTable();
+        //createDatabaseTable();
         // Get location of user
         getLocation();
         // Set up sensor technology
@@ -74,27 +75,19 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
         // Set up stats page db
         myDb = new Databasehelperclass(this);
+        flagsDb = new DataBaseManagement(this);
 
         //Initialise vibration
         vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        //Initialise flags
+        flagsCaptured = flagsDb.todaysFlags();
+        // Update text with number of flags captured from other games
+        TextView textView = (TextView) findViewById(R.id.distance);
+        textView.setText("Todays Flags: " + Integer.toString(flagsCaptured));
+
 
     }
 
-    public void createDatabaseTable() {
-
-        //Making table to store all the values of the flags collected by user
-        try{
-            SQLiteDatabase userDatabase = this.openOrCreateDatabase("UserData", MODE_PRIVATE, null);
-            referenceDataBase = new DataBaseManagement(userDatabase);
-
-            flagsCaptured = referenceDataBase.makeLocalFlagTable();
-            // Update text with number of flags captured from other games
-            TextView textView = (TextView) findViewById(R.id.distance);
-            textView.setText("Flags Captured: " + Integer.toString(flagsCaptured));
-        }catch (Exception e){
-            Toast.makeText(PrivateMap.this, "Error in Database", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     public void getLocation() {
         // getting location
@@ -187,15 +180,16 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
             // Remove the flag from the map
             flagsOnMap.removeFlagFromMap(value);
             // Increment number of flags collected by the user
-            flagsCaptured++;
+
             // Update the local database
-            referenceDataBase.updateLocalFlagTable();
+            flagsDb.updateLocalFlagTable();
             // Make toast that flag was captured
             showToast("Flag captured :) ");
+            flagsCaptured = flagsDb.todaysFlags();
 
             // Up date the text view of the number of captured flags
             TextView textView = (TextView) findViewById(R.id.distance);
-            textView.setText("Flags Captured: " + Integer.toString(flagsCaptured));
+            textView.setText("Todays Flags: " + Integer.toString(flagsCaptured));
 
             // If there is no more flags make new ones
             if (flagsOnMap.numberOfFlagsRemaining<=0){

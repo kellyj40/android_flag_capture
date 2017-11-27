@@ -48,6 +48,7 @@ public class StatsActivity extends AppCompatActivity {
 
 
     Databasehelperclass myDb;
+    DataBaseManagement flagsDb;
 
     public int todayssteps;
     public int week;
@@ -66,14 +67,7 @@ public class StatsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         int numsteps = intent.getIntExtra("numSteps", 0);
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Maybe email stats to yourself?", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        flagsDb = new DataBaseManagement(this);
         myDb = new Databasehelperclass(this);
         todayssteps = myDb.todaysSteps() + numsteps;
         week = myDb.weeksSteps() + numsteps;
@@ -81,6 +75,9 @@ public class StatsActivity extends AppCompatActivity {
         TextView today_steps;
         TextView week_steps;
         TextView overall_steps;
+        TextView today_flags;
+        TextView week_flags;
+        TextView overall_flags;
 
 
 
@@ -99,7 +96,7 @@ public class StatsActivity extends AppCompatActivity {
         series.setValueDependentColor(new ValueDependentColor<DataPoint>() {
             @Override
             public int get(DataPoint data) {
-                return Color.rgb((int) data.getX()*255/4, (int) Math.abs(data.getY()*255/6), 100);
+                return Color.rgb((int) data.getX()*100/4, (int) Math.abs(data.getY()*255/6), 100);
             }
         });
 
@@ -121,6 +118,10 @@ public class StatsActivity extends AppCompatActivity {
         today_steps = (TextView) findViewById(R.id.tvTodaySteps);
         week_steps = (TextView) findViewById(R.id.tvWeeklySteps);
         overall_steps = (TextView) findViewById(R.id.tvOverallSteps);
+        today_flags = (TextView) findViewById(R.id.tvTodaysFlags);
+        week_flags = (TextView) findViewById(R.id.textView9);
+        overall_flags = (TextView) findViewById(R.id.textView10);
+
 
         loadSharedPreferences();
 
@@ -132,6 +133,9 @@ public class StatsActivity extends AppCompatActivity {
         today_steps.append(""+todayssteps);
         week_steps.append(""+week);
         overall_steps.append(""+overall);
+        today_flags.append(flagsDb.todaysFlags()+"");
+        week_flags.append(flagsDb.weeksFlags()+"");
+        overall_flags.append(flagsDb.overallFlags()+"");
         //float distanceday = (Math.round(stepLength*week*100))/100.0f;
         //float distanceweek = (Math.round(stepLength*todayssteps*100))/100.0f;
         //float distanceoverall = (Math.round(stepLength*overall*100))/100.0f;

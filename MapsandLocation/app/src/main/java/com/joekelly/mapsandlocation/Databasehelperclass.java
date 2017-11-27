@@ -62,7 +62,7 @@ public class Databasehelperclass extends SQLiteOpenHelper {
      * All CRUD(Create, Read, Update, Delete) Operations
      */
 
-    // Adding new contact
+    // Adding steps
     void addSteps(Steps steps) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -93,7 +93,6 @@ public class Databasehelperclass extends SQLiteOpenHelper {
                 steps.setTimestamp(cursor.getLong(1));
                 steps.setSteps(cursor.getInt(2));
                 steps.setToday(cursor.getString(3));
-                // Adding contact to list
                 rowList.add(steps);
             } while (cursor.moveToNext());
         }
