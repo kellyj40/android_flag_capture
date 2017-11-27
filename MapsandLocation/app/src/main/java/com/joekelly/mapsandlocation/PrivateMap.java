@@ -24,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -227,7 +228,11 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.private_menu, menu);
+
+
+        // ----------CHANGE BACK TO PRIVATE MENU WHEN EVERYONE HAS LOGGED OUT---------
+//        inflater.inflate(R.menu.private_menu, menu);
+        inflater.inflate(R.menu.public_menu, menu);
         return true;
     }
 
@@ -246,6 +251,15 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
             case R.id.leaderboard:
                 startActivity(new Intent(this, Abouter.class));
                 return true;
+
+
+
+                // ------REMOVE ONCE EVERYONE HAS LOGGED OUT-----
+            case R.id.logout:
+                // set logout to true, then destroy the instance.
+                // user will be logged out onDestroy()
+                logout = true;
+                finish();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -259,5 +273,23 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
     protected void onStart() {super.onStart();}
     protected void onPause() {super.onPause();}
     protected void onResume() {super.onResume();}
+
+
+
+
+
+
+
+// -------REMOVE ONCE EVERYONE HAS LOGGED OUT
+    boolean logout = false;
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (logout) {
+            FirebaseAuth.getInstance().signOut();
+        }
+    }
 
 }
