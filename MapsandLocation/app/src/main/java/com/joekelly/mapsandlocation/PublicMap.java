@@ -12,7 +12,6 @@ import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -53,6 +52,9 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
     //Flag instance
     PublicFlagRequest flagRequest;
+
+    // Login/logout preference - allows us to check whether the user wants to be logged out on destroy
+    private boolean logout = false;
 
 
 
@@ -116,7 +118,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
+        inflater.inflate(R.menu.public_menu, menu);
         return true;
     }
 
@@ -135,6 +137,11 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
             case R.id.help:
                 startActivity(new Intent(this, Abouter.class));
                 return true;
+            case R.id.logout:
+                // set logout to true, then destroy the instance.
+                // user will be logged out onDestroy()
+                logout = true;
+                finish();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -142,6 +149,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
 
     }
+
 
     @Override // Called once the map is ready by google
     public void onMapReady(GoogleMap googleMap) {
@@ -266,6 +274,14 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         userManager.removeUserFromPlaying();
         locationManager.removeUpdates(locationListener);
         myDb.addSteps(new Steps(stepObject.numSteps));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (logout) {
+            FirebaseAuth.getInstance().signOut();
+        }
     }
 
     public void showToast(String message) {
