@@ -71,21 +71,28 @@ public class UserLoginActivity extends AppCompatActivity {
                 // Going to pass the email and password up to the database
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(UserLoginActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(!task.isSuccessful()){
-                            Toast.makeText(UserLoginActivity.this, "sign up error", Toast.LENGTH_SHORT).show();
-                        }else{
-                            // If successful save same of the imformation to the database, user_id
-                            String user_id = mAuth.getCurrentUser().getUid();
-                            DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("users").child(user_id);
-                            current_user_db.child("name").setValue(email);
-                            current_user_db.child("flags collected").setValue(0);
-                            current_user_db.child("flags stolen").setValue(0);
+                if ((email.length() > 0) && (password.length() > 0)) {
+                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(UserLoginActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(!task.isSuccessful()){
+                                String errorMessage = task.getException().getMessage();
+                                Toast.makeText(UserLoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                            }else{
+                                // If successful save same of the imformation to the database, user_id
+                                String user_id = mAuth.getCurrentUser().getUid();
+                                DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("users").child(user_id);
+                                current_user_db.child("name").setValue(email);
+                                current_user_db.child("flags collected").setValue(0);
+                                current_user_db.child("flags stolen").setValue(0);
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    Toast.makeText(UserLoginActivity.this, "Please enter an email and password", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
         });
 
@@ -96,14 +103,20 @@ public class UserLoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(UserLoginActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(!task.isSuccessful()){
-                            Toast.makeText(UserLoginActivity.this, "sign in error", Toast.LENGTH_SHORT).show();
+                if ((email.length() > 0) && (password.length() > 0)) {
+                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(UserLoginActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(!task.isSuccessful()){
+                                String errorMessage = task.getException().getMessage();
+                                Toast.makeText(UserLoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+                }
+                else {
+                    Toast.makeText(UserLoginActivity.this, "Please enter an email and password", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
