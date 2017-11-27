@@ -281,7 +281,6 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
     protected void onPause() {
         super.onPause();
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     }
 
     protected void onStart() {
@@ -290,15 +289,14 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
     protected void onStop() {
         super.onStop();
-
-        userManager.removeUserFromPlaying();
-        locationManager.removeUpdates(locationListener);
-        myDb.addSteps(new Steps(stepObject.numSteps));
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        userManager.removeUserFromPlaying();
+        locationManager.removeUpdates(locationListener);
+        myDb.addSteps(new Steps(stepObject.numSteps));
         if (logout) {
             FirebaseAuth.getInstance().signOut();
         }
@@ -322,6 +320,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
         stepObject.initialiseStepSensor(this, message, StepsTaken, 0);
     }
+
 
 }
 
