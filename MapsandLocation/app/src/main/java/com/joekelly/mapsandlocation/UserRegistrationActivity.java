@@ -40,6 +40,9 @@ public class UserRegistrationActivity extends AppCompatActivity {
         mLatitudeText = intent.getDoubleExtra("LAT", 0.0);
         mLongitudeText = intent.getDoubleExtra("LON", 0.0);
 
+        Toast.makeText(UserRegistrationActivity.this, mLatitudeText.toString() + " " + mLongitudeText.toString(), Toast.LENGTH_SHORT).show();
+
+
         mAuth = FirebaseAuth.getInstance();
         // User logins in and goes to the next stage if exists
         firebaseAuthListener = new FirebaseAuth.AuthStateListener() {

@@ -98,7 +98,10 @@ public class UserLoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Start the Signup activity
                 Intent intent = new Intent(getApplicationContext(), UserRegistrationActivity.class);
+                intent.putExtra("LAT", mLatitudeText);
+                intent.putExtra("LON", mLongitudeText);
                 startActivity(intent);
+                finish();
             }
         });
     }
