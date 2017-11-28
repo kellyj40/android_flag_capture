@@ -223,7 +223,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
                         userManager.setHasFlag(true);
 
                         // Draw radius for user to walk
-                        flagRequest.drawPerimeterDistanceToWalk();
+                        flagRequest.drawPerimeterDistanceToWalk(userLocation);
 
                     }
 

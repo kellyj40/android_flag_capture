@@ -185,9 +185,9 @@ public class PublicFlagRequest {
     }
 
     //This method will draw 200 meter distance to walk if flag captured
-    public void drawPerimeterDistanceToWalk(){
+    public void drawPerimeterDistanceToWalk(LatLng userLocationUpdate){
         // drawing circle
-        int d = 200; // diameter
+        int d = 400; // diameter
         Bitmap bm = Bitmap.createBitmap(d, d, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(bm);
         Paint p = new Paint();
@@ -202,13 +202,11 @@ public class PublicFlagRequest {
         //Add the circle
         distanceToWalkOverLay = mMap.addGroundOverlay(new GroundOverlayOptions().
                 image(bmD).
-                position(userLocation,radiusM*2,radiusM*2).transparency(0.4f));
+                position(userLocationUpdate,radiusM*2,radiusM*2).transparency(0.4f));
     }
 
     public void removePerimeterDistanceToWalk(){
         distanceToWalkOverLay.remove();
     }
-
-
-
+    
 }
