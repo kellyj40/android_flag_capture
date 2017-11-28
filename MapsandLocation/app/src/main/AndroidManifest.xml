@@ -50,7 +50,7 @@
             android:parentActivityName=".HomePage"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Abouter"
+            android:name=".Leaderboard"
             android:label="@string/title_activity_abouter"
             android:parentActivityName=".HomePage"
             android:theme="@style/AppTheme.NoActionBar" />

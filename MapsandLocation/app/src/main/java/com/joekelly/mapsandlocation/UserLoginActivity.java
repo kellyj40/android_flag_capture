@@ -29,7 +29,7 @@ public class UserLoginActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     protected Double mLatitudeText;
     protected Double mLongitudeText;
-
+    protected Class nextActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +39,7 @@ public class UserLoginActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mLatitudeText = intent.getDoubleExtra("LAT", 0.0);
         mLongitudeText = intent.getDoubleExtra("LON", 0.0);
+        final String nextActivity = intent.getStringExtra("nextActivity");
 
         mAuth = FirebaseAuth.getInstance();
         // User logins in and goes to the next stage if exists
@@ -47,7 +48,13 @@ public class UserLoginActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if(user!=null){
-                    Intent intent = new Intent(UserLoginActivity.this, PublicMap.class);
+                    Intent intent;
+                    if (nextActivity.equals("PublicMap")) {
+                       intent =  new Intent(UserLoginActivity.this, PublicMap.class);
+                    } else {
+                        intent = new Intent(UserLoginActivity.this, Leaderboard.class);
+                    }
+
                     intent.putExtra("LAT", mLatitudeText);
                     intent.putExtra("LON", mLongitudeText);
                     startActivity(intent);

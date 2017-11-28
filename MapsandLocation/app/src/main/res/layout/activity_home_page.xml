@@ -100,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:text="Score"
-            android:onClick="scoreLauncher"
+            android:onClick="leaderboardLauncher"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:background="@color/white"

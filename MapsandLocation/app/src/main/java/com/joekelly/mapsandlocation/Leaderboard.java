@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Abouter extends AppCompatActivity {
+public class Leaderboard extends AppCompatActivity {
 
 
     ListView listView;

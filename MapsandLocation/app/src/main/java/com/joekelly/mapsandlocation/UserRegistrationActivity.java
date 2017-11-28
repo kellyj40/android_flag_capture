@@ -39,6 +39,7 @@ public class UserRegistrationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mLatitudeText = intent.getDoubleExtra("LAT", 0.0);
         mLongitudeText = intent.getDoubleExtra("LON", 0.0);
+        final String nextActivity = intent.getStringExtra("nextActivity");
 
         Toast.makeText(UserRegistrationActivity.this, mLatitudeText.toString() + " " + mLongitudeText.toString(), Toast.LENGTH_SHORT).show();
 
@@ -50,8 +51,12 @@ public class UserRegistrationActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if(user!=null){
-                    Intent intent = new Intent(UserRegistrationActivity.this, PublicMap.class);
-                    intent.putExtra("LAT", mLatitudeText);
+                    Intent intent;
+                    if (nextActivity.equals("PublicMap")) {
+                        intent =  new Intent(UserRegistrationActivity.this, PublicMap.class);
+                    } else {
+                        intent = new Intent(UserRegistrationActivity.this, Leaderboard.class);
+                    }                    intent.putExtra("LAT", mLatitudeText);
                     intent.putExtra("LON", mLongitudeText);
                     startActivity(intent);
                     finish();

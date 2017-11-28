@@ -137,6 +137,7 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         Intent intent = new Intent(this, UserLoginActivity.class);
         intent.putExtra("LAT", mLatitudeText);
         intent.putExtra("LON", mLongitudeText);
+        intent.putExtra("nextActivity", "PublicMap");
 //        myDb.addSteps(new Steps(stepObject.numSteps));
 
         // check if we have successfully recieved user's location
@@ -172,9 +173,10 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         startActivity(intent);
     }
 
-    public void scoreLauncher(View view) {
-        Intent intent = new Intent(this, Abouter.class);
+    public void leaderboardLauncher(View view) {
+        Intent intent = new Intent(this, UserLoginActivity.class);
 //        myDb.addSteps(new Steps(stepObject.numSteps));
+        intent.putExtra("nextActivity", "Leaderboard");
         startActivity(intent);
 
     }

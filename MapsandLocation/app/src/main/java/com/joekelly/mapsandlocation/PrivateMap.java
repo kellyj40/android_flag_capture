@@ -200,6 +200,14 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
         }
     }
 
+    public boolean checkLogin() {
+//        boolean result = true;
+
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        return user != null;
+        return true;
+    }
+
 
     public void setUpSensors(){
         StepsTaken = (TextView) findViewById(R.id.tv_steps);
@@ -249,7 +257,7 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 //                finish();
                 return true;
             case R.id.leaderboard:
-                startActivity(new Intent(this, Abouter.class));
+                startActivity(new Intent(this, Leaderboard.class));
                 return true;
 
 
