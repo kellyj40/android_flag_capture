@@ -238,9 +238,7 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
         MenuInflater inflater = getMenuInflater();
 
 
-        // ----------CHANGE BACK TO PRIVATE MENU WHEN EVERYONE HAS LOGGED OUT---------
-//        inflater.inflate(R.menu.private_menu, menu);
-        inflater.inflate(R.menu.public_menu, menu);
+        inflater.inflate(R.menu.private_menu, menu);
         return true;
     }
 
@@ -260,14 +258,6 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
                 startActivity(new Intent(this, Leaderboard.class));
                 return true;
 
-
-
-                // ------REMOVE ONCE EVERYONE HAS LOGGED OUT-----
-            case R.id.logout:
-                // set logout to true, then destroy the instance.
-                // user will be logged out onDestroy()
-                logout = true;
-                finish();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -281,23 +271,4 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
     protected void onStart() {super.onStart();}
     protected void onPause() {super.onPause();}
     protected void onResume() {super.onResume();}
-
-
-
-
-
-
-
-// -------REMOVE ONCE EVERYONE HAS LOGGED OUT
-    boolean logout = false;
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (logout) {
-            FirebaseAuth.getInstance().signOut();
-        }
-    }
-
 }
