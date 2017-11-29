@@ -28,9 +28,13 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
-// Activity for the private game
+/*
+    This is the private map class
+    The class listens to the users location movement
+    Used to initiate the google maps api and call respecive classes for the flags, local databases and distance functions
+ */
 public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
-
+    // Google map api variables
     private GoogleMap mMap;
     private int flagsCaptured;
     private Vibrator vib;
@@ -40,20 +44,24 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
     private SensorObject stepObject;
     private TextView StepsTaken;
 
-    //stats db
+    // stats db
     private ArrayList <double[]> arrFlags; // Coordinates of all flags on map
     private FlagsOnMap flagsOnMap;
-    private LocationManager locationManager;
-    private LocationListener locationListener;
     private PrivateFlagRequest getFlagLocation = new PrivateFlagRequest();
 
+    // Database management variables
     private Databasehelperclass myDb;
     private DataBaseManagement flagsDb;
-    //private DataBaseManagement referenceDataBase;
+
+    // User location variables
+    private LocationManager locationManager;
+    private LocationListener locationListener;
     private LatLng userLocation;
     private String message;
 
-
+    /*
+    On create method, will set up the map and ensure all database management is ready
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,8 +71,6 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // Set up database
-        //createDatabaseTable();
         // Get location of user
         getLocation();
         // Set up sensor technology
@@ -79,8 +85,10 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
         //Initialise vibration
         vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
         //Initialise flags
         flagsCaptured = flagsDb.todaysFlags();
+
         // Update text with number of flags captured from other games
         TextView textView = (TextView) findViewById(R.id.distance);
         textView.setText("Todays Flags: " + Integer.toString(flagsCaptured));
@@ -88,20 +96,28 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
     }
 
-
+    /*
+    Method will get the users current location
+     */
     public void getLocation() {
         // getting location
         Intent intent = getIntent();
+
         // Lat and lngs pasted in from the homepage
         Double startingLat = intent.getDoubleExtra("LAT", 0.0);
         Double startingLon = intent.getDoubleExtra("LON", 0.0);
+
         // Set to the global value
         userLocation = new LatLng(startingLat, startingLon);
         showToast(userLocation.toString());
     }
 
 
-
+    /*
+       When the map is all set up, markers will be placed on the map and a listener of the user will
+       be activated. This listener will call a distance formula every step checking if the user is in the
+       proximity of a flag to collect
+      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // Set the map
@@ -144,6 +160,7 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
 
         // Must be after the location listener is made
+        // checks users permission for user location
         if (Build.VERSION.SDK_INT < 23) {
             // check for permision, and then start requesting location updates. Otherwise, request permission
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
@@ -168,8 +185,11 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
 
     }
-
+    /*
+    Method called on location change to see if the user has captured flags
+     */
     public void checkIfCapturedFlag(){
+
         // Calculate the distance to all the flags, if within the distance return location of the index, -1 if not in radius
         int value = DistanceCalculations.checkFlagDistances(userLocation, arrFlags);
 
@@ -199,7 +219,9 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
             }
         }
     }
-
+    /*
+    This method will check if the user has chacked into the application or not
+     */
     public boolean checkLogin() {
 //        boolean result = true;
 
@@ -208,7 +230,9 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
         return true;
     }
 
-
+    /*
+    Method is used to set up the sensors for the Pedometer
+     */
     public void setUpSensors(){
         StepsTaken = (TextView) findViewById(R.id.tv_steps);
         stepObject = new SensorObject();
@@ -218,12 +242,12 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
         stepObject.initialiseStepSensor(this, message, StepsTaken, 0);
 
     }
-
+    // Mehod used to generate new flags
     public void newFlags(){
         // Make a flagRequest for new flags from the users location
         arrFlags = getFlagLocation.requestFlags(userLocation);
     }
-
+    // Method used to generate all Toast messages
     public void showToast(String message) {
         // All Toast messages call this method
         Context context = getApplicationContext();
@@ -233,15 +257,14 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
     }
-
+    // Method used to make the toolbar options menu
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-
 
         inflater.inflate(R.menu.private_menu, menu);
         return true;
     }
-
+    // Method called when an option from tool bar is selected
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.statsMenu:
@@ -263,7 +286,10 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
         }
 
     }
-
+    // Cycle methods
+    /*
+    On stop will update the databases steps with the new value
+     */
     protected void onStop() {
         super.onStop();
         myDb.addSteps(new Steps(stepObject.numSteps));

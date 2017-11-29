@@ -31,13 +31,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-// Activity for the public game
+/*
+    This class is the publicMaps class in which will show the flags that are within a killometer of the user
+    and the other players.
+ */
 public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
-
+    // Google maps variable
     private GoogleMap mMap;
+
+    //User Location variables
     private LatLng userLocation;
     private UserManager userManager;
-
     LocationManager locationManager;
     LocationListener locationListener;
 
@@ -58,7 +62,10 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
     private boolean logout = false;
 
 
-
+    /*
+    The on create method is called on initiation of the app, it sets up all the location variables,
+    Database variabels
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,44 +125,16 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         setUpSensors();
 
         // Initialise vibration
-        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); }
-
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.public_menu, menu);
-        return true;
+        vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.statsMenu:
-                // passes steps to stats page
-                Intent registerIntent = new Intent(this, StatsActivity.class);
-                int x = stepObject.numSteps;
-                // adds current steps to db
-                // myDb.addSteps(new Steps(x));
-                registerIntent.putExtra("numSteps", x);
-                startActivity(registerIntent);
-//                finish();
-                return true;
-            case R.id.leaderboard:
-                startActivity(new Intent(this, Leaderboard.class));
-                return true;
-            case R.id.logout:
-                // set logout to true, then destroy the instance.
-                // user will be logged out onDestroy()
-                logout = true;
-                finish();
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-
-
-
-    }
-
-
-    @Override // Called once the map is ready by google
+    /*
+        When the map is is ready then then the logic of the public game begins
+        Gets the users location and sets listener for changes
+        Gets all users playing and they will have listeners updating their positions on the map
+        Checks user is within a distance of a flag to pick up
+        Listens to all flag activity.
+     */
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         // Set the map
         mMap = googleMap;
@@ -196,9 +175,9 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
     }
 
-
-
-
+    /*
+    Listener of the users location
+     */
     public LocationListener createLocationListener() {
         // Add listener for GPS movement - Check if collect flag, update to fireBase,
         LocationListener newLocationListener = new LocationListener() {
@@ -267,7 +246,10 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         return newLocationListener;
     }
 
-
+    /*
+    Get user location method
+    sets the LatLng position to the global variable
+     */
     public void getLocation() {
         PrivateFlagRequest getFlagsObject = new PrivateFlagRequest();
 
@@ -278,6 +260,77 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         userLocation = new LatLng(startingLat, startingLon);
     }
 
+    /*
+    Set up the sensors for the Pedometer
+     */
+    public void setUpSensors(){
+        StepsTaken = (TextView) findViewById(R.id.tv_steps);
+        stepObject = new SensorObject();
+        numSteps= stepObject.numSteps;
+        stepObject.passTextView(StepsTaken);
+        String message = getResources().getString(R.string.steps_walked);
+
+        stepObject.initialiseStepSensor(this, message, StepsTaken, 0);
+    }
+    /*
+    Menu for the toolbar creator
+     */
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.public_menu, menu);
+        return true;
+    }
+    /*
+    Option selector for toolbar menu
+     */
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.statsMenu:
+                // passes steps to stats page
+                Intent registerIntent = new Intent(this, StatsActivity.class);
+                int x = stepObject.numSteps;
+
+                registerIntent.putExtra("numSteps", x);
+                startActivity(registerIntent);
+
+                return true;
+            case R.id.leaderboard:
+                startActivity(new Intent(this, Leaderboard.class));
+                return true;
+            case R.id.logout:
+                // set logout to true, then destroy the instance.
+                // user will be logged out onDestroy()
+                logout = true;
+                finish();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+    /*
+    Toast method for all toast messages
+     */
+    public void showToast(String message) {
+        Context context = getApplicationContext();
+        CharSequence text = message;
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+    }
+    /*
+    On destroy, call all listeners to stop so that users cannot see them on their locations
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        userManager.removeUserFromPlaying();
+        locationManager.removeUpdates(locationListener);
+        myDb.addSteps(new Steps(stepObject.numSteps));
+        if (logout) {
+            FirebaseAuth.getInstance().signOut();
+        }
+    }
 
     protected void onPause() {
         super.onPause();
@@ -290,37 +343,6 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
     protected void onStop() {
         super.onStop();
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        userManager.removeUserFromPlaying();
-        locationManager.removeUpdates(locationListener);
-        myDb.addSteps(new Steps(stepObject.numSteps));
-        if (logout) {
-            FirebaseAuth.getInstance().signOut();
-        }
-    }
-
-    public void showToast(String message) {
-        Context context = getApplicationContext();
-        CharSequence text = message;
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
-
-    public void setUpSensors(){
-        StepsTaken = (TextView) findViewById(R.id.tv_steps);
-        stepObject = new SensorObject();
-        numSteps= stepObject.numSteps;
-        stepObject.passTextView(StepsTaken);
-        String message = getResources().getString(R.string.steps_walked);
-
-        stepObject.initialiseStepSensor(this, message, StepsTaken, 0);
-    }
-
 
 }
 
