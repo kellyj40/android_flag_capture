@@ -31,6 +31,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Timer;
+
 /*
     This class is the publicMaps class in which will show the flags that are within a killometer of the user
     and the other players.
@@ -226,13 +228,19 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
                     }
                     if (userManager.checkIfNearPlayerWithFlag(userLocation)){
                         showToast("Your flag has been stolen :(");
-
                         vib.vibrate(1000);
-                        // If walked 200m with flag, allow to capture flags again
-                        userManager.setHasFlag(false);
 
                         // Remove radius for user to walk
                         flagRequest.removePerimeterDistanceToWalk();
+
+                        //Wait half a second before updating the database that doesnt have flag
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        // If walked 200m with flag, allow to capture flags again
+                        userManager.setHasFlag(false);
                     }
                 }
 

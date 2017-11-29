@@ -37,7 +37,7 @@ public class UserManager {
     private boolean hasFlag = false;
     private GoogleMap mMap;
     private int numberOfFlagsCollected;
-    private int numberOfFlagsStolen = 0;
+    private int numberOfFlagsStolen;
 
     public UserManager(GoogleMap mMap) {
         // get this user's ID
@@ -174,7 +174,7 @@ public class UserManager {
                 if (playerRef.playerHasFlag() && DistanceCalculations.distanceBetweenTwoPlayers(userLatLng, playerRef.getPlayerLatLng())) {
                     numberOfFlagsStolen++;
                     DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
-                    current_user_db.child("flags stolen").setValue(numberOfFlagsCollected);
+                    current_user_db.child("flags stolen").setValue(numberOfFlagsStolen);
                     return true;
                 }
             }else{
