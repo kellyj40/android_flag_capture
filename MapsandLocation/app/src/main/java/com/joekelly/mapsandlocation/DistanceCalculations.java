@@ -83,12 +83,23 @@ public class DistanceCalculations {
         return null;
     }
 
+    public static boolean distanceBetweenTwoPlayers(LatLng userLocation, LatLng playerLocation){
+
+        double d = distance(playerLocation.latitude, playerLocation.longitude, userLocation.latitude,userLocation.longitude);
+
+        // Check if within distance
+        if (d > 200) {
+            return true;
+        }
+        return false;
+    }
+
     public static boolean checkedWalkedDistance(LatLng userLocation){
 
         double d = distance(pickedUpFlagLocation.latitude,pickedUpFlagLocation.longitude, userLocation.latitude,userLocation.longitude);
 
         // Check if within distance
-        if (d > 200) {
+        if (d > 40) {
             return true;
         }
         return false;

@@ -203,8 +203,11 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
                         // Draw radius for user to walk
                         flagRequest.drawPerimeterDistanceToWalk(userLocation);
-
                     }
+                    if (userManager.checkIfNearPlayerWithFlag(userLocation)){
+                        showToast("You have stolen a flag :)");
+                    }
+
 
                 }else{
                     // otherwise check if walked 200 meters with flag.
@@ -220,7 +223,16 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
                         // Update database score
                         userManager.capturedFlagUpdate();
 
+                    }
+                    if (userManager.checkIfNearPlayerWithFlag(userLocation)){
+                        showToast("Your flag has been stolen :(");
 
+                        vib.vibrate(1000);
+                        // If walked 200m with flag, allow to capture flags again
+                        userManager.setHasFlag(false);
+
+                        // Remove radius for user to walk
+                        flagRequest.removePerimeterDistanceToWalk();
                     }
                 }
 
@@ -318,9 +330,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
     }
-    /*
-    On destroy, call all listeners to stop so that users cannot see them on their locations
-     */
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

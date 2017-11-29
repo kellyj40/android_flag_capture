@@ -37,7 +37,7 @@ public class UserManager {
     private boolean hasFlag = false;
     private GoogleMap mMap;
     private int numberOfFlagsCollected;
-    private int numberOfFlagsStolen;
+    private int numberOfFlagsStolen = 0;
 
     public UserManager(GoogleMap mMap) {
         // get this user's ID
@@ -162,7 +162,30 @@ public class UserManager {
 
     }
 
+    public boolean checkIfNearPlayerWithFlag(LatLng userLatLng){
+        // The user playing the games phone is userLatLng, other players are palyer references
+        //iterate through each user, making User object, and then adding them to userMap
+        for (Map.Entry<String, User> entry : userMap.entrySet()) {
 
+            String otherPlayerId = entry.getKey();
+            User playerRef = userMap.get(otherPlayerId);
+            // If user doesnt have a flag its checking people with flag to steal
+            if (!hasFlag) {
+                if (playerRef.playerHasFlag() && DistanceCalculations.distanceBetweenTwoPlayers(userLatLng, playerRef.getPlayerLatLng())) {
+                    numberOfFlagsStolen++;
+                    DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
+                    current_user_db.child("flags stolen").setValue(numberOfFlagsCollected);
+                    return true;
+                }
+            }else{
+                // Otherwise the user is checking to see if someone else has stolen their flag, someone who doesnt have a flag
+                if (!playerRef.playerHasFlag() && DistanceCalculations.distanceBetweenTwoPlayers(userLatLng, playerRef.getPlayerLatLng())) {
+                    return true;
+                }
+            }
+        }
+        return false;
 
+    }
 
 }

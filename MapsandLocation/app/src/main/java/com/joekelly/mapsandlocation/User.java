@@ -25,6 +25,9 @@ public class User {
     private Marker userMarkerRef;
     private DatabaseReference playerRef;
     private GoogleMap mMap;
+    private LatLng playerLatLng;
+    private boolean hasFlag = false;
+
 
     // ------------------------- Constructor -------------------------- \\
     public User(String playerId, GoogleMap mMap) {
@@ -48,7 +51,7 @@ public class User {
                 if(dataSnapshot.exists()){
                     //Get snapshot of change
                     Map<String, Object> userMap = (Map<String, Object>) dataSnapshot.getValue();
-                    boolean hasFlag = false;
+                    hasFlag = false;
                     // Issue with updating the flags, needs to be set to false
                     try {
                         hasFlag =(boolean) userMap.get("hasFlag");
@@ -69,7 +72,8 @@ public class User {
                     }
 
 
-                    LatLng playerLatLng = new LatLng(locationLat, locationLng);
+                    playerLatLng = new LatLng(locationLat, locationLng);
+
 
                     //Remove all marker of user
                     if(userMarkerRef != null){
@@ -94,6 +98,13 @@ public class User {
 
     public void removePlayerFromMap() {
         userMarkerRef.remove();
+    }
+
+    public LatLng getPlayerLatLng(){
+        return playerLatLng;
+    }
+    public boolean playerHasFlag(){
+        return hasFlag;
     }
 
 
