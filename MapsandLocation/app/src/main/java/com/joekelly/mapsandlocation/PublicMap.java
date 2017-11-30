@@ -363,6 +363,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         myDb.addSteps(new Steps(stepObject.numSteps));
         if (logout) {
             FirebaseAuth.getInstance().signOut();
+            showToast("Logged out");
         }
     }
 

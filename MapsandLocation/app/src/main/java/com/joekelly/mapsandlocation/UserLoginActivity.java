@@ -86,6 +86,8 @@ public class UserLoginActivity extends AppCompatActivity {
                             if(!task.isSuccessful()){
                                 String errorMessage = task.getException().getMessage();
                                 Toast.makeText(UserLoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(UserLoginActivity.this, "Logged in", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

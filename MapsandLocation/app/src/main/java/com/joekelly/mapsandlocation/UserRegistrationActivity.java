@@ -96,6 +96,7 @@ public class UserRegistrationActivity extends AppCompatActivity {
                                 current_user_db.child("name").setValue(username);
                                 current_user_db.child("flags collected").setValue(0);
                                 current_user_db.child("flags stolen").setValue(0);
+                                Toast.makeText(UserRegistrationActivity.this, "User " + username + " created", Toast.LENGTH_SHORT).show();
                                 launchNewActivity();
                             }
                         }
