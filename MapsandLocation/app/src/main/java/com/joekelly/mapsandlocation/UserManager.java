@@ -167,11 +167,15 @@ public class UserManager {
         }
     }
 
+
     public void setHasFlag(boolean value){
         hasFlag = value;
     }
     public boolean getHasFlag(){
         return hasFlag;
+    }
+    public int getNumberOfFlagsCollected(){
+        return numberOfFlagsCollected;
     }
 
     public void capturedFlagUpdate(){

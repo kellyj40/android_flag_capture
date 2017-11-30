@@ -51,8 +51,10 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
     // Step instance
     private int numSteps;
+    private int numFlagsCollectedMap = 0;
     private SensorObject stepObject;
     private TextView StepsTaken;
+    private TextView flagsCaptured;
 
     //Step database
     private Databasehelperclass myDb;
@@ -145,6 +147,12 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
         userManager.setUserLocation(userLocation);
         userManager.setHasFlag(false);
 
+        numFlagsCollectedMap = userManager.getNumberOfFlagsCollected();
+        flagsCaptured = (TextView)findViewById(R.id.distance);
+        String textForCapturedFlags = "flags captured: "+Integer.toString(numFlagsCollectedMap);
+        flagsCaptured.setText(textForCapturedFlags);
+
+
         // Used for getting access to the systems location service
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationListener = createLocationListener();
@@ -224,6 +232,11 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
                         // Update database score
                         userManager.capturedFlagUpdate();
+
+                        //Update screen of numbers
+                        numFlagsCollectedMap++;
+                        String textForCapturedFlags = "flags captured: "+Integer.toString(numFlagsCollectedMap);
+                        flagsCaptured.setText(textForCapturedFlags);
 
                     }
                     if (userManager.checkIfOtherPlayersStoleFlag(userLocation)){
