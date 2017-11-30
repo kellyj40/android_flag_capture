@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 /*
     This is the private map class
-    The class listens to the users location movement
+    The class listens to the users location movement and controls the logic of the game, eachtime the user moves, checkers are made
     Used to initiate the google maps api and call respecive classes for the flags, local databases and distance functions
  */
 public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{

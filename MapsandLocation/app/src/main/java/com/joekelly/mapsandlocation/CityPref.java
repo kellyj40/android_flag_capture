@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 
 /**
- * Created by jakek on 17/11/2017.
+
  */
 
 public class CityPref {

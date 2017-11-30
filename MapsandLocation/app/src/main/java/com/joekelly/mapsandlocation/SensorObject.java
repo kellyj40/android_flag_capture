@@ -14,7 +14,7 @@ import java.util.Map;
 import static android.content.Context.SENSOR_SERVICE;
 
 /**
- * Created by pigna on 13/11/2017.
+
  */
 
 public class SensorObject implements SensorEventListener, StepListener {

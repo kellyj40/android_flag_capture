@@ -1,14 +1,10 @@
 package com.joekelly.mapsandlocation;
 
 /**
- * Created by pigna on 25/10/2017.
+ Interface to listen to step alerts
  */
 
-
-    // Will listen to step alerts
-    public interface StepListener {
-
-        public void step(long timeNs);
-
-    }
+public interface StepListener {
+    public void step(long timeNs);
+}
 

@@ -1,7 +1,7 @@
 package com.joekelly.mapsandlocation;
 
 /**
- * Created by jakek on 17/11/2017.
+ * This class is used to connect to the open weather API and pull recent data
  */
 
 import android.content.Context;

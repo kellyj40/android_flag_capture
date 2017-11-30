@@ -12,7 +12,7 @@ import android.support.v4.app.NotificationCompat;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
- * Created by jakek on 13/11/2017.
+ * THis class is used to notify the user on completing challenges, such as walking milestones
  */
 
 public class Notification {

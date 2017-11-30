@@ -34,8 +34,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Timer;
 
 /*
-    This class is the publicMaps class in which will show the flags that are within a killometer of the user
-    and the other players.
+    This class is the publicMaps class that shows the flags that are within a kilometer of the user
+    and the other players. The logic of this class is to set up the map, activate the listeners on
+    other players and flags.
  */
 public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
     // Google maps variable
@@ -195,6 +196,8 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
             public void onLocationChanged(Location location) {
                 //Get new location
                 userLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                // Update user on FireBase so other users can see
+                userManager.setUserLocation(userLocation);
 
                 if (userManager.checkIfUserStoleFlag()){
                     showToast("You have stolen a flag :)");
@@ -208,9 +211,6 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
                     flagsCaptured.setText(textForCapturedFlags);
 
                 }
-
-                // Update user on FireBase so other users can see
-                userManager.setUserLocation(userLocation);
 
                 //Check to make sure doest have flag
                 if (!userManager.getHasFlag()){
@@ -242,7 +242,7 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
                         // Update database score
                         userManager.capturedFlagUpdate();
 
-                        //Update screen of numbers
+                        // Update screen of numbers
                         numFlagsCollectedMap++;
                         String textForCapturedFlags = "flags captured: "+Integer.toString(numFlagsCollectedMap);
                         flagsCaptured.setText(textForCapturedFlags);

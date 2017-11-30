@@ -1,4 +1,9 @@
 package com.joekelly.mapsandlocation;
+/*
+    This class deals with all homepage activity methods
+    Including, Spotify, step counters and activating activities
+ */
+
 
 import android.Manifest;
 import android.app.Activity;
@@ -23,9 +28,9 @@ import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONObject;
 
-public class HomePage extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+public class HomePage extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    // Instance variables for the application
     protected Location mLastLocation;
     protected GoogleApiClient mGoogleApiClient;
     protected static final String TAG = "Homepage";
@@ -51,42 +56,35 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         getLocationPermission(this, this);
         buildGoogleApiClient();
 
-        //Step stuff
-
+        //Sensor objects to count steps
         stepObject = new SensorObject();
 
         numSteps = stepObject.numSteps;
         stepObject.initialiseStepSensor(this);
 
+        // Database object for todays steps
         myDb = new Databasehelperclass(this);
 
         final JSONObject weather = GetWeather.getJSON(this, "Dublin, IE");
-//        Toast.makeText(this, weather.toString(), Toast.LENGTH_LONG).show();
 
         stepWidget();
-//        Spotify.setContext(this);
-//        getCurrentlyPlaying();
 
     }
-
+    // Displays the steps taken in the widget screen
     private void stepWidget() {
+
+        // Increenting the number of steps
         int today = myDb.todaysSteps() + numSteps;
         TextView stepsWidget = findViewById(R.id.step_widget);
 
+        // Setting string with distance
         String getString = getResources().getString(R.string.motivation_widget);
         String setMessage = String.format(getString, today);
+
+        // Put message in the widget
         stepsWidget.setText(setMessage);
         stepObject.initialiseStepSensor(this, getString, stepsWidget, today);
 
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        stepObject.numSteps = 0;
-//        getLocationPermission(this, this);
-//        buildGoogleApiClient();
     }
 
 
@@ -118,11 +116,11 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
             mLongitudeText = mLastLocation.getLongitude();
             hasLocation = true;
         } else {
-//            Toast.makeText(this, R.string.no_location_detected, Toast.LENGTH_LONG).show();
+            showToast("Could not get your location...");
             hasLocation = false;
         }
     }
-
+    // Toast message for all messages
     public void showToast(String message) {
         Context context = getApplicationContext();
         CharSequence text = message;
@@ -132,6 +130,7 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         toast.show();
     }
 
+    //Launch the public game, only if have the location of user
 
     public void publicGameLauncher(View view) {
         getLocation();
@@ -139,7 +138,6 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         intent.putExtra("LAT", mLatitudeText);
         intent.putExtra("LON", mLongitudeText);
         intent.putExtra("nextActivity", "PublicMap");
-//        myDb.addSteps(new Steps(stepObject.numSteps));
 
         // check if we have successfully recieved user's location
         // if not, ask them to check their settings
@@ -210,83 +208,29 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
     }
 
 
-    //Andrea
-    protected void onStop() {
-        super.onStop();
-        myDb.addSteps(new Steps(stepObject.numSteps));
 
-        //Toast.makeText(PrivateMap.this, saveSteps+"Saving to database", Toast.LENGTH_SHORT).show();
-        //myDb.addSteps(new Steps(stepObject.numSteps));
-    }
-
-    protected void onPause() {
-        myDb.addSteps(new Steps(stepObject.numSteps));
-        super.onPause();
-        //saveSteps = numSteps;
-        //Toast.makeText(PrivateMap.this, saveSteps+"Pause", Toast.LENGTH_SHORT).show();
-        //myDb.addSteps(new Steps(stepObject.numSteps));
-    }
-
-    protected void onResume() {
-        super.onResume();
-        stepWidget();
-}
-
-//    public void spotify(View view){
-////        String uri = "spotify:track:0IcSLT53eE07Jmok64Ppo3";
-////        Intent launcher = new Intent( Intent.ACTION_VIEW, Uri.parse(uri) );
-////        launcher.addFlags(Intent.FLAG_FROM_BACKGROUND);
-//
-//        Intent launcher = new Intent("com.spotify.mobile.android.ui.widget.NEXT");
-//
-//        launcher.setPackage("com.spotify.music");
-//
-//        sendBroadcast(launcher);
-//    }
-
-//    public void spotifyPlay(View view) {
-//        Intent i = new Intent(Intent.ACTION_MEDIA_BUTTON);
-//        i.setComponent(new ComponentName("com.spotify.music", "com.spotify.music.internal.receiver.MediaButtonReceiver"));
-//        i.putExtra(Intent.EXTRA_KEY_EVENT,new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MEDIA_PLAY));
-//        sendOrderedBroadcast(i, null);
-//
-//        i = new Intent(Intent.ACTION_MEDIA_BUTTON);
-//        i.setComponent(new ComponentName("com.spotify.music", "com.spotify.music.internal.receiver.MediaButtonReceiver"));
-//        i.putExtra(Intent.EXTRA_KEY_EVENT,new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_MEDIA_PLAY));
-//        sendOrderedBroadcast(i, null);
-//    }
-
+    // Play pause buttons for the spotify app
     public void spotifyPlayPause(View view){
         try{
-//        String uri = "spotifyPause:track:0IcSLT53eE07Jmok64Ppo3";
-//        Intent launcher = new Intent( Intent.ACTION_VIEW, Uri.parse(uri) );
-////        launcher.addFlags(Intent.FLAG_FROM_BACKGROUND);
-//
-//        Intent launcher = new Intent("com.spotify.mobile.android.ui.widget.PAUSE");
-//
-//        launcher.setPackage("com.spotify.music");
-        int keyCode = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
-//
-//            if (!mAudioManager.isMusicActive() && !isSpotifyRunning()) {
-//            startMusicPlayer();
-//            }
+            int keyCode = KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE;
 
-            Intent i = new Intent(Intent.ACTION_MEDIA_BUTTON);
-            i.setPackage("com.spotify.music");
-    synchronized (this) {
-            i.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));
-            sendOrderedBroadcast(i, null);
+                Intent i = new Intent(Intent.ACTION_MEDIA_BUTTON);
+                i.setPackage("com.spotify.music");
+                synchronized (this) {
+                    i.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_DOWN, keyCode));
+                    sendOrderedBroadcast(i, null);
 
-            i.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_UP, keyCode));
-            sendOrderedBroadcast(i, null);
+                    i.putExtra(Intent.EXTRA_KEY_EVENT, new KeyEvent(KeyEvent.ACTION_UP, keyCode));
+                    sendOrderedBroadcast(i, null);
+                }
             }
-    }
         catch (Exception e) {
-        Toast.makeText(this, "Spotify not installed", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Spotify not installed", Toast.LENGTH_LONG).show();
+        }
+
     }
 
-}
-
+    // Play the next song in app
     public void spotifyNext(View view) {
         try {
             Intent launcher = new Intent("com.spotify.mobile.android.ui.widget.NEXT");
@@ -300,18 +244,41 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
         }
     }
 
+    // Open the spotify app from the app when link clicked
     public void openSpotify(View view) {
         try {
             String uri = "spotify:user:spotify:playlist:37i9dQZF1DX9BXb6GsGCLl";
             Intent launcher = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-//        launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
             startActivity(launcher);
         } catch (java.lang.IllegalStateException e) {
             Toast.makeText(this, "Spotify not installed", Toast.LENGTH_LONG).show();
         } catch (ActivityNotFoundException e){
             Toast.makeText(this, "Spotify not installed", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        stepObject.numSteps = 0;
+    }
+
+    protected void onStop() {
+        super.onStop();
+        myDb.addSteps(new Steps(stepObject.numSteps));
+    }
+
+    protected void onPause() {
+        myDb.addSteps(new Steps(stepObject.numSteps));
+        super.onPause();
+        //saveSteps = numSteps;
+        //Toast.makeText(PrivateMap.this, saveSteps+"Pause", Toast.LENGTH_SHORT).show();
+        //myDb.addSteps(new Steps(stepObject.numSteps));
+    }
+
+    protected void onResume() {
+        super.onResume();
+        stepWidget();
     }
 
 }

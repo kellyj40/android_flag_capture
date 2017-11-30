@@ -1,7 +1,7 @@
 package com.joekelly.mapsandlocation;
 
 /**
- * Created by pigna on 25/10/2017.
+
  */
 
 public class StepDetector {

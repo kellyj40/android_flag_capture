@@ -19,7 +19,10 @@ import com.jjoe64.graphview.helper.StaticLabelsFormatter;
 import com.jjoe64.graphview.series.BarGraphSeries;
 import com.jjoe64.graphview.series.DataPoint;
 
-// Activity for the stats screen
+/*
+This class deals with all the Stats activity methods, such as BMI calcualtions and
+showing the progress of the user on the graphs
+ */
 public class StatsActivity extends AppCompatActivity {
     //shared preferences
     SharedPreferences sharedpreferences;
@@ -217,22 +220,6 @@ public class StatsActivity extends AppCompatActivity {
             if (loadHeight != 0 && loadWeight!= 0 && loadAge!=0 ) {
                 stepLength = (loadHeight * 1.05)/1000;
                 BMI = loadWeight / loadHeight * loadHeight;
-
-//                Calculator Formulas
-//                Calorie Burn = (BMR / 24) x MET x T
-//                where
-//
-//                For males: BMR = (13.75 x WKG) + (5 x HC) - (6.76 x age) + 66
-//                For females: BMR = (9.56 x WKG) + (1.85 x HC) - (4.68 x age) + 655
-//
-//                and
-//
-//                        BMR = Basal Metabolic Rate (over 24 hours)
-//                MET = Metabolic Equivalent (for selected activity)
-//                T = Activity duration time (in hours)
-//                HC = Height (in centimetres)
-//                WKG = Weight (in kilograms)
-//                Time = (distance /average walking speed 5km/h)
 
                 if (loadSex == true) {
                     BMR = ((9.56*loadWeight)+(1.85*loadHeight) - (4.68*loadAge)+ 655);

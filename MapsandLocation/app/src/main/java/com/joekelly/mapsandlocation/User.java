@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 
 /*
- * Created by danieljordan on 15/11/2017.
- * This class is incharge of all other users on the database
+ * This class is incharge of all other users on the database and displays them on the public map
+ * It will be updated using the listeners of the firebase
  */
 
 public class User {

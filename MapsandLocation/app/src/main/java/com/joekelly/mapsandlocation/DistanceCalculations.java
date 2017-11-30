@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Created by joekelly on 26/10/2017.
  * This class calculates the distance between different locations, such as the user an a flag
  */
 
@@ -70,7 +69,7 @@ public class DistanceCalculations {
             double d = distance(flagLocations.get(key.toString()).latitude,flagLocations.get(key.toString()).longitude, userLocation.latitude,userLocation.longitude);
 
             // Check if within distance
-            if (d < 7) {
+            if (d < 5) {
                 // Retrun key of the flag
                 pickedUpFlagLocation = new LatLng(flagLocations.get(key.toString()).latitude, flagLocations.get(key.toString()).longitude);
                 return key.toString();
@@ -84,7 +83,7 @@ public class DistanceCalculations {
         double d = distance(playerLocation.latitude, playerLocation.longitude, userLocation.latitude,userLocation.longitude);
 
         // Check if within distance
-        if (d < 7) {
+        if (d < 5) {
             return true;
         }
         return false;
@@ -92,7 +91,7 @@ public class DistanceCalculations {
 
     public static boolean checkedWalkedDistance(LatLng userLocation){
 
-        double d = distance(pickedUpFlagLocation.latitude,pickedUpFlagLocation.longitude, userLocation.latitude,userLocation.longitude);
+        double d = distance(pickedUpFlagLocation.latitude, pickedUpFlagLocation.longitude, userLocation.latitude, userLocation.longitude);
 
         // Check if within distance
         if (d > 100) {

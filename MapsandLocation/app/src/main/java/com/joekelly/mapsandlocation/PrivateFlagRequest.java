@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Created by jakek on 06/11/2017.
+ * This class will create the position of flags within a killometer distance randomly
  */
 
 // Creates array of flags based on user location
