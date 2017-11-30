@@ -12,9 +12,10 @@ import java.util.Date;
 
 /**
  * Created by joekelly on 04/11/2017.
+ * Edited by Daniel
  */
 
-public class DataBaseManagement extends SQLiteOpenHelper {
+class DataBaseManagement extends SQLiteOpenHelper {
 
 
 
@@ -31,7 +32,6 @@ public class DataBaseManagement extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_FLAGS_TABLE = "CREATE TABLE IF NOT EXISTS flagsCaptured1 (day VARCHAR PRIMARY KEY, flagsNum INT)";
         try{
-            db.execSQL("DROP TABLE IF EXISTS flagsCaptured"); //to get rid of Joes db with no version number
             db.execSQL(CREATE_FLAGS_TABLE);
         }catch(Exception e){
             System.out.println("Did not create");

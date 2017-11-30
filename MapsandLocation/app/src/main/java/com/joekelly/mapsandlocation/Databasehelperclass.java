@@ -7,15 +7,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
-public class Databasehelperclass extends SQLiteOpenHelper {
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
-    Date today = Calendar.getInstance().getTime();
-    String reportDate = sdf.format(today);
+
+class Databasehelperclass extends SQLiteOpenHelper {
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+    private Date today = Calendar.getInstance().getTime();
+    private String reportDate = sdf.format(today);
 
     // All Static variables
     // Database Version
@@ -34,7 +34,7 @@ public class Databasehelperclass extends SQLiteOpenHelper {
     private static final String KEY_DAY = "day";
 
 
-    public Databasehelperclass(Context context) {
+    Databasehelperclass(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -77,31 +77,31 @@ public class Databasehelperclass extends SQLiteOpenHelper {
     }
 
     // Getting All Rows
-    public List<Steps> getAllRows() {
-        List<Steps> rowList = new ArrayList<Steps>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_STATS;
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                Steps steps = new Steps();
-                steps.setID(Integer.parseInt(cursor.getString(0)));
-                steps.setTimestamp(cursor.getLong(1));
-                steps.setSteps(cursor.getInt(2));
-                steps.setToday(cursor.getString(3));
-                rowList.add(steps);
-            } while (cursor.moveToNext());
-        }
-
+//    public List<Steps> getAllRows() {
+//        List<Steps> rowList = new ArrayList<Steps>();
+//        // Select All Query
+//        String selectQuery = "SELECT  * FROM " + TABLE_STATS;
+//
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        Cursor cursor = db.rawQuery(selectQuery, null);
+//
+//        // looping through all rows and adding to list
+//        if (cursor.moveToFirst()) {
+//            do {
+//                Steps steps = new Steps();
+//                steps.setID(Integer.parseInt(cursor.getString(0)));
+//                steps.setTimestamp(cursor.getLong(1));
+//                steps.setSteps(cursor.getInt(2));
+//                steps.setToday(cursor.getString(3));
+//                rowList.add(steps);
+//            } while (cursor.moveToNext());
+//        }
+//        cursor.close();
         // return row list
-        return rowList;
-    }
+//        return rowList;
+//    }
 
-    public int todaysSteps() {
+    int todaysSteps() {
 
         String selectQuery = "SELECT steps FROM " + TABLE_STATS +  " WHERE day = '"+reportDate+"'";
 
@@ -116,11 +116,11 @@ public class Databasehelperclass extends SQLiteOpenHelper {
             i += cursor.getInt(0);
             cursor.moveToNext();
         }
-
+        cursor.close();
         return i;
 
     }
-    public int weeksSteps() {
+    int weeksSteps() {
         long x = new Date().getTime();
         long y = x - 604800000; //1 week previous
         String selectQuery = "SELECT steps FROM " + TABLE_STATS + " WHERE time > "+ y;
@@ -136,11 +136,11 @@ public class Databasehelperclass extends SQLiteOpenHelper {
             i += cursor.getInt(0);
             cursor.moveToNext();
         }
-
+        cursor.close();
         return i;
     }
 
-    public int overallSteps() {
+    int overallSteps() {
 
         String selectQuery = "SELECT steps FROM " + TABLE_STATS;
 
@@ -155,7 +155,7 @@ public class Databasehelperclass extends SQLiteOpenHelper {
             i += cursor.getInt(0);
             cursor.moveToNext();
         }
-
+        cursor.close();
         return i;
     }
 

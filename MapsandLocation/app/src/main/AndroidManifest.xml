@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.joekelly.mapsandlocation">
 
     <!--
@@ -51,7 +52,7 @@
             android:configChanges="orientation|screenSize"/>
         <activity
             android:name=".Leaderboard"
-            android:label="@string/title_activity_abouter"
+            android:label="Leaderboard"
             android:parentActivityName=".HomePage"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -60,7 +61,8 @@
             android:parentActivityName=".HomePage" />
         <activity
             android:name=".UserLoginActivity"
-            android:parentActivityName=".HomePage"/>
+            android:parentActivityName=".HomePage"
+             />
         <activity
             android:name=".PublicMap"
             android:label="@string/title_activity_private_map"
@@ -68,7 +70,8 @@
         <activity
             android:name=".UserRegistrationActivity"
             android:label="@string/title_activity_user_registration"
-            android:parentActivityName=".UserLoginActivity"></activity>
+            android:parentActivityName=".UserLoginActivity"
+             />
     </application>
 
 </manifest>

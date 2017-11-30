@@ -21,7 +21,7 @@ import com.jjoe64.graphview.series.DataPoint;
 
 // Activity for the stats screen
 public class StatsActivity extends AppCompatActivity {
-    //shared prefrences
+    //shared preferences
     SharedPreferences sharedpreferences;
 
     private EditText height;
@@ -81,7 +81,7 @@ public class StatsActivity extends AppCompatActivity {
 
 
 
-        //taken from graphView examples
+        //Examples from graphView examples, edited for our needs
         GraphView graph = (GraphView) findViewById(R.id.gGraph);
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {
 
@@ -129,21 +129,20 @@ public class StatsActivity extends AppCompatActivity {
         TextView distance_week = (TextView) findViewById(R.id.tvWeeklyDistance);
         TextView distance_overall = (TextView) findViewById(R.id.tvOverallDistance);
 
-        //current_steps.append(""+numsteps);
+
         today_steps.append(""+todayssteps);
         week_steps.append(""+week);
         overall_steps.append(""+overall);
         today_flags.append(flagsDb.todaysFlags()+"");
         week_flags.append(flagsDb.weeksFlags()+"");
         overall_flags.append(flagsDb.overallFlags()+"");
-        //float distanceday = (Math.round(stepLength*week*100))/100.0f;
-        //float distanceweek = (Math.round(stepLength*todayssteps*100))/100.0f;
-        //float distanceoverall = (Math.round(stepLength*overall*100))/100.0f;
+
 
         distance_today.append(""+ (Math.round(stepLength*todayssteps*100))/100.0f + " km");
         distance_week.append(""+ (Math.round(stepLength*week*100))/100.0f + " km");
         distance_overall.append(""+ (Math.round(stepLength*overall*100))/100.0f + " km") ;
 
+        //checks if user has inputted persona details, if not it will not display calories burnt
         if (BMI != 0.0 ){
         TextView calories_today = (TextView) findViewById(R.id.tvCaloriesToday);
         TextView calories_week = (TextView) findViewById(R.id.textView5);
@@ -165,14 +164,14 @@ public class StatsActivity extends AppCompatActivity {
         stepObject.initialiseStepSensor(this);
 
 
-        //height weight and BMI:
+        //Inputs for height weight and BMI:
         height = (EditText) findViewById(R.id.height);
         weight = (EditText) findViewById(R.id.weight);
         age = (EditText) findViewById(R.id.age);
         sex = (ToggleButton)findViewById(R.id.tgsex);
         b1 = (Button)findViewById(R.id.calc);
 
-
+        //Collecting Saved Preferences
         b1.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -181,9 +180,7 @@ public class StatsActivity extends AppCompatActivity {
                 String weightStr = weight.getText().toString();
                 String ageStr = age.getText().toString();
                 boolean female = sex.isChecked();
-//                if (sex.isChecked()){
-//                boolean female = true;}
-//                else {boolean female = false;}
+
 
                 if (!"".equals(heightStr)
                         && !"".equals(weightStr) && !"".equals(ageStr)) {
