@@ -2,6 +2,7 @@ package com.joekelly.mapsandlocation;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -301,21 +302,16 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
 
     public void openSpotify(View view) {
         try {
-            String uri = "spotify:track:53qU2K55RJgfs9F50irpB3";
+            String uri = "spotify:user:spotify:playlist:37i9dQZF1DX9BXb6GsGCLl";
             Intent launcher = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 //        launcher.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             startActivity(launcher);
-        } catch (Exception e) {
+        } catch (java.lang.IllegalStateException e) {
+            Toast.makeText(this, "Spotify not installed", Toast.LENGTH_LONG).show();
+        } catch (ActivityNotFoundException e){
             Toast.makeText(this, "Spotify not installed", Toast.LENGTH_LONG).show();
         }
     }
 
-//    public void getCurrentlyPlaying(){
-//        Intent launcher = new Intent("com.spotify.music.metadatachanged");
-//        launcher.setPackage("com.spotify.music");
-//
-//        sendBroadcast(launcher);
-//
-//    }
 }
