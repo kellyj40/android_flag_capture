@@ -1,12 +1,15 @@
 package com.joekelly.mapsandlocation;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
 import android.widget.TextView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.content.Context.SENSOR_SERVICE;
 
@@ -19,7 +22,12 @@ public class SensorObject implements SensorEventListener, StepListener {
     public StepDetector simpleStepDetector;
     public SensorManager sensorManager;
     public Sensor accel;
-
+    public SharedPreferences sharedpreferences;
+    public float loadHeight;
+    public double stepLength;
+    public double BMI;
+    public int oneKM;
+    Map<Integer, String> congratMessage = new HashMap<Integer, String>();
 
     public static String TEXT_NUM_STEPS;
     private int extraStep;
@@ -44,6 +52,9 @@ public class SensorObject implements SensorEventListener, StepListener {
         sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
         //v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         contextNotification=context;
+        sharedpreferences = context.getSharedPreferences("MyPrefs", context.MODE_PRIVATE);
+        loadSharedPreferences();
+
 
 
     } public void initialiseStepSensor(Context context, String text, TextView textView, int additionalSteps) {
@@ -61,6 +72,9 @@ public class SensorObject implements SensorEventListener, StepListener {
         //v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         contextNotification=context;
         txtView = textView;
+        sharedpreferences = context.getSharedPreferences("MyPrefs", context.MODE_PRIVATE);
+        loadSharedPreferences();
+
 
     }
 
@@ -88,9 +102,9 @@ public class SensorObject implements SensorEventListener, StepListener {
             
             txtView.setText(String.format(TEXT_NUM_STEPS, extraStep+numSteps));
 
-        if (numSteps == 110) {
-            Notification.notifier(contextNotification);
-
+        String message = congratMessage.get(numSteps);
+        if (message != null) {
+            Notification.notifier(contextNotification, message);
         }
     }
 
@@ -107,5 +121,30 @@ public class SensorObject implements SensorEventListener, StepListener {
         txt.setText(TEXT_NUM_STEPS + numSteps);
 
     }
+
+    private void loadSharedPreferences() {
+
+
+        if (sharedpreferences != null) {
+            loadHeight= sharedpreferences.getFloat(
+                    "heightKey" , 0);
+            if (loadHeight != 0) {
+                stepLength = (loadHeight * 1.05)/1000;
+            }
+
+        }
+        else {
+            stepLength = 0.74/1000; //average step length
+        }
+        int[] distances = {1, 5, 10, 20};
+        for (int i : distances) {
+            int stepsNeeded =(int) (i/stepLength);
+//            int stepsNeeded =4;
+            congratMessage.put(stepsNeeded, i+"");
+
+        }
+
+    }
+
 
 }
