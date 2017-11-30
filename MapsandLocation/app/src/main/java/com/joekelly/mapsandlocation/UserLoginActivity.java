@@ -107,6 +107,7 @@ public class UserLoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), UserRegistrationActivity.class);
                 intent.putExtra("LAT", mLatitudeText);
                 intent.putExtra("LON", mLongitudeText);
+                intent.putExtra("nextActivity", "PublicMap");
                 startActivity(intent);
                 finish();
             }
