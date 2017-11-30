@@ -28,8 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /*
- * Created by joekelly on 26/10/2017.
- * This class is used for the game flags logic
+ * This class is used for the public game flags logic
  * Queries the database, crowd sources flags and checks if flags were captured
  */
 
@@ -187,7 +186,7 @@ public class PublicFlagRequest {
     //This method will draw 200 meter distance to walk if flag captured
     public void drawPerimeterDistanceToWalk(LatLng userLocationUpdate){
         // drawing circle
-        int d = 400; // diameter
+        int d = 200; // diameter
         Bitmap bm = Bitmap.createBitmap(d, d, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(bm);
         Paint p = new Paint();

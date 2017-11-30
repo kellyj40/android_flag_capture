@@ -11,6 +11,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+/*
+    This class is used for all database handling,
+    The database used is a local SQLite database
+    This deals with the steps and all health base handling of data
+ */
 
 class Databasehelperclass extends SQLiteOpenHelper {
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
@@ -63,7 +68,7 @@ class Databasehelperclass extends SQLiteOpenHelper {
      */
 
     // Adding steps
-    void addSteps(Steps steps) {
+    public void addSteps(Steps steps) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -76,32 +81,8 @@ class Databasehelperclass extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
-    // Getting All Rows
-//    public List<Steps> getAllRows() {
-//        List<Steps> rowList = new ArrayList<Steps>();
-//        // Select All Query
-//        String selectQuery = "SELECT  * FROM " + TABLE_STATS;
-//
-//        SQLiteDatabase db = this.getWritableDatabase();
-//        Cursor cursor = db.rawQuery(selectQuery, null);
-//
-//        // looping through all rows and adding to list
-//        if (cursor.moveToFirst()) {
-//            do {
-//                Steps steps = new Steps();
-//                steps.setID(Integer.parseInt(cursor.getString(0)));
-//                steps.setTimestamp(cursor.getLong(1));
-//                steps.setSteps(cursor.getInt(2));
-//                steps.setToday(cursor.getString(3));
-//                rowList.add(steps);
-//            } while (cursor.moveToNext());
-//        }
-//        cursor.close();
-        // return row list
-//        return rowList;
-//    }
 
-    int todaysSteps() {
+    public int todaysSteps() {
 
         String selectQuery = "SELECT steps FROM " + TABLE_STATS +  " WHERE day = '"+reportDate+"'";
 
@@ -120,7 +101,7 @@ class Databasehelperclass extends SQLiteOpenHelper {
         return i;
 
     }
-    int weeksSteps() {
+    public int weeksSteps() {
         long x = new Date().getTime();
         long y = x - 604800000; //1 week previous
         String selectQuery = "SELECT steps FROM " + TABLE_STATS + " WHERE time > "+ y;
@@ -140,7 +121,7 @@ class Databasehelperclass extends SQLiteOpenHelper {
         return i;
     }
 
-    int overallSteps() {
+    public int overallSteps() {
 
         String selectQuery = "SELECT steps FROM " + TABLE_STATS;
 

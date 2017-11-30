@@ -16,6 +16,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 /**
  * Created by joekelly on 14/11/2017.
+ * This calss is used for putting the and handling the private map flags
+ * In this class there are methods for putting flags on map,
+ * removing flags from map and drawing the layovers for the distance of picking up flags
  */
 
 public class FlagsOnMap {

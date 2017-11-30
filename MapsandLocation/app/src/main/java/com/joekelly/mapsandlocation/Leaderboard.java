@@ -1,5 +1,8 @@
 package com.joekelly.mapsandlocation;
-
+/*
+    This class will query th global database, sort all results in order of collected flags
+    and display in a list view using an adapter
+ */
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -23,12 +26,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 public class Leaderboard extends AppCompatActivity {
 
-
+    // Variablees
     ListView listView;
     List listOfScores = new ArrayList<>();
     Adapter arrayAdapter;
+    /*
+    On create will set up listener to query the database
+    and then set the listview to the values
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,12 +59,11 @@ public class Leaderboard extends AppCompatActivity {
                             // dataSnapshot is the "issue" node with all children with id 0
                             Map<String, Object> fullMap = (Map<String, Object>) dataSnapshot.getValue();
                             int size = fullMap.size();
-
+                            //Loop through all the results
                             for (DataSnapshot issue : dataSnapshot.getChildren()) {
                                 // do something with the individual "issues"
 
                                 Map<String, Object> scoreMap = (Map<String, Object>) issue.getValue();
-//                                Log.i("value", scoreMap.get("flags collect").toString());
 
                                 String value2 = "Rank "+Integer.toString(size-counter)+": "+scoreMap.get("name").toString() +" \nFlags captured: " +scoreMap.get("flags collected").toString()
                                         +" \nFlags stolen: " +scoreMap.get("flags stolen").toString();

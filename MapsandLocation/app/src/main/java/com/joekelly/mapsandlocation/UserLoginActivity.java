@@ -1,5 +1,7 @@
 package com.joekelly.mapsandlocation;
-
+/*
+This class is incharge of user authentication of the users logining into the system
+ */
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -18,9 +20,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class UserLoginActivity extends AppCompatActivity {
 
-
+    //Instance variables of user login information
     private EditText mEmail, mPassword;
-
     private Button mLogin;
     private TextView mRegistrationLink;
 
@@ -63,10 +64,7 @@ public class UserLoginActivity extends AppCompatActivity {
             }
         };
 
-
-//        mEmail = (EditText) findViewById(R.id.email);
-//        mPassword = (EditText) findViewById(R.id.password);
-
+        // Fields where the user logs in
         mEmail = (EditText) findViewById(R.id.input_email);
         mPassword = (EditText) findViewById(R.id.input_password);
 

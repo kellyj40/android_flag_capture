@@ -11,18 +11,16 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by joekelly on 04/11/2017.
- * Edited by Daniel
+ * This class is used to manage all the private game database information
  */
 
 class DataBaseManagement extends SQLiteOpenHelper {
 
-
-
+    //Initialised the instance variables
     private int flagsCaptured = 0;
     private int currentFlagCount;
 
-
+    //Constructor
     public DataBaseManagement(Context context) {
         super(context, "flagsCaptured1", null, 4); //updating change version number
     }
@@ -57,8 +55,8 @@ class DataBaseManagement extends SQLiteOpenHelper {
         // Create table again
         onCreate(db);
     }
-
-    void updateLocalFlagTable(){
+    // This updates the database to keep track of the flags being captured
+    public void updateLocalFlagTable(){
         SQLiteDatabase db = this.getWritableDatabase();
         long i = new Date().getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
@@ -82,8 +80,8 @@ class DataBaseManagement extends SQLiteOpenHelper {
 
 
     }
-
-     int todaysFlags () {
+    // Keeps track of daily flags captured
+     public int todaysFlags () {
 
         SQLiteDatabase db = this.getReadableDatabase();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
@@ -103,7 +101,7 @@ class DataBaseManagement extends SQLiteOpenHelper {
         cursor.close();
         return flagsCaptured;
     }
-
+    // Keeps track of weekly flags captured by user
     public int weeksFlags() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
         Date today = Calendar.getInstance().getTime();
@@ -126,7 +124,7 @@ class DataBaseManagement extends SQLiteOpenHelper {
 
         return i;
     }
-
+    //Stores all the details of the flags
     public int overallFlags() {
 
         String selectQuery = "SELECT flagsNum FROM flagsCaptured1";

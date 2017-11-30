@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by Daniel on 27/10/2017.
+ * This is the steps class that keeps track of all steps motions for when moving into different classes
  */
 
 public class Steps {

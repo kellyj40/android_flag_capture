@@ -1,7 +1,8 @@
 package com.joekelly.mapsandlocation;
 
 /**
- * Created by pigna on 25/10/2017.
+ * This class is used for the sensor readers of the Pedometer
+ * This will be used in all classes to record the users steps taken
  */
 
 public class SensorFilter {
