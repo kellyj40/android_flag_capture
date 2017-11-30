@@ -219,6 +219,7 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
     }
 
     protected void onPause() {
+        myDb.addSteps(new Steps(stepObject.numSteps));
         super.onPause();
         //saveSteps = numSteps;
         //Toast.makeText(PrivateMap.this, saveSteps+"Pause", Toast.LENGTH_SHORT).show();
