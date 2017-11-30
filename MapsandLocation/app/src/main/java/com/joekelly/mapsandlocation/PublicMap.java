@@ -198,6 +198,15 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
 
                 if (userManager.checkIfUserStoleFlag()){
                     showToast("You have stolen a flag :)");
+
+                    // Update database score
+                    userManager.capturedFlagUpdate();
+
+                    //Update screen of numbers
+                    numFlagsCollectedMap++;
+                    String textForCapturedFlags = "flags captured: "+Integer.toString(numFlagsCollectedMap);
+                    flagsCaptured.setText(textForCapturedFlags);
+
                 }
 
                 // Update user on FireBase so other users can see
