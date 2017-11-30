@@ -38,7 +38,8 @@ public class UserManager {
     private GoogleMap mMap;
     private int numberOfFlagsCollected;
     private int numberOfFlagsStolen;
-
+    private int numberOfFlagsStolenChecker;
+    private DatabaseReference userThatStoleFlag;
     public UserManager(GoogleMap mMap) {
         // get this user's ID
         userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -55,6 +56,7 @@ public class UserManager {
                         Map<String, Object> scoreMap = (Map<String, Object>) dataSnapshot.getValue();
                         numberOfFlagsCollected = Integer.parseInt(scoreMap.get("flags collected").toString());
                         numberOfFlagsStolen = Integer.parseInt(scoreMap.get("flags stolen").toString());
+                        numberOfFlagsStolenChecker = numberOfFlagsStolen;
                     }
 
                     @Override
@@ -63,7 +65,25 @@ public class UserManager {
                     }
                 });
 
+        // Listener to check if stole a flag
+        DatabaseReference playerRefFlagsStolen = FirebaseDatabase.getInstance().getReference("users").child(userId).child("flags stolen");
+        //Listener for if user steals a flag
+        ValueEventListener stolenListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.i("FlagStolen", "FlagStolen");
+                numberOfFlagsStolen = numberOfFlagsStolenChecker+1;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+            }
+        };
+        playerRefFlagsStolen.addValueEventListener(stolenListener);
+
         getUsers();
+
     }
 
     // sets user location in firebase
@@ -161,31 +181,47 @@ public class UserManager {
         current_user_db.child("flags collected").setValue(numberOfFlagsCollected);
 
     }
+    public boolean checkIfUserStoleFlag(){
+        if (numberOfFlagsStolen != numberOfFlagsStolenChecker){
+            numberOfFlagsStolenChecker = numberOfFlagsStolen;
+            return true;
+        }
+        return false;
+    }
 
-    public boolean checkIfNearPlayerWithFlag(LatLng userLatLng){
-        // The user playing the games phone is userLatLng, other players are palyer references
+    public boolean checkIfOtherPlayersStoleFlag(LatLng userLatLng){
+        // The user playing the games phone is userLatLng, other players are player references
         //iterate through each user, making User object, and then adding them to userMap
         for (Map.Entry<String, User> entry : userMap.entrySet()) {
 
             String otherPlayerId = entry.getKey();
             User playerRef = userMap.get(otherPlayerId);
-            // If user doesnt have a flag its checking people with flag to steal
-            if (!hasFlag) {
-                if (playerRef.playerHasFlag() && DistanceCalculations.distanceBetweenTwoPlayers(userLatLng, playerRef.getPlayerLatLng())) {
-                    numberOfFlagsStolen++;
-                    DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
-                    current_user_db.child("flags stolen").setValue(numberOfFlagsStolen);
-                    return true;
-                }
-            }else{
-                // Otherwise the user is checking to see if someone else has stolen their flag, someone who doesnt have a flag
-                if (!playerRef.playerHasFlag() && DistanceCalculations.distanceBetweenTwoPlayers(userLatLng, playerRef.getPlayerLatLng())) {
-                    return true;
-                }
+
+
+            // The user is checking to see if someone else has stolen their flag, someone who doesn't have a flag
+            if (!playerRef.playerHasFlag() && DistanceCalculations.distanceBetweenTwoPlayers(userLatLng, playerRef.getPlayerLatLng())) {
+                userThatStoleFlag = FirebaseDatabase.getInstance().getReference().child("users").child(otherPlayerId);
+
+                //Get snap shot of the players data to increment
+                userThatStoleFlag.addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                Map<String, Object> playerStolenMap = (Map<String, Object>) dataSnapshot.getValue();
+                                int playerFlagsStolen = Integer.parseInt(playerStolenMap.get("flags stolen").toString());
+                                playerFlagsStolen +=1;
+                                userThatStoleFlag.child("flags stolen").setValue(playerFlagsStolen);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                //handle databaseError
+                            }
+                        });
+                return true;
             }
         }
         return false;
-
     }
 
 }

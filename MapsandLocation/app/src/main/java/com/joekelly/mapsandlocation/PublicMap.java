@@ -188,6 +188,10 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
                 //Get new location
                 userLocation = new LatLng(location.getLatitude(), location.getLongitude());
 
+                if (userManager.checkIfUserStoleFlag()){
+                    showToast("You have stolen a flag :)");
+                }
+
                 // Update user on FireBase so other users can see
                 userManager.setUserLocation(userLocation);
 
@@ -206,10 +210,6 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
                         // Draw radius for user to walk
                         flagRequest.drawPerimeterDistanceToWalk(userLocation);
                     }
-                    if (userManager.checkIfNearPlayerWithFlag(userLocation)){
-                        showToast("You have stolen a flag :)");
-                    }
-
 
                 }else{
                     // otherwise check if walked 200 meters with flag.
@@ -226,20 +226,14 @@ public class PublicMap extends AppCompatActivity implements OnMapReadyCallback{
                         userManager.capturedFlagUpdate();
 
                     }
-                    if (userManager.checkIfNearPlayerWithFlag(userLocation)){
+                    if (userManager.checkIfOtherPlayersStoleFlag(userLocation)){
                         showToast("Your flag has been stolen :(");
                         vib.vibrate(1000);
 
                         // Remove radius for user to walk
                         flagRequest.removePerimeterDistanceToWalk();
 
-                        //Wait half a second before updating the database that doesnt have flag
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        // If walked 200m with flag, allow to capture flags again
+                        // Allow to capture flags again
                         userManager.setHasFlag(false);
                     }
                 }
