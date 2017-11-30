@@ -29,7 +29,6 @@ public class UserLoginActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     protected Double mLatitudeText;
     protected Double mLongitudeText;
-    protected Class nextActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +106,7 @@ public class UserLoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), UserRegistrationActivity.class);
                 intent.putExtra("LAT", mLatitudeText);
                 intent.putExtra("LON", mLongitudeText);
-                intent.putExtra("nextActivity", "PublicMap");
+                intent.putExtra("nextActivity", nextActivity);
                 startActivity(intent);
                 finish();
             }
