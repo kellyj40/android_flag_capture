@@ -84,7 +84,8 @@ public class StatsActivity extends AppCompatActivity {
 
 
 
-        //Examples from graphView examples, edited for our needs
+        //Examples used from graphView , edited for our needs
+        //http://www.android-graphview.org/
         GraphView graph = (GraphView) findViewById(R.id.gGraph);
         BarGraphSeries<DataPoint> series = new BarGraphSeries<>(new DataPoint[] {
 
@@ -97,6 +98,7 @@ public class StatsActivity extends AppCompatActivity {
         });
         graph.addSeries(series);
         series.setValueDependentColor(new ValueDependentColor<DataPoint>() {
+            //colour of bars on chart
             @Override
             public int get(DataPoint data) {
                 return Color.rgb((int) data.getX()*100/4, (int) Math.abs(data.getY()*255/6), 100);
@@ -140,12 +142,12 @@ public class StatsActivity extends AppCompatActivity {
         week_flags.append(flagsDb.weeksFlags()+"");
         overall_flags.append(flagsDb.overallFlags()+"");
 
-
+        //converting steplength * number of steps to Kilometers
         distance_today.append(""+ (Math.round(stepLength*todayssteps*100))/100.0f + " km");
         distance_week.append(""+ (Math.round(stepLength*week*100))/100.0f + " km");
         distance_overall.append(""+ (Math.round(stepLength*overall*100))/100.0f + " km") ;
 
-        //checks if user has inputted persona details, if not it will not display calories burnt
+        //checks if user has inputted persona details, if not it will not display calories burnt & step length will be average
         if (BMI != 0.0 ){
         TextView calories_today = (TextView) findViewById(R.id.tvCaloriesToday);
         TextView calories_week = (TextView) findViewById(R.id.textView5);
@@ -160,7 +162,7 @@ public class StatsActivity extends AppCompatActivity {
 
 
 
-        //Step stuff
+        //Step sensing
 
         stepObject = new SensorObject();
         numSteps= stepObject.numSteps;
@@ -207,7 +209,7 @@ public class StatsActivity extends AppCompatActivity {
 
     private void loadSharedPreferences() {
 
-
+//Read shared preferences
         if (sharedpreferences != null) {
             loadHeight= sharedpreferences.getFloat(
                     Height , 0);
@@ -222,6 +224,7 @@ public class StatsActivity extends AppCompatActivity {
                 BMI = loadWeight / loadHeight * loadHeight;
 
                 if (loadSex == true) {
+                    //Basal Metobolic rate
                     BMR = ((9.56*loadWeight)+(1.85*loadHeight) - (4.68*loadAge)+ 655);
                 }
                 else {
@@ -240,6 +243,7 @@ public class StatsActivity extends AppCompatActivity {
 
 
     private void saveWeightHeight(float heightValue, float weightValue,  float age, boolean female) {
+        //save shared preferences
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putFloat(Weight, weightValue);
         editor.putFloat(Height, heightValue);
@@ -257,8 +261,8 @@ public class StatsActivity extends AppCompatActivity {
 
     protected void onStop() {
         super.onStop();
-//        myDb.addSteps(new Steps(stepObject.numSteps));
     }
+
     protected void onPause(){
         super.onPause();
         myDb.addSteps(new Steps(stepObject.numSteps));
