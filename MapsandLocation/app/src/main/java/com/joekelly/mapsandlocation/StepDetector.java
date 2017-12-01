@@ -1,17 +1,19 @@
 package com.joekelly.mapsandlocation;
 
 /**
+ Class that detects each step, based on accelerometer output
+ Tutorial followed: http://www.gadgetsaint.com/android/create-pedometer-step-counter-android/  October 2017
+ **/
 
- */
 
+// class that gets updates from accelerometer sensor and uses the filter to detect a step.
 public class StepDetector {
 
     private static final int ACCEL_RING_SIZE = 50;
     private static final int VEL_RING_SIZE = 10;
 
-    // change this threshold according to your sensitivity preferences
+    // threshold for the sensitivy of the sensor
     private static final float STEP_THRESHOLD = 50f;
-
     private static final int STEP_DELAY_NS = 250000000;
 
     private int accelRingCounter = 0;
@@ -36,7 +38,7 @@ public class StepDetector {
         currentAccel[1] = y;
         currentAccel[2] = z;
 
-        // First step is to update our guess of where the global z vector is.
+        // Update our guess of where the global z vector is.
         accelRingCounter++;
         accelRingX[accelRingCounter % ACCEL_RING_SIZE] = currentAccel[0];
         accelRingY[accelRingCounter % ACCEL_RING_SIZE] = currentAccel[1];
