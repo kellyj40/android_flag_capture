@@ -1,10 +1,13 @@
 package com.joekelly.mapsandlocation;
 
 /**
- * This class is used for the sensor readers of the Pedometer
- * This will be used in all classes to record the users steps taken
- */
+ This class is used for the sensor readers of the Pedometer
+ This will be used in all classes to record the users steps taken
+ Tutorial followed: http://www.gadgetsaint.com/android/create-pedometer-step-counter-android/  October 2017
+ **/
 
+
+//This class filters the values that are steps
 public class SensorFilter {
 
     private SensorFilter() {
@@ -17,15 +20,8 @@ public class SensorFilter {
         }
         return retval;
     }
-
-    public static float[] cross(float[] arrayA, float[] arrayB) {
-        float[] retArray = new float[3];
-        retArray[0] = arrayA[1] * arrayB[2] - arrayA[2] * arrayB[1];
-        retArray[1] = arrayA[2] * arrayB[0] - arrayA[0] * arrayB[2];
-        retArray[2] = arrayA[0] * arrayB[1] - arrayA[1] * arrayB[0];
-        return retArray;
-    }
-
+    
+    //method for normalising the the values of the acceleration
     public static float norm(float[] array) {
         float retval = 0;
         for (int i = 0; i < array.length; i++) {
@@ -34,18 +30,9 @@ public class SensorFilter {
         return (float) Math.sqrt(retval);
     }
 
-
+    //find current z based on current acceleration and normalisng factor
     public static float dot(float[] a, float[] b) {
         float retval = a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-        return retval;
-    }
-
-    public static float[] normalize(float[] a) {
-        float[] retval = new float[a.length];
-        float norm = norm(a);
-        for (int i = 0; i < a.length; i++) {
-            retval[i] = a[i] / norm;
-        }
         return retval;
     }
 
