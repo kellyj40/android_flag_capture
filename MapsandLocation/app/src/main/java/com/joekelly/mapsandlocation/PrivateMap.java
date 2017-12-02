@@ -109,7 +109,6 @@ public class PrivateMap extends AppCompatActivity implements OnMapReadyCallback{
 
         // Set to the global value
         userLocation = new LatLng(startingLat, startingLon);
-        showToast(userLocation.toString());
     }
 
 
