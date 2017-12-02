@@ -47,7 +47,7 @@
         </activity>
         <activity
             android:name=".PrivateMap"
-            android:label="@string/title_activity_maps"
+            android:label="@string/title_activity_private_map"
             android:parentActivityName=".HomePage"
             android:configChanges="orientation|screenSize"/>
         <activity
@@ -65,7 +65,7 @@
              />
         <activity
             android:name=".PublicMap"
-            android:label="@string/title_activity_private_map"
+            android:label="@string/title_activity_public_map"
             android:configChanges="orientation|screenSize" />
         <activity
             android:name=".UserRegistrationActivity"

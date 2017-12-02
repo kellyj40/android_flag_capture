@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Maps and Location</string>
-    <string name="title_activity_maps">Public Game</string>
-    <string name="flag_collected">Flag collected</string>
     <string name="title_activity_private_map">Private Game</string>
+    <string name="flag_collected">Flag collected</string>
+    <string name="title_activity_public_map">Public Game</string>
     <string name="no_location_detected">Cant find location</string>
     <string name="flags_captured">Flags Captured:</string>
     <string name="steps_taken">Steps Taken:</string>
