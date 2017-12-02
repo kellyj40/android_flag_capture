@@ -116,7 +116,6 @@ public class UserRegistrationActivity extends AppCompatActivity {
         mLatitudeText = intent.getDoubleExtra("LAT", 0.0);
         mLongitudeText = intent.getDoubleExtra("LON", 0.0);
         nextActivity = intent.getStringExtra("nextActivity");
-        Toast.makeText(this, nextActivity, Toast.LENGTH_LONG).show();
     }
 
 }

@@ -26,8 +26,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
-import org.json.JSONObject;
-
 public class HomePage extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     // Instance variables for the application
@@ -64,8 +62,6 @@ public class HomePage extends AppCompatActivity implements GoogleApiClient.Conne
 
         // Database object for todays steps
         myDb = new Databasehelperclass(this);
-
-        final JSONObject weather = GetWeather.getJSON(this, "Dublin, IE");
 
         stepWidget();
 

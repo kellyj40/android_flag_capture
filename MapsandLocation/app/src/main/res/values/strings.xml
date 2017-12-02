@@ -1,13 +1,11 @@
 <resources>
     <string name="app_name">Maps and Location</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps">Public Game</string>
     <string name="flag_collected">Flag collected</string>
-    <string name="title_activity_abouter">Abouter</string>
-    <string name="title_activity_private_map">Map</string>
+    <string name="title_activity_private_map">Private Game</string>
     <string name="no_location_detected">Cant find location</string>
     <string name="flags_captured">Flags Captured:</string>
     <string name="steps_taken">Steps Taken:</string>
-    <string name="openweathermaps_api_key">df9195ca1794965f11aecbdfe1c94bd4</string>
     <string name="weight">Weight</string>
     <string name="height">Height</string>
     <string name="motivation_widget">So far you\'ve walked %1$d steps today! Keep it up</string>
